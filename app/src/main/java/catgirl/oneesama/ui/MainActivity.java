@@ -184,7 +184,7 @@ public class MainActivity extends AppCompatActivity
         menu.setGroupCheckable(0, true, true);
 
         if(!fromSavedInstance)
-            onNavigationItemSelected(mNavigationView.getMenu().getItem(currentMenuItemId));
+            switchFragment(currentMenuItemId);
     }
 
     @Override
@@ -201,11 +201,8 @@ public class MainActivity extends AppCompatActivity
         currentMenuItemId = menuItemId;
     }
 
-    @Override
-    public boolean onNavigationItemSelected(MenuItem menuItem) {
-        mDrawerLayout.closeDrawers();
-
-        MenuConfigItem item = menuConfig.menuItems.get(menuItem.getItemId());
+    public void switchFragment(int id) {
+        MenuConfigItem item = menuConfig.menuItems.get(id);
 
         if(item.type == MenuItemType.ITEM_ABOUT) {
             try {
@@ -218,10 +215,10 @@ public class MainActivity extends AppCompatActivity
             } catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
             }
-            return true;
+            return;
         }
 
-        updateUiForFragment(menuItem.getItemId());
+        updateUiForFragment(id);
 
         Class fragmentClass = null;
 
@@ -244,7 +241,7 @@ public class MainActivity extends AppCompatActivity
                                 R.id.container,
                                 ((Fragment) fragmentClass.newInstance()))
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                        .addToBackStack(String.valueOf(menuItem.getItemId()))
+                        .addToBackStack(String.valueOf(id))
                         .commit();
             } catch (InstantiationException e) {
                 e.printStackTrace();
@@ -252,11 +249,22 @@ public class MainActivity extends AppCompatActivity
                 e.printStackTrace();
             }
 
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem menuItem) {
+        if(currentMenuItemId == menuItem.getItemId())
+            return true;
+
+        mDrawerLayout.closeDrawers();
+
+        switchFragment(menuItem.getItemId());
+
         return true;
     }
 
     public void selectMenuItem(MenuItemType type) {
-        onNavigationItemSelected(mNavigationView.getMenu().getItem(menuConfig.getId(type)));
+        switchFragment(menuConfig.getId(type));
     }
 
     @Override

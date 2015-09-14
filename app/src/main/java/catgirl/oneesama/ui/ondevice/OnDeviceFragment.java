@@ -2,45 +2,29 @@ package catgirl.oneesama.ui.ondevice;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
 
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import catgirl.oneesama.R;
-import catgirl.oneesama.model.chapter.gson.Chapter;
 import catgirl.oneesama.model.chapter.gson.Tag;
-import catgirl.oneesama.tools.RealmObservable;
-import io.realm.Realm;
-import io.realm.RealmChangeListener;
-import rx.Observable;
-import rx.Subscriber;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func0;
-import rx.functions.Func1;
-import rx.observers.Subscribers;
-import rx.schedulers.Schedulers;
+import catgirl.oneesama.ui.ondevice.pages.DoujinsPage;
+import catgirl.oneesama.ui.ondevice.pages.MiscPage;
+import catgirl.oneesama.ui.ondevice.pages.SeriesPage;
 
 public class OnDeviceFragment extends Fragment {
 
-    @Bind(R.id.Fragment_OnDevice_Recycler) RecyclerView recycler;
-    @Bind(R.id.Fragment_OnDevice_EmptyContainer) View emptyContainer;
-    @Bind(R.id.Fragment_OnDevice_BrowseButton) Button browseButton;
-
-    Realm realm;
-    int lastCount;
+    @Bind(R.id.Fragment_OnDevice_ViewPager) ViewPager viewPager;
+    @Bind(R.id.Fragment_OnDevice_TabLayout) TabLayout tabLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,53 +37,86 @@ public class OnDeviceFragment extends Fragment {
         ViewGroup view = (ViewGroup) inflater.inflate(R.layout.fragment_ondevice, container, false);
         ButterKnife.bind(this, view);
 
-        realm = Realm.getInstance(getActivity());
-        lastCount = realm.allObjects(Chapter.class).size();
+        List<Fragment> fragments = new ArrayList<>();
+        List<String> names = new ArrayList<>();
 
-        realm.addChangeListener(() -> {
-            int count = realm.allObjects(Chapter.class).size();
-            if(lastCount != count)
-            {
-                recycler.getAdapter().notifyDataSetChanged();
-                lastCount = count;
-                Log.v("Log", "Realm changed");
+        fragments.add(new SeriesPage());
+        names.add("SERIES");
+
+        fragments.add(new DoujinsPage());
+        names.add("DOUJINS");
+
+        fragments.add(new MiscPage());
+        names.add("MISC");
+
+        viewPager.setAdapter(new FragmentStatePagerAdapter(getActivity().getSupportFragmentManager()) {
+            @Override
+            public Fragment getItem(int position) {
+                return fragments.get(position);
+            }
+
+            @Override
+            public int getCount() {
+                return fragments.size();
+            }
+
+            @Override
+            public CharSequence getPageTitle(int position) {
+                return names.get(position);
             }
         });
 
-        browseButton.setOnClickListener(button -> ((OnDeviceFragmentDelegate) getActivity()).onBrowseButtonPressed());
-
-        boolean empty = realm.allObjects(Tag.class).where().equalTo("type", "Series").count() == 0;
-
-        emptyContainer.setVisibility(empty ? View.VISIBLE : View.GONE);
-        recycler.setVisibility(empty ? View.GONE : View.VISIBLE);
-
-        recycler.setAdapter(new RecyclerView.Adapter<SeriesViewHolder>() {
+        // Hack for flickering TabLayout titles bug https://code.google.com/p/android/issues/detail?id=180454
+        // until it's fixed in Support Design Library
+        // TODO - test upon Support Design Library update and remove
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout) {
+            int mScrollState;
+            int mScrollPosition;
+            float mScrollOffset;
 
             @Override
-            public SeriesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                return new SeriesViewHolder(getActivity().getLayoutInflater().inflate(R.layout.item_series, parent, false));
+            public void onPageScrollStateChanged(int state) {
+                super.onPageScrollStateChanged(state);
+                mScrollState = state;
             }
 
             @Override
-            public void onBindViewHolder(SeriesViewHolder holder, int position) {
-                holder.bind(position);
+            public void onPageScrolled(int position, float positionOffset,
+                                       int positionOffsetPixels) {
+                super.onPageScrolled(position, positionOffset, positionOffsetPixels);
+                mScrollPosition = position;
+                mScrollOffset = positionOffset;
             }
 
             @Override
-            public int getItemCount() {
-                return (int) realm.allObjects(Tag.class).where().equalTo("type", "Series").count();
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                if (mScrollState != ViewPager.SCROLL_STATE_IDLE) {
+                    tabLayout.setScrollPosition(mScrollPosition, mScrollOffset, true);
+                }
             }
         });
 
-        recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
+        tabLayout.setupWithViewPager(viewPager);
+
+        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {}
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {}
+        });
 
         return view;
     }
 
     @Override
     public void onDestroyView() {
-        realm.removeAllChangeListeners();
-        realm.close();
         super.onDestroyView();
     }
 
@@ -137,56 +154,6 @@ public class OnDeviceFragment extends Fragment {
         public SeriesAuthorRealm(Tag series, Tag author) {
             this.series = series;
             this.author = author;
-        }
-    }
-
-    class SeriesViewHolder extends RecyclerView.ViewHolder {
-
-        @Bind(R.id.Item_Series_Author) TextView author;
-        @Bind(R.id.Item_Series_Title) TextView title;
-
-        Subscription subscription;
-
-        public SeriesViewHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-        }
-
-        public void bind(int id) {
-            author.setText("");
-            title.setText("");
-
-            if(subscription != null)
-                subscription.unsubscribe();
-
-            Executor ex = Executors.newSingleThreadExecutor();
-
-            subscription = RealmObservable.object(getActivity(), realm1 -> {
-                Tag series = realm1.allObjects(Tag.class)
-                        .where()
-                        .equalTo("type", "Series")
-                        .findAllSorted("name")
-                        .get(id);
-                Tag author = realm1.allObjects(Chapter.class)
-                        .where()
-                        .equalTo("tags.id", series.getId())
-                        .findFirst()
-                        .getTags()
-                        .where()
-                        .equalTo("type", "Author")
-                        .findFirst();
-                return new SeriesAuthorRealm(series, author);
-            })
-                .subscribeOn(Schedulers.from(ex))
-                .unsubscribeOn(Schedulers.from(ex))
-                .map(tag -> new SeriesAuthor(
-                        new catgirl.oneesama.model.chapter.ui.Tag(tag.series.getId(), tag.series.getType(), tag.series.getName(), tag.series.getPermalink()),
-                        new catgirl.oneesama.model.chapter.ui.Tag(tag.author.getId(), tag.author.getType(), tag.author.getName(), tag.author.getPermalink())))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(tag -> {
-                    author.setText(tag.author.getName());
-                    title.setText(tag.series.getName());
-                });
         }
     }
 }

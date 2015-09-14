@@ -1,35 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/Fragment_OnDevice_Recycler"
+    <android.support.design.widget.TabLayout
+        android:id="@+id/Fragment_OnDevice_TabLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:elevation="0dp"
+        app:tabIndicatorColor="@android:color/white"
+        app:tabTextAppearance="@style/TabLayoutTextAppearance"
+        app:theme="@style/TabLayout"
+        app:tabTextColor="#B3FFFFFF"
+        app:tabSelectedTextColor="#FFFFFF"
+        />
 
-    <LinearLayout
-        android:id="@+id/Fragment_OnDevice_EmptyContainer"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:layout_width="250dp"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="You don't have any chapters downloaded yet."
-            android:id="@+id/textView" />
+        <android.support.v4.view.ViewPager
+            android:id="@+id/Fragment_OnDevice_ViewPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-        <Button
-            android:id="@+id/Fragment_OnDevice_BrowseButton"
-            android:layout_width="250dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="20dp"
-            android:text="Browse catalog" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:background="@drawable/toolbar_shadow" />
 
-    </LinearLayout>
+    </FrameLayout>
 
-</FrameLayout>
+
+
+</LinearLayout>

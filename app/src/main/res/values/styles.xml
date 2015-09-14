@@ -20,4 +20,12 @@
         <item name="android:textColor">@android:color/white</item>
     </style>
 
+    <style name="TabLayout" parent="Widget.Design.TabLayout">
+
+    </style>
+
+    <style name="TabLayoutTextAppearance" parent="TextAppearance.AppCompat">
+        <item name="android:textStyle">bold</item>
+    </style>
+
 </resources>
