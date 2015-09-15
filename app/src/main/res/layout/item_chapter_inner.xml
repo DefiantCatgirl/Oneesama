@@ -12,7 +12,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <include layout="@layout/item_chapter_common"/>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:background="?android:selectableItemBackground">
+            <include layout="@layout/item_chapter_common"/>
+        </FrameLayout>
 
     </android.support.v7.widget.CardView>
 

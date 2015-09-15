@@ -1,15 +1,13 @@
-package catgirl.oneesama.ui.ondevice.pages;
+package catgirl.oneesama.ui.activity.main.ondevice.pages;
 
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import catgirl.oneesama.R;
-import catgirl.oneesama.model.chapter.gson.Chapter;
-import catgirl.oneesama.model.chapter.gson.Tag;
+import catgirl.oneesama.model.chapter.serializable.Tag;
 import catgirl.oneesama.tools.RealmObservable;
-import catgirl.oneesama.ui.ondevice.OnDeviceFragment;
+import catgirl.oneesama.ui.activity.main.ondevice.OnDeviceFragment;
 import rx.Observable;
 
 public class DoujinsPage extends SeriesPage {
@@ -45,7 +43,7 @@ public class DoujinsPage extends SeriesPage {
                 .setOnClickListener(button -> ((OnDeviceFragment.OnDeviceFragmentDelegate) getActivity()).onBrowseButtonPressed());
 
         ((TextView) emptyMessage.findViewById(R.id.Common_Empty_MessageText))
-                .setText("You don't have any doujins downloaded yet. T-that would have been lewd.");
+                .setText(R.string.page_doujins_no_chapters);
 
         return emptyMessage;
     }

@@ -1,16 +1,18 @@
 package catgirl.oneesama.model.chapter.ui;
 
-public class Page {
+import catgirl.oneesama.model.chapter.serializable.Page;
+
+public class UiPage {
 
     private String name;
     private String url;
 
-    public Page(String name, String url) {
+    public UiPage(String name, String url) {
         this.name = name;
         this.url = url;
     }
 
-    public Page(catgirl.oneesama.model.chapter.gson.Page page) {
+    public UiPage(Page page) {
         this.name = page.getName();
         this.url = page.getUrl();
     }

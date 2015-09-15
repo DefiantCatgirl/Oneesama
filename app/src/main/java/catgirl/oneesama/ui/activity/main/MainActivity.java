@@ -1,4 +1,4 @@
-package catgirl.oneesama.ui;
+package catgirl.oneesama.ui.activity.main;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -31,9 +31,9 @@ import butterknife.ButterKnife;
 import catgirl.oneesama.R;
 import catgirl.oneesama.api.Config;
 import catgirl.oneesama.api.DynastyService;
-import catgirl.oneesama.model.chapter.gson.Chapter;
-import catgirl.oneesama.ui.browse.BrowseFragment;
-import catgirl.oneesama.ui.ondevice.OnDeviceFragment;
+import catgirl.oneesama.model.chapter.serializable.Chapter;
+import catgirl.oneesama.ui.activity.main.browse.BrowseFragment;
+import catgirl.oneesama.ui.activity.main.ondevice.OnDeviceFragment;
 import io.realm.Realm;
 import io.realm.RealmObject;
 import retrofit.GsonConverterFactory;
@@ -46,12 +46,11 @@ import rx.schedulers.Schedulers;
 public class MainActivity extends AppCompatActivity
         implements FragmentManager.OnBackStackChangedListener, NavigationView.OnNavigationItemSelectedListener, OnDeviceFragment.OnDeviceFragmentDelegate {
 
-    private final Handler mDrawerActionHandler = new Handler();
     private ActionBarDrawerToggle mDrawerToggle;
 
     private Realm realm;
 
-    private MenuConfig menuConfig = new MenuConfig();
+    private MenuConfig menuConfig;
     private int currentMenuItemId = 0;
 
     @Bind(R.id.toolbar_layout) Toolbar toolbar;
@@ -71,6 +70,8 @@ public class MainActivity extends AppCompatActivity
 //        }
 
         realm = Realm.getInstance(this);
+
+        menuConfig = new MenuConfig();
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.navigation_drawer_open,R.string.navigation_drawer_close);
         mDrawerLayout.setDrawerListener(mDrawerToggle);
@@ -209,7 +210,7 @@ public class MainActivity extends AppCompatActivity
             try {
                 Toast.makeText(
                         this,
-                        "Oneesama v." + getPackageManager().getPackageInfo(getPackageName(), 0).versionName + ", a Dynasty Reader client.\nMore to come.",
+                        String.format(getString(R.string.activity_main_about_text), getPackageManager().getPackageInfo(getPackageName(), 0).versionName),
                         Toast.LENGTH_LONG
                 ).show();
                 updateUiForFragment(currentMenuItemId);
@@ -297,9 +298,9 @@ public class MainActivity extends AppCompatActivity
         public MenuConfig() {
             menuItems = new ArrayList<>();
 
-
-            menuItems.add(new MenuConfigItem(MenuItemType.ITEM_BROWSE, "Browse", R.drawable.ic_library_books_black_24dp));
-            menuItems.add(new MenuConfigItem(MenuItemType.ITEM_ABOUT, "About", R.drawable.ic_help_black_24dp));
+            menuItems.add(new MenuConfigItem(MenuItemType.ITEM_ONDEVICE, getString(R.string.activity_main_ondevice), R.drawable.ic_file_download_black_24dp));
+            menuItems.add(new MenuConfigItem(MenuItemType.ITEM_BROWSE, getString(R.string.activity_main_browse), R.drawable.ic_library_books_black_24dp));
+            menuItems.add(new MenuConfigItem(MenuItemType.ITEM_ABOUT, getString(R.string.activity_main_about), R.drawable.ic_help_black_24dp));
         }
 
         public int getId(MenuItemType type) {

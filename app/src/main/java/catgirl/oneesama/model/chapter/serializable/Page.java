@@ -1,9 +1,8 @@
-package catgirl.oneesama.model.chapter.gson;
+package catgirl.oneesama.model.chapter.serializable;
 
 import com.google.gson.annotations.Expose;
 
 import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
 
 public class Page extends RealmObject {
 

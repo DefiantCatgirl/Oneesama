@@ -12,28 +12,35 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-
-        <LinearLayout
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:focusable="true"
+            android:background="?android:selectableItemBackground">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
 
-        <include layout="@layout/item_chapter_common"/>
+                <include layout="@layout/item_chapter_common"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Author"
-            android:paddingLeft="12dp"
-            android:paddingRight="12dp"
-            android:paddingBottom="12dp"
-            android:textSize="14sp"
-            android:layout_marginTop="6dp"
-            android:id="@+id/Item_Chapter_Author" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Author"
+                    android:paddingLeft="12dp"
+                    android:paddingRight="12dp"
+                    android:paddingBottom="12dp"
+                    android:textSize="14sp"
+                    android:layout_marginTop="6dp"
+                    android:id="@+id/Item_Chapter_Author" />
 
-        </LinearLayout>
+            </LinearLayout>
+
+        </FrameLayout>
+
 
     </android.support.v7.widget.CardView>
 

@@ -1,4 +1,4 @@
-package catgirl.oneesama.model.chapter.gson;
+package catgirl.oneesama.model.chapter.serializable;
 
 import com.google.gson.annotations.Expose;
 

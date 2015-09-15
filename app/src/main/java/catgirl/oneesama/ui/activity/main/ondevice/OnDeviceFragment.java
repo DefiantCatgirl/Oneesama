@@ -1,11 +1,10 @@
-package catgirl.oneesama.ui.ondevice;
+package catgirl.oneesama.ui.activity.main.ondevice;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,10 +16,11 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import catgirl.oneesama.R;
-import catgirl.oneesama.model.chapter.gson.Tag;
-import catgirl.oneesama.ui.ondevice.pages.DoujinsPage;
-import catgirl.oneesama.ui.ondevice.pages.MiscPage;
-import catgirl.oneesama.ui.ondevice.pages.SeriesPage;
+import catgirl.oneesama.model.chapter.serializable.Tag;
+import catgirl.oneesama.model.chapter.ui.UiTag;
+import catgirl.oneesama.ui.activity.main.ondevice.pages.DoujinsPage;
+import catgirl.oneesama.ui.activity.main.ondevice.pages.MiscPage;
+import catgirl.oneesama.ui.activity.main.ondevice.pages.SeriesPage;
 
 public class OnDeviceFragment extends Fragment {
 
@@ -42,13 +42,13 @@ public class OnDeviceFragment extends Fragment {
         List<String> names = new ArrayList<>();
 
         fragments.add(new SeriesPage());
-        names.add("SERIES");
+        names.add(getString(R.string.fragment_ondevice_series));
 
         fragments.add(new DoujinsPage());
-        names.add("DOUJINS");
+        names.add(getString(R.string.fragment_ondevice_doujins));
 
         fragments.add(new MiscPage());
-        names.add("MISC");
+        names.add(getString(R.string.fragment_ondevice_misc));
 
         viewPager.setAdapter(new FragmentPagerAdapter(getChildFragmentManager()) {
             @Override
@@ -141,9 +141,9 @@ public class OnDeviceFragment extends Fragment {
     }
 
     class SeriesAuthor {
-        catgirl.oneesama.model.chapter.ui.Tag series;
-        catgirl.oneesama.model.chapter.ui.Tag author;
-        public SeriesAuthor(catgirl.oneesama.model.chapter.ui.Tag series, catgirl.oneesama.model.chapter.ui.Tag author) {
+        UiTag series;
+        UiTag author;
+        public SeriesAuthor(UiTag series, UiTag author) {
             this.series = series;
             this.author = author;
         }

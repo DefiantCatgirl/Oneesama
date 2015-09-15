@@ -1,4 +1,4 @@
-package catgirl.oneesama.ui.ondevice.pages;
+package catgirl.oneesama.ui.common;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,7 +16,7 @@ import java.util.concurrent.Executors;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import catgirl.oneesama.R;
-import catgirl.oneesama.model.chapter.gson.Chapter;
+import catgirl.oneesama.model.chapter.serializable.Chapter;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import rx.Observable;
@@ -24,12 +24,12 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public abstract class CommonPage<T, RT, VH extends CommonPage.ViewHolder> extends Fragment {
+public abstract class CommonPage<T, RT, VH extends CommonViewHolder> extends Fragment {
 
     @Bind(R.id.Fragment_OnDevice_CommonRecycler) RecyclerView recycler;
     View emptyContainer;
 
-    Realm realm;
+    protected Realm realm;
     int lastCount;
 
     RealmChangeListener listener;
@@ -139,11 +139,4 @@ public abstract class CommonPage<T, RT, VH extends CommonPage.ViewHolder> extend
     public abstract void bindViewHolder(VH holder, int position, T data);
     public abstract void resetViewHolder(VH holder, int position);
     public abstract View getEmptyMessage(ViewGroup parent);
-
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        Subscription subscription;
-        public ViewHolder(View itemView) {
-            super(itemView);
-        }
-    }
 }

@@ -27,6 +27,12 @@ android {
     packagingOptions {
         exclude 'META-INF/services/javax.annotation.processing.Processor'
     }
+
+    signingConfigs {
+        debug {
+            storeFile file("debug.keystore")
+        }
+    }
 }
 
 buildscript {

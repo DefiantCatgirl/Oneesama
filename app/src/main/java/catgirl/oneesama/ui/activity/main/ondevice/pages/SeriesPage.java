@@ -1,21 +1,22 @@
-package catgirl.oneesama.ui.ondevice.pages;
+package catgirl.oneesama.ui.activity.main.ondevice.pages;
 
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import catgirl.oneesama.R;
-import catgirl.oneesama.model.chapter.gson.Chapter;
-import catgirl.oneesama.model.chapter.gson.Tag;
+import catgirl.oneesama.model.chapter.serializable.Chapter;
+import catgirl.oneesama.model.chapter.serializable.Tag;
+import catgirl.oneesama.model.chapter.ui.UiTag;
 import catgirl.oneesama.tools.RealmObservable;
-import catgirl.oneesama.ui.ondevice.OnDeviceFragment;
+import catgirl.oneesama.ui.activity.chapters.ChaptersActivity;
+import catgirl.oneesama.ui.common.CommonPage;
+import catgirl.oneesama.ui.activity.main.ondevice.OnDeviceFragment;
+import catgirl.oneesama.ui.common.CommonViewHolder;
 import rx.Observable;
-import rx.Subscription;
 
 public class SeriesPage extends CommonPage<SeriesPage.SeriesAuthor, SeriesPage.SeriesAuthorRealm, SeriesPage.SeriesViewHolder> {
 
@@ -48,7 +49,7 @@ public class SeriesPage extends CommonPage<SeriesPage.SeriesAuthor, SeriesPage.S
                 .setOnClickListener(button -> ((OnDeviceFragment.OnDeviceFragmentDelegate) getActivity()).onBrowseButtonPressed());
 
         ((TextView) emptyMessage.findViewById(R.id.Common_Empty_MessageText))
-                .setText("You don't have chapters from any series downloaded yet.");
+                .setText(R.string.page_series_no_chapters);
 
         return emptyMessage;
     }
@@ -61,8 +62,8 @@ public class SeriesPage extends CommonPage<SeriesPage.SeriesAuthor, SeriesPage.S
     @Override
     public SeriesAuthor convertDataFromRealm(SeriesAuthorRealm source) {
         return new SeriesAuthor(
-                new catgirl.oneesama.model.chapter.ui.Tag(source.series),
-                new catgirl.oneesama.model.chapter.ui.Tag(source.author));
+                new UiTag(source.series),
+                new UiTag(source.author));
     }
 
     @Override
@@ -81,9 +82,9 @@ public class SeriesPage extends CommonPage<SeriesPage.SeriesAuthor, SeriesPage.S
     }
 
     class SeriesAuthor {
-        catgirl.oneesama.model.chapter.ui.Tag series;
-        catgirl.oneesama.model.chapter.ui.Tag author;
-        public SeriesAuthor(catgirl.oneesama.model.chapter.ui.Tag series, catgirl.oneesama.model.chapter.ui.Tag author) {
+        UiTag series;
+        UiTag author;
+        public SeriesAuthor(UiTag series, UiTag author) {
             this.series = series;
             this.author = author;
         }
@@ -98,24 +99,39 @@ public class SeriesPage extends CommonPage<SeriesPage.SeriesAuthor, SeriesPage.S
         }
     }
 
-    class SeriesViewHolder extends CommonPage.ViewHolder {
+    class SeriesViewHolder extends CommonViewHolder {
 
         @Bind(R.id.Item_Series_Author) TextView author;
         @Bind(R.id.Item_Series_Title) TextView title;
 
+        SeriesAuthor data;
+
         public SeriesViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            itemView.setOnClickListener(this::onClick);
         }
 
         public void bind(int id, SeriesAuthor data) {
+            this.data = data;
+
             author.setText(data.author.getName());
             title.setText(data.series.getName());
         }
 
         public void reset() {
+            data = null;
             author.setText("");
             title.setText("");
+        }
+
+        public void onClick(View view) {
+            if(data == null)
+                return;
+
+            Intent intent = new Intent(getActivity(), ChaptersActivity.class);
+            intent.putExtra("TAG_ID", data.series.getId());
+            startActivity(intent);
         }
     }
 }

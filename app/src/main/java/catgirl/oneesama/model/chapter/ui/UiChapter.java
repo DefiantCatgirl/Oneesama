@@ -3,21 +3,22 @@ package catgirl.oneesama.model.chapter.ui;
 import java.util.ArrayList;
 import java.util.List;
 
+import catgirl.oneesama.model.chapter.serializable.Chapter;
 import rx.Observable;
 
-public class Chapter {
+public class UiChapter {
     private Integer id;
     private String title;
     private String longTitle;
     private String permalink;
-    private List<Tag> tags;
-    private List<Page> pages;
+    private List<UiTag> tags;
+    private List<UiPage> pages;
     private String releasedOn;
     private String addedOn;
 
     private boolean completelyDownloaded;
 
-    public Chapter(Integer id, String title, String longTitle, String permalink, List<Tag> tags, List<Page> pages, String releasedOn, String addedOn, boolean completelyDownloaded) {
+    public UiChapter(Integer id, String title, String longTitle, String permalink, List<UiTag> tags, List<UiPage> pages, String releasedOn, String addedOn, boolean completelyDownloaded) {
         this.id = id;
         this.title = title;
         this.longTitle = longTitle;
@@ -29,23 +30,23 @@ public class Chapter {
         this.completelyDownloaded = completelyDownloaded;
     }
 
-    public Chapter(catgirl.oneesama.model.chapter.gson.Chapter chapter) {
+    public UiChapter(Chapter chapter) {
         this.id = chapter.getId();
         this.title = chapter.getTitle();
         this.longTitle = chapter.getLongTitle();
         this.permalink = chapter.getPermalink();
 
         Observable.from(chapter.getTags())
-                .map(Tag::new)
-                .reduce(new ArrayList<Tag>(), (tags1, tag) -> {
+                .map(UiTag::new)
+                .reduce(new ArrayList<UiTag>(), (tags1, tag) -> {
                     tags1.add(tag);
                     return tags1;
                 })
                 .subscribe(tags -> this.tags = tags);
 
         Observable.from(chapter.getPages())
-                .map(Page::new)
-                .reduce(new ArrayList<Page>(), (pages1, page) -> {
+                .map(UiPage::new)
+                .reduce(new ArrayList<UiPage>(), (pages1, page) -> {
                     pages1.add(page);
                     return pages1;
                 })
@@ -98,7 +99,7 @@ public class Chapter {
      * @return
      * The tags
      */
-    public List<Tag> getTags() {
+    public List<UiTag> getTags() {
         return tags;
     }
 
@@ -107,7 +108,7 @@ public class Chapter {
      * @return
      * The pages
      */
-    public List<Page> getPages() {
+    public List<UiPage> getPages() {
         return pages;
     }
     /**
