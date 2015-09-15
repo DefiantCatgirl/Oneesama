@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Series title"
+        android:textSize="20sp"
+        android:layout_weight="1"
+        android:id="@+id/Item_Chapter_Title"
+        android:maxLines="2"
+        android:minLines="2"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:layout_gravity="center_vertical"
+        android:paddingLeft="12dp"/>
+
+    <FrameLayout
+        android:layout_width="@dimen/download_progress_layout_size"
+        android:layout_height="@dimen/download_progress_layout_size"
+        android:id="@+id/Item_Chapter_StatusLayout"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="12dp">
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/Item_Chapter_ProgressLayout"
+            android:layout_gravity="center_vertical">
+            <com.pnikosis.materialishprogress.ProgressWheel
+                android:id="@+id/Item_Chapter_ProgressBG"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                app:matProg_barColor="#20000000"
+                app:matProg_progressIndeterminate="false"
+                app:matProg_barWidth="@dimen/download_progress_wheel_weight"
+                app:matProg_fillRadius="true"
+                app:matProg_linearProgress="true"
+                android:layout_gravity="center_vertical" />
+            <com.pnikosis.materialishprogress.ProgressWheel
+                android:id="@+id/Item_Chapter_ProgressBar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                app:matProg_barColor="?attr/colorAccent"
+                app:matProg_progressIndeterminate="false"
+                app:matProg_barWidth="@dimen/download_progress_wheel_weight"
+                app:matProg_fillRadius="true"
+                app:matProg_linearProgress="true"
+                android:layout_gravity="center_vertical" />
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/Item_Chapter_DownloadedLayout"
+            android:background="@drawable/downloaded_circle"
+            android:layout_gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="@dimen/download_progress_layout_size"
+                android:layout_height="@dimen/download_progress_layout_size"
+                android:padding="@dimen/download_progress_wheel_weight"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_done_white_18dp" />
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/Item_Chapter_ReloadLayout"
+            android:background="@drawable/reload_circle"
+            android:layout_gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="@dimen/download_progress_layout_size"
+                android:layout_height="@dimen/download_progress_layout_size"
+                android:padding="@dimen/download_progress_wheel_weight"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_refresh_white_18dp" />
+        </FrameLayout>
+    </FrameLayout>
+
+    <ImageButton
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:padding="12dp"
+        android:src="@drawable/ic_delete_grey600_24dp"
+        android:background="@android:color/transparent"/>
+</LinearLayout>

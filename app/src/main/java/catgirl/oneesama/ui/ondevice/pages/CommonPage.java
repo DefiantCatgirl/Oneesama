@@ -9,8 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -19,23 +17,22 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import catgirl.oneesama.R;
 import catgirl.oneesama.model.chapter.gson.Chapter;
-import catgirl.oneesama.model.chapter.gson.Tag;
-import catgirl.oneesama.tools.RealmObservable;
 import io.realm.Realm;
+import io.realm.RealmChangeListener;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-public class CommonPage extends Fragment {
+public abstract class CommonPage<T, RT, VH extends CommonPage.ViewHolder> extends Fragment {
 
-    @Bind(R.id.Fragment_OnDevice_SeriesRecycler) RecyclerView recycler;
-    @Bind(R.id.Fragment_OnDevice_EmptyContainer) View emptyContainer;
-    @Bind(R.id.Fragment_OnDevice_BrowseButton) Button browseButton;
+    @Bind(R.id.Fragment_OnDevice_CommonRecycler) RecyclerView recycler;
+    View emptyContainer;
 
     Realm realm;
     int lastCount;
+
+    RealmChangeListener listener;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,39 +42,61 @@ public class CommonPage extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        ViewGroup view = (ViewGroup) inflater.inflate(R.layout.fragment_ondevice_page_series, container, false);
+        ViewGroup view = (ViewGroup) inflater.inflate(R.layout.fragment_ondevice_page_common, container, false);
         ButterKnife.bind(this, view);
 
         realm = Realm.getInstance(getActivity());
         lastCount = realm.allObjects(Chapter.class).size();
 
-        realm.addChangeListener(() -> {
+        listener = (() -> {
             int count = realm.allObjects(Chapter.class).size();
-            if(lastCount != count)
-            {
+            if (lastCount != count) {
                 recycler.getAdapter().notifyDataSetChanged();
+
+                boolean empty = getDataItemCount() == 0;
+                emptyContainer.setVisibility(empty ? View.VISIBLE : View.GONE);
+                recycler.setVisibility(empty ? View.GONE : View.VISIBLE);
+
                 lastCount = count;
-                Log.v("Log", "Realm changed");
+
+                // TODO remove debug
+                Log.v("Log", "Realm changed " + this.getClass().getName());
             }
         });
+        realm.addChangeListener(listener);
 
-        browseButton.setOnClickListener(button -> ((OnDeviceFragmentDelegate) getActivity()).onBrowseButtonPressed());
+        boolean empty = getDataItemCount() == 0;
 
-        boolean empty = realm.allObjects(Tag.class).where().equalTo("type", "Series").count() == 0;
+        emptyContainer = getEmptyMessage(view);
+        view.addView(emptyContainer);
 
         emptyContainer.setVisibility(empty ? View.VISIBLE : View.GONE);
         recycler.setVisibility(empty ? View.GONE : View.VISIBLE);
 
-        recycler.setAdapter(new RecyclerView.Adapter<SeriesViewHolder>() {
+        recycler.setAdapter(new RecyclerView.Adapter<VH>() {
 
             @Override
-            public SeriesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                return new SeriesViewHolder(getActivity().getLayoutInflater().inflate(R.layout.item_series, parent, false));
+            public VH onCreateViewHolder(ViewGroup parent, int viewType) {
+                return provideViewHolder(parent);
             }
 
             @Override
-            public void onBindViewHolder(SeriesViewHolder holder, int position) {
-                holder.bind(position);
+            public void onBindViewHolder(VH holder, int position) {
+                resetViewHolder(holder, position);
+
+                if(holder.subscription != null)
+                    holder.subscription.unsubscribe();
+
+                Executor ex = Executors.newSingleThreadExecutor();
+
+                holder.subscription = getDataSource(position)
+                        .subscribeOn(Schedulers.from(ex))
+                        .unsubscribeOn(Schedulers.from(ex))
+                        .map(CommonPage.this::convertDataFromRealm)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(item -> {
+                            CommonPage.this.bindViewHolder(holder, position, item);
+                        });
             }
 
             @Override
@@ -93,7 +112,7 @@ public class CommonPage extends Fragment {
 
     @Override
     public void onDestroyView() {
-        realm.removeAllChangeListeners();
+        realm.removeChangeListener(listener);
         realm.close();
         super.onDestroyView();
     }
@@ -113,69 +132,18 @@ public class CommonPage extends Fragment {
         super.onSaveInstanceState(outState);
     }
 
-    public Observable<SeriesAuthorRealm> getDataSource(int id) {
-        return null;
-    }
+    public abstract Observable<RT> getDataSource(int id);
+    public abstract int getDataItemCount();
+    public abstract T convertDataFromRealm(RT source);
+    public abstract VH provideViewHolder(ViewGroup parent);
+    public abstract void bindViewHolder(VH holder, int position, T data);
+    public abstract void resetViewHolder(VH holder, int position);
+    public abstract View getEmptyMessage(ViewGroup parent);
 
-
-    public int getDataItemCount() {
-        return 0;
-    }
-
-    public interface OnDeviceFragmentDelegate {
-        void onBrowseButtonPressed();
-    }
-
-    class SeriesAuthor {
-        catgirl.oneesama.model.chapter.ui.Tag series;
-        catgirl.oneesama.model.chapter.ui.Tag author;
-        public SeriesAuthor(catgirl.oneesama.model.chapter.ui.Tag series, catgirl.oneesama.model.chapter.ui.Tag author) {
-            this.series = series;
-            this.author = author;
-        }
-    }
-
-    class SeriesAuthorRealm {
-        Tag series;
-        Tag author;
-        public SeriesAuthorRealm(Tag series, Tag author) {
-            this.series = series;
-            this.author = author;
-        }
-    }
-
-    class SeriesViewHolder extends RecyclerView.ViewHolder {
-
-        @Bind(R.id.Item_Series_Author) TextView author;
-        @Bind(R.id.Item_Series_Title) TextView title;
-
+    public class ViewHolder extends RecyclerView.ViewHolder {
         Subscription subscription;
-
-        public SeriesViewHolder(View itemView) {
+        public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
-        }
-
-        public void bind(int id) {
-            author.setText("");
-            title.setText("");
-
-            if(subscription != null)
-                subscription.unsubscribe();
-
-            Executor ex = Executors.newSingleThreadExecutor();
-
-            subscription = getDataSource(id)
-                    .subscribeOn(Schedulers.from(ex))
-                    .unsubscribeOn(Schedulers.from(ex))
-                    .map(item -> new SeriesAuthor(
-                            new catgirl.oneesama.model.chapter.ui.Tag(item.series.getId(), item.series.getType(), item.series.getName(), item.series.getPermalink()),
-                            new catgirl.oneesama.model.chapter.ui.Tag(item.author.getId(), item.author.getType(), item.author.getName(), item.author.getPermalink())))
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(item -> {
-                        author.setText(item.author.getName());
-                        title.setText(item.series.getName());
-                    });
         }
     }
 }

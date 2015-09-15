@@ -14,6 +14,13 @@ public class Tag {
         this.permalink = permalink;
     }
 
+    public Tag(catgirl.oneesama.model.chapter.gson.Tag tag) {
+        this.id = tag.getId();
+        this.type = tag.getType();
+        this.name = tag.getName();
+        this.permalink = tag.getPermalink();
+    }
+
     /**
      *
      * @return

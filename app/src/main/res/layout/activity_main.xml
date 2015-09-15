@@ -32,7 +32,7 @@
                         android:layout_width="match_parent"
                         android:background="?attr/colorPrimary"
                         app:titleTextAppearance="@style/ToolbarTitle"
-                        app:theme="@style/Toolbar"
+                        android:theme="@style/Toolbar"
                         android:elevation="0dp"/>
                 </FrameLayout>
 

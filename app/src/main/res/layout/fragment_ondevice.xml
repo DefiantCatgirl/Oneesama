@@ -13,7 +13,7 @@
         android:elevation="0dp"
         app:tabIndicatorColor="@android:color/white"
         app:tabTextAppearance="@style/TabLayoutTextAppearance"
-        app:theme="@style/TabLayout"
+        android:theme="@style/TabLayout"
         app:tabTextColor="#B3FFFFFF"
         app:tabSelectedTextColor="#FFFFFF"
         />

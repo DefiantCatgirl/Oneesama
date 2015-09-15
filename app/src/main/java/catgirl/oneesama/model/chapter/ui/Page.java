@@ -10,6 +10,11 @@ public class Page {
         this.url = url;
     }
 
+    public Page(catgirl.oneesama.model.chapter.gson.Page page) {
+        this.name = page.getName();
+        this.url = page.getUrl();
+    }
+
     /**
      *
      * @return

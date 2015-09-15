@@ -33,6 +33,8 @@ public class Chapter extends RealmObject {
     @Expose
     private String addedOn;
 
+    private boolean completelyDownloaded = false;
+
     /**
      *
      * @return
@@ -177,4 +179,11 @@ public class Chapter extends RealmObject {
         this.addedOn = addedOn;
     }
 
+    public boolean isCompletelyDownloaded() {
+        return completelyDownloaded;
+    }
+
+    public void setCompletelyDownloaded(boolean completelyDownloaded) {
+        this.completelyDownloaded = completelyDownloaded;
+    }
 }

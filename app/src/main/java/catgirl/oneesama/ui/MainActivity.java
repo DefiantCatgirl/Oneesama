@@ -139,6 +139,7 @@ public class MainActivity extends AppCompatActivity
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {
+                    // TODO remove debug
                     Log.v("Log", response.getPermalink());
                     for (Chapter chapter : realm.allObjects(Chapter.class)) {
                         Log.v("Log1", "Chapter: " + chapter.getTitle());
@@ -296,8 +297,8 @@ public class MainActivity extends AppCompatActivity
         public MenuConfig() {
             menuItems = new ArrayList<>();
 
+
             menuItems.add(new MenuConfigItem(MenuItemType.ITEM_BROWSE, "Browse", R.drawable.ic_library_books_black_24dp));
-            menuItems.add(new MenuConfigItem(MenuItemType.ITEM_ONDEVICE, "On Device", R.drawable.ic_file_download_black_24dp));
             menuItems.add(new MenuConfigItem(MenuItemType.ITEM_ABOUT, "About", R.drawable.ic_help_black_24dp));
         }
 
