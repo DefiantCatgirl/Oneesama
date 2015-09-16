@@ -46,7 +46,7 @@ public abstract class CommonPage<T, RT, VH extends CommonViewHolder> extends Fra
         ViewGroup view = (ViewGroup) inflater.inflate(R.layout.fragment_ondevice_page_common, container, false);
         ButterKnife.bind(this, view);
 
-        realm = Realm.getInstance(getActivity());
+        realm = Realm.getDefaultInstance();
         lastCount = realm.allObjects(Chapter.class).size();
 
         listener = (() -> {

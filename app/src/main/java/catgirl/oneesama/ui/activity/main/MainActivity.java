@@ -36,11 +36,14 @@ import catgirl.oneesama.api.DynastyService;
 import catgirl.oneesama.controller.ChaptersController;
 import catgirl.oneesama.controller.legacy.Book;
 import catgirl.oneesama.model.chapter.serializable.Chapter;
+import catgirl.oneesama.model.chapter.serializable.Page;
+import catgirl.oneesama.model.chapter.serializable.Tag;
 import catgirl.oneesama.ui.activity.legacyreader.activityreader.ReaderActivity;
 import catgirl.oneesama.ui.activity.legacyreader.tools.EndAnimatorListener;
 import catgirl.oneesama.ui.activity.main.browse.BrowseFragment;
 import catgirl.oneesama.ui.activity.main.ondevice.OnDeviceFragment;
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmObject;
 import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
@@ -74,7 +77,9 @@ public class MainActivity extends AppCompatActivity
 
         ButterKnife.bind(this);
 
-        realm = Realm.getInstance(this);
+        realm = Realm.getDefaultInstance();
+
+//        fixOrphans();
 
         menuConfig = new MenuConfig();
 
@@ -312,4 +317,23 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    // Remove orphaned tags and pages fix for development
+    private void fixOrphans() {
+        realm.beginTransaction();
+
+        List<RealmObject> toRemove = new ArrayList<>();
+
+        for(Tag tag : realm.allObjects(Tag.class)) {
+            if(realm.where(Chapter.class).equalTo("tags.id", tag.getId()).count() == 0)
+                toRemove.add(tag);
+        }
+        for(Page page : realm.allObjects(Page.class)) {
+            if(realm.where(Chapter.class).equalTo("pages.url", page.getUrl()).count() == 0)
+                toRemove.add(page);
+        }
+        for(RealmObject object : toRemove)
+            object.removeFromRealm();
+
+        realm.commitTransaction();
+    }
 }

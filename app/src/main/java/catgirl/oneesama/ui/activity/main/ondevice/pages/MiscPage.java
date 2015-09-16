@@ -101,8 +101,8 @@ public class MiscPage extends CommonPage<ChapterAuthor, ChapterAuthorRealm, Chap
         }
 
         @Override
-        public void bind(int id, ChapterAuthor data) {
-            super.bind(id, data);
+        public void bind(int position, ChapterAuthor data) {
+            super.bind(position, data);
             author.setText(data.author.getName());
         }
 

@@ -28,4 +28,7 @@
     <string name="PAGE_TITLE">Page</string>
     <string name="core_reader_thumbnails_title">Page Overview</string>
     <string name="activity_main_loading_chapter">Loading chapter</string>
+    <string name="item_chapter_are_you_sure_delete">Are you sure?</string>
+    <string name="common_yes">Yes</string>
+    <string name="common_no">No</string>
 </resources>

@@ -83,7 +83,7 @@ public class AirViewer implements AirPageDelegate {
 	// Initialization and page positions                  //
 	// -------------------------------------------------- //
 	
-	boolean started = false;
+	public boolean started = false;
 	
 	/**
 	 * Call this method when everything is ready, especially the draw delegate. Can also be used to reset the viewer, I guess.

@@ -26,7 +26,7 @@ public abstract class OnSubscribeRealm<T extends Object> implements Observable.O
 
     @Override
     public void call(final Subscriber<? super T> subscriber) {
-        final Realm realm = fileName != null ? Realm.getInstance(context, fileName) : Realm.getInstance(context);
+        final Realm realm = fileName != null ? Realm.getInstance(context, fileName) : Realm.getDefaultInstance();
         subscriber.add(Subscriptions.create(new Action0() {
             @Override
             public void call() {

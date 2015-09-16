@@ -134,6 +134,7 @@ public class Downloader {
 				RetStream input = null;
 				String suffix = "";
 
+				Log.v("Log", "Downloading " + page.getUrl());
 
 				try {
 					input = self.openDownloadStream(Config.apiEndpoint + page.getUrl());

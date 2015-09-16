@@ -1,18 +1,20 @@
 package catgirl.oneesama.ui.common.chapter;
 
 import android.animation.Animator;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.pnikosis.materialishprogress.ProgressWheel;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import catgirl.oneesama.Application;
 import catgirl.oneesama.R;
 import catgirl.oneesama.controller.ChaptersController;
 import catgirl.oneesama.controller.legacy.Book;
@@ -23,42 +25,68 @@ import catgirl.oneesama.ui.common.CommonViewHolder;
 
 public class ChapterViewHolder extends CommonViewHolder implements BookStateDelegate {
 
-    @Bind(R.id.Item_Chapter_Title)
-    protected TextView title;
+    @Bind(R.id.Item_Chapter_Title) protected TextView title;
 
     @Bind(R.id.Item_Chapter_StatusLayout) View statusLayout;
     @Bind(R.id.Item_Chapter_ProgressLayout) View progressLayout;
     @Bind(R.id.Item_Chapter_DownloadedLayout) View downloadedLayout;
     @Bind(R.id.Item_Chapter_ReloadLayout) View reloadLayout;
     @Bind(R.id.Item_Chapter_ProgressBar) ProgressWheel progressBar;
+    @Bind(R.id.Item_Chapter_ProgressBG) ProgressWheel progressBG;
+
+    @Bind(R.id.Item_Chapter_DeleteButton) ImageButton deleteButton;
 
     ChapterAuthor data;
-    int pageId;
+    int position;
     RecyclerView recycler;
     Handler handler;
+    Context context;
 
     public ChapterViewHolder(View itemView, RecyclerView recycler) {
         super(itemView);
         ButterKnife.bind(this, itemView);
+        context = itemView.getContext();
         progressBar.stopSpinning();
+        progressBG.stopSpinning();
+        progressBG.setInstantProgress(1f);
         this.recycler = recycler;
         itemView.setOnClickListener(this::onClick);
+        deleteButton.setOnClickListener(this::onDeleteButtonClicked);
         handler = new Handler();
+    }
+
+    private void onDeleteButtonClicked(View view) {
+        if(data == null)
+            return;
+
+        DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
+            switch (which){
+                case DialogInterface.BUTTON_POSITIVE:
+                    ChaptersController.getInstance().deleteChapter(data.chapter.getId());
+                    break;
+                case DialogInterface.BUTTON_NEGATIVE:
+                    break;
+            }
+        };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setMessage(context.getString(R.string.item_chapter_are_you_sure_delete)).setPositiveButton(context.getString(R.string.common_yes), dialogClickListener)
+                .setNegativeButton(context.getString(R.string.common_no), dialogClickListener).show();
     }
 
     private void onClick(View view) {
         if(data == null)
             return;
 
-        Intent readerIntent = new Intent(Application.getContextOfApplication(), ReaderActivity.class);
+        Intent readerIntent = new Intent(context, ReaderActivity.class);
         readerIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         readerIntent.putExtra(ReaderActivity.PUBLICATION_ID, data.chapter.getId());
-        Application.getContextOfApplication().startActivity(readerIntent);
+        context.startActivity(readerIntent);
     }
 
-    public void bind(int pageId, ChapterAuthor data) {
+    public void bind(int position, ChapterAuthor data) {
         this.data = data;
-        this.pageId = pageId;
+        this.position = position;
 
         title.setText(data.chapter.getTitle());
 

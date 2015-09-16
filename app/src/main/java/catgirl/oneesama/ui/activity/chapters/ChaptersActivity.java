@@ -21,7 +21,7 @@ public class ChaptersActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        Realm realm = Realm.getInstance(this);
+        Realm realm = Realm.getDefaultInstance();
         Tag tag = realm.where(Tag.class).equalTo("id", getIntent().getIntExtra("TAG_ID", 0)).findFirst();
         String name = tag.getName();
         toolbar.setTitle(name);

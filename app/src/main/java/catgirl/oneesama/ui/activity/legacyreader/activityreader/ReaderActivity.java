@@ -395,7 +395,7 @@ public class ReaderActivity extends BaseActivity implements AirViewerDelegate, A
 
 	@Override
 	public void onPageDimensionsChanged(int pageId) {
-		if(airView != null)
+		if(airView != null && airView.started)
 			airView.onPageDimensionsChanged(pageId);
 	}
 

@@ -8,7 +8,9 @@ import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import catgirl.oneesama.Application;
@@ -18,8 +20,11 @@ import catgirl.oneesama.controller.legacy.Book;
 import catgirl.oneesama.controller.legacy.BookStateDelegate;
 import catgirl.oneesama.controller.legacy.CacherDelegate;
 import catgirl.oneesama.model.chapter.serializable.Chapter;
+import catgirl.oneesama.model.chapter.serializable.Page;
+import catgirl.oneesama.model.chapter.serializable.Tag;
 import catgirl.oneesama.model.chapter.ui.UiChapter;
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmObject;
 import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
@@ -45,7 +50,7 @@ public class ChaptersController implements BookStateDelegate, CacherDelegate {
         if(controllers.containsKey(id))
             return controllers.get(id);
         else {
-            Realm realm = Realm.getInstance(Application.getContextOfApplication());
+            Realm realm = Realm.getDefaultInstance();
             Chapter chapter = realm.where(Chapter.class).equalTo("id", id).findFirst();
             realm.close();
             Book book = new Book(new UiChapter(chapter), this, this, false, null);
@@ -87,7 +92,7 @@ public class ChaptersController implements BookStateDelegate, CacherDelegate {
         return service.getChapter(uri.getLastPathSegment())
                 .subscribeOn(Schedulers.io())
                 .doOnNext(response -> {
-                    Realm realm = Realm.getInstance(Application.getContextOfApplication());
+                    Realm realm = Realm.getDefaultInstance();
                     realm.beginTransaction();
                     realm.copyToRealmOrUpdate(response);
                     realm.commitTransaction();
@@ -111,7 +116,7 @@ public class ChaptersController implements BookStateDelegate, CacherDelegate {
     @Override
     public void completelyDownloaded(int id, boolean success) {
         if(success) {
-            Realm realm = Realm.getInstance(Application.getContextOfApplication());
+            Realm realm = Realm.getDefaultInstance();
             Chapter chapter = realm.where(Chapter.class).equalTo("id", id).findFirst();
             realm.beginTransaction();
             chapter.setCompletelyDownloaded(true);
@@ -129,5 +134,42 @@ public class ChaptersController implements BookStateDelegate, CacherDelegate {
     @Override
     public void onPageDimensionsChanged(int pageId) {
 
+    }
+
+    public void deleteChapter(int id) {
+        if(controllers.containsKey(id)) {
+            Book book = controllers.get(id);
+            book.cancelDownload();
+            controllers.remove(id);
+        }
+        Realm realm = Realm.getDefaultInstance();
+        Chapter chapter = realm.where(Chapter.class).equalTo("id", id).findFirst();
+        realm.beginTransaction();
+
+        List<RealmObject> toRemove = new ArrayList<>();
+
+        // Collect orphaned pages
+        for(Page page : chapter.getPages())
+            toRemove.add(page);
+
+        List<Tag> tags = new ArrayList<>();
+        tags.addAll(chapter.getTags());
+
+        chapter.removeFromRealm();
+
+        // Collect orphaned tags
+        for(Tag tag : tags) {
+            if(realm.where(Chapter.class).equalTo("tags.id", tag.getId()).count() == 0)
+                toRemove.add(tag);
+        }
+
+        // Clean orphaned tags and pages
+        for(RealmObject object : toRemove)
+            object.removeFromRealm();
+
+        realm.commitTransaction();
+        realm.close();
+
+        FileManager.deleteFolder(id);
     }
 }

@@ -3,10 +3,13 @@ package catgirl.oneesama.controller;
 import android.content.Context;
 import android.util.Log;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 
 import catgirl.oneesama.Application;
@@ -47,5 +50,17 @@ public class FileManager {
 
     public static File getCache(String cacheName) {
         return new File(Application.getContextOfApplication().getExternalFilesDir(null), cacheName);
+    }
+
+    public static void deleteFolder(int chapterId) {
+        // Some devices have bugs with re-creating formerly deleted directories, hence this workaround
+        try {
+            File deleted = new File(Application.getContextOfApplication().getExternalFilesDir(null), "deleted/" + chapterId);
+            deleted.mkdirs();
+            getChapterFolder(chapterId).renameTo(deleted);
+            FileUtils.deleteDirectory(deleted);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

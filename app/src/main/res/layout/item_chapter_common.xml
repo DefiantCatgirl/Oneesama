@@ -38,8 +38,6 @@
                 android:id="@+id/Item_Chapter_ProgressBG"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
                 app:matProg_barColor="#20000000"
                 app:matProg_progressIndeterminate="false"
                 app:matProg_barWidth="@dimen/download_progress_wheel_weight"
@@ -50,8 +48,6 @@
                 android:id="@+id/Item_Chapter_ProgressBar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
                 app:matProg_barColor="?attr/colorAccent"
                 app:matProg_progressIndeterminate="false"
                 app:matProg_barWidth="@dimen/download_progress_wheel_weight"
@@ -90,9 +86,13 @@
     </FrameLayout>
 
     <ImageButton
+        android:id="@+id/Item_Chapter_DeleteButton"
         android:layout_width="48dp"
         android:layout_height="48dp"
+        android:layout_gravity="center"
         android:padding="12dp"
         android:src="@drawable/ic_delete_grey600_24dp"
-        android:background="@android:color/transparent"/>
+        android:focusable="true"
+        android:background="?android:selectableItemBackground"
+        />
 </LinearLayout>
