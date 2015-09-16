@@ -4,6 +4,11 @@
 
     </style>
 
+
+    <style name="ReaderTheme" parent="BaseTheme">
+
+    </style>
+
     <!-- Base application theme. -->
     <style name="BaseTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -27,11 +32,5 @@
     <style name="TabLayoutTextAppearance" parent="TextAppearance.AppCompat">
         <item name="android:textStyle">bold</item>
     </style>
-    <style name="AppTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-    </style>
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 </resources>

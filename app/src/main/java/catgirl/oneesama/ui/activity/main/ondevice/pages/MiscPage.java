@@ -1,5 +1,6 @@
 package catgirl.oneesama.ui.activity.main.ondevice.pages;
 
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -64,7 +65,7 @@ public class MiscPage extends CommonPage<ChapterAuthor, ChapterAuthorRealm, Chap
 
     @Override
     public ChapterViewHolder provideViewHolder(ViewGroup parent) {
-        return new MiscChapterViewHolder(getActivity().getLayoutInflater().inflate(R.layout.item_chapter_author, parent, false));
+        return new MiscChapterViewHolder(getActivity().getLayoutInflater().inflate(R.layout.item_chapter_author, parent, false), recycler);
     }
 
     @Override
@@ -94,8 +95,8 @@ public class MiscPage extends CommonPage<ChapterAuthor, ChapterAuthorRealm, Chap
     public static class MiscChapterViewHolder extends ChapterViewHolder {
         @Bind(R.id.Item_Chapter_Author) TextView author;
 
-        public MiscChapterViewHolder(View itemView) {
-            super(itemView);
+        public MiscChapterViewHolder(View itemView, RecyclerView recycler) {
+            super(itemView, recycler);
             ButterKnife.bind(this, itemView);
         }
 

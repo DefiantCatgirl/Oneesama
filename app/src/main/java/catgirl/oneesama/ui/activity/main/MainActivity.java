@@ -1,5 +1,6 @@
 package catgirl.oneesama.ui.activity.main;
 
+import android.animation.Animator;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
@@ -31,7 +33,11 @@ import butterknife.ButterKnife;
 import catgirl.oneesama.R;
 import catgirl.oneesama.api.Config;
 import catgirl.oneesama.api.DynastyService;
+import catgirl.oneesama.controller.ChaptersController;
+import catgirl.oneesama.controller.legacy.Book;
 import catgirl.oneesama.model.chapter.serializable.Chapter;
+import catgirl.oneesama.ui.activity.legacyreader.activityreader.ReaderActivity;
+import catgirl.oneesama.ui.activity.legacyreader.tools.EndAnimatorListener;
 import catgirl.oneesama.ui.activity.main.browse.BrowseFragment;
 import catgirl.oneesama.ui.activity.main.ondevice.OnDeviceFragment;
 import io.realm.Realm;
@@ -57,6 +63,9 @@ public class MainActivity extends AppCompatActivity
     @Bind(R.id.drawer_layout) DrawerLayout mDrawerLayout;
     @Bind(R.id.MainActivity_NavigationView) NavigationView mNavigationView;
     @Bind(R.id.container) ViewGroup container;
+    @Bind(R.id.MainActivity_LoadingLayout) View loadingLayout;
+
+    boolean loading = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,10 +73,6 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         ButterKnife.bind(this);
-
-//        if(savedInstanceState != null) {
-//            currentMenuItemId = savedInstanceState.getInt("CURRENT_ITEM", 0);
-//        }
 
         realm = Realm.getInstance(this);
 
@@ -82,6 +87,11 @@ public class MainActivity extends AppCompatActivity
         setUpNavigationMenu(savedInstanceState != null);
 
         if(savedInstanceState != null) {
+
+            loading = savedInstanceState.getBoolean("LOADING");
+            if(loading)
+                loadingLayout.setVisibility(View.VISIBLE);
+
             onBackStackChanged();
         }
 
@@ -104,48 +114,37 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onNewIntent (Intent intent) {
+        if(loading)
+            return;
         if(intent.getData() == null)
             return;
 
-        Gson gson = new GsonBuilder()
-                .setExclusionStrategies(new ExclusionStrategy() {
-                    @Override
-                    public boolean shouldSkipField(FieldAttributes f) {
-                        return f.getDeclaringClass().equals(RealmObject.class);
-                    }
+        Chapter chapter = realm.where(Chapter.class).equalTo("permalink", intent.getData().getLastPathSegment()).findFirst();
+        if(chapter != null) {
+            Intent readerIntent = new Intent(this, ReaderActivity.class);
+            readerIntent.putExtra(ReaderActivity.PUBLICATION_ID, chapter.getId());
+            startActivity(readerIntent);
+            return;
+        }
 
-                    @Override
-                    public boolean shouldSkipClass(Class<?> clazz) {
-                        return false;
-                    }
-                })
-                .create();
+        loading = true;
+        loadingLayout.setVisibility(View.VISIBLE);
+        loadingLayout.setAlpha(0f);
+        loadingLayout.animate().alpha(1f).setListener(new EndAnimatorListener() {
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                loadingLayout.setAlpha(1f);
+            }
+        });
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Config.apiEndpoint)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .build();
-
-        DynastyService service = retrofit.create(DynastyService.class);
-
-        service.getChapter(intent.getData().getLastPathSegment())
-                .subscribeOn(Schedulers.io())
-                .doOnNext(response -> {
-                    Realm realm = Realm.getInstance(this);
-                    realm.beginTransaction();
-                    realm.copyToRealmOrUpdate(response);
-                    realm.commitTransaction();
-                    realm.close();
-                })
-                .observeOn(AndroidSchedulers.mainThread())
+        ChaptersController.getInstance()
+                .requestChapterController(intent.getData())
                 .subscribe(response -> {
-                    // TODO remove debug
-                    Log.v("Log", response.getPermalink());
-                    for (Chapter chapter : realm.allObjects(Chapter.class)) {
-                        Log.v("Log1", "Chapter: " + chapter.getTitle());
-                        Log.v("Log1", "Page count: " + chapter.getPages().size());
-                    }
+                    Intent readerIntent = new Intent(this, ReaderActivity.class);
+                    readerIntent.putExtra(ReaderActivity.PUBLICATION_ID, response.data.getId());
+                    startActivity(readerIntent);
+                    loading = false;
+                    loadingLayout.setVisibility(View.GONE);
                 });
 
         setIntent(null);
@@ -154,6 +153,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putInt("CURRENT_ITEM", currentMenuItemId);
+        outState.putBoolean("LOADING", loading);
         super.onSaveInstanceState(outState);
     }
 

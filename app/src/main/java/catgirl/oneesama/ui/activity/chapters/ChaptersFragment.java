@@ -60,7 +60,7 @@ public class ChaptersFragment extends CommonPage<ChapterAuthor, ChapterAuthorRea
     @Override
     public ChapterViewHolder provideViewHolder(ViewGroup parent) {
         if(getArguments().getString("TAG_TYPE", "").equals("Series"))
-            return new ChapterViewHolder(getActivity().getLayoutInflater().inflate(R.layout.item_chapter_inner, parent, false)) {
+            return new ChapterViewHolder(getActivity().getLayoutInflater().inflate(R.layout.item_chapter_inner, parent, false), recycler) {
                 @Override
                 public void bind(int position, ChapterAuthor data) {
                     super.bind(position, data);
@@ -68,7 +68,7 @@ public class ChaptersFragment extends CommonPage<ChapterAuthor, ChapterAuthorRea
                 }
             };
         else
-            return new MiscPage.MiscChapterViewHolder(getActivity().getLayoutInflater().inflate(R.layout.item_chapter_author    , parent, false)) {
+            return new MiscPage.MiscChapterViewHolder(getActivity().getLayoutInflater().inflate(R.layout.item_chapter_author, parent, false), recycler) {
                 @Override
                 public void bind(int position, ChapterAuthor data) {
                     super.bind(position, data);

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/Start_CodeLayout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <FrameLayout
+        android:id="@+id/PagePreviewLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="200dp" >
+
+        <View
+            android:id="@+id/ThumbnailHighlight"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#686ba1"
+            android:scaleType="centerInside" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/thumbnail_border"
+            android:background="#ffffff" >
+
+        </FrameLayout>
+
+        <ImageView
+            android:id="@+id/ThumbnailPagePreview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/thumbnail_border"
+            android:scaleType="centerInside" />
+
+        <FrameLayout
+            android:id="@+id/ThumbnailFrameBorder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/thumbnail_border"
+            android:background="@drawable/page_border" >
+
+        </FrameLayout>
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp">
+
+        <!--<TextView-->
+        <!--android:id="@+id/ThumbnailPageLabelActive"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="20dp"-->
+        <!--android:gravity="center"-->
+        <!--android:text="0"-->
+        <!--android:textColor="@android:color/primary_text_dark"-->
+        <!--android:textSize="14sp"-->
+        <!--android:background="#686ba1"-->
+        <!--android:paddingBottom="@dimen/thumbnail_border"/>-->
+
+
+        <TextView
+            android:id="@+id/ThumbnailPageLabel"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:gravity="center"
+            android:text="0"
+            android:textColor="@android:color/primary_text_light"
+            android:textSize="14sp"
+            android:paddingBottom="@dimen/thumbnail_border"/>
+
+    </FrameLayout>
+
+
+</LinearLayout>

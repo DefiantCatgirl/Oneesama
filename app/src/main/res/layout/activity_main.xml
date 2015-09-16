@@ -83,7 +83,7 @@
             android:layout_marginStart="40dp"
             android:layout_marginEnd="40dp"
             android:gravity="center_horizontal"
-            android:text="Loading publication"
+            android:text="@string/activity_main_loading_chapter"
             android:textColor="#ffffff"
             android:id="@+id/MainActivity_LoadingMessage"/>
 

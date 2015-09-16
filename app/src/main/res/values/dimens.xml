@@ -11,6 +11,7 @@
 
     <dimen name="download_progress_layout_size">24dp</dimen>
     <dimen name="download_progress_wheel_weight">2dp</dimen>
-    <dimen name="app_bar_height">180dp</dimen>
-    <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="thumbnails_width">100dp</dimen>
+    <dimen name="thumbnail_border">3dp</dimen>
 </resources>

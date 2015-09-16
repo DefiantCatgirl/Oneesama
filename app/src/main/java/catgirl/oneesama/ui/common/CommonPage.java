@@ -26,7 +26,8 @@ import rx.schedulers.Schedulers;
 
 public abstract class CommonPage<T, RT, VH extends CommonViewHolder> extends Fragment {
 
-    @Bind(R.id.Fragment_OnDevice_CommonRecycler) RecyclerView recycler;
+    @Bind(R.id.Fragment_OnDevice_CommonRecycler)
+    protected RecyclerView recycler;
     View emptyContainer;
 
     protected Realm realm;
@@ -72,6 +73,7 @@ public abstract class CommonPage<T, RT, VH extends CommonViewHolder> extends Fra
 
         emptyContainer.setVisibility(empty ? View.VISIBLE : View.GONE);
         recycler.setVisibility(empty ? View.GONE : View.VISIBLE);
+        recycler.setItemAnimator(null);
 
         recycler.setAdapter(new RecyclerView.Adapter<VH>() {
 
@@ -125,6 +127,12 @@ public abstract class CommonPage<T, RT, VH extends CommonViewHolder> extends Fra
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        recycler.getAdapter().notifyDataSetChanged();
     }
 
     @Override
