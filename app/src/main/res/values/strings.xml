@@ -31,4 +31,6 @@
     <string name="item_chapter_are_you_sure_delete">Are you sure?</string>
     <string name="common_yes">Yes</string>
     <string name="common_no">No</string>
+    <string name="dialog_add_chapter_hint">Enter chapter URL here</string>
+    <string name="dialog_add_chapter_title">Add chapter</string>
 </resources>

@@ -1,11 +1,14 @@
 package catgirl.oneesama.ui.activity.main;
 
 import android.animation.Animator;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -15,20 +18,15 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.InputType;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
-
-import com.google.gson.ExclusionStrategy;
-import com.google.gson.FieldAttributes;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,8 +34,6 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import catgirl.oneesama.R;
-import catgirl.oneesama.api.Config;
-import catgirl.oneesama.api.DynastyService;
 import catgirl.oneesama.controller.ChaptersController;
 import catgirl.oneesama.controller.legacy.Book;
 import catgirl.oneesama.model.chapter.serializable.Chapter;
@@ -48,13 +44,9 @@ import catgirl.oneesama.ui.activity.legacyreader.tools.EndAnimatorListener;
 import catgirl.oneesama.ui.activity.main.browse.BrowseFragment;
 import catgirl.oneesama.ui.activity.main.ondevice.OnDeviceFragment;
 import io.realm.Realm;
-import io.realm.RealmList;
 import io.realm.RealmObject;
-import retrofit.GsonConverterFactory;
-import retrofit.Retrofit;
-import retrofit.RxJavaCallAdapterFactory;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import rx.Observable;
+import rx.Subscription;
 
 
 public class MainActivity extends AppCompatActivity
@@ -75,6 +67,10 @@ public class MainActivity extends AppCompatActivity
     @Bind(R.id.MainActivity_AddButton) ImageButton addButton;
 
     boolean loading = false;
+
+    // TODO use a library or move this into a singleton
+    static Observable<Book> chapterRequest;
+    Subscription chapterSubscription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,8 +96,11 @@ public class MainActivity extends AppCompatActivity
         if(savedInstanceState != null) {
 
             loading = savedInstanceState.getBoolean("LOADING");
-            if(loading)
+            if(loading) {
                 loadingLayout.setVisibility(View.VISIBLE);
+                if(chapterRequest != null)
+                    subscribeToChapterRequest(chapterRequest);
+            }
 
             onBackStackChanged();
         }
@@ -110,22 +109,44 @@ public class MainActivity extends AppCompatActivity
 
         addButton.setOnClickListener(view -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Title");
+            builder.setTitle(getString(R.string.dialog_add_chapter_title));
 
-            final EditText input = new EditText(this);
-            input.setHint("Enter chapter URL here");
+            View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_chapter, null);
+            EditText input = (EditText) dialogView.findViewById(R.id.Dialog_AddChapter_Input);
 
-            input.setInputType(InputType.TYPE_CLASS_TEXT);
-            builder.setView(input);
+            // Paste copied link from clipboard
+            ClipData data = ((ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE)).getPrimaryClip();
+            if(data != null) {
+                ClipData.Item item = data.getItemAt(0);
+                if(item.getText().toString().contains("dynasty-scans.com/chapters/")) {
+                    input.setText(item.getText());
+                    input.selectAll();
+                }
+            }
+
+            builder.setView(dialogView);
 
             builder.setPositiveButton("OK", (dialog, which) -> {
-                openChapterByUrl(input.getText().toString());
+                openChapterByUrl(Uri.parse(input.getText().toString()));
+                dialog.cancel();
             });
             builder.setNegativeButton("Cancel", (dialog, which) -> {
                 dialog.cancel();
             });
 
-            builder.show();
+            AlertDialog dialog = builder.create();
+            input.setOnEditorActionListener((v, actionId, event) -> {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    dialog.getButton(DialogInterface.BUTTON_POSITIVE).performClick();
+                    return true;
+                }
+                return false;
+            });
+            dialog.setOnShowListener(activeDialog -> {
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(input, InputMethodManager.SHOW_IMPLICIT);
+            });
+            dialog.show();
         });
     }
 
@@ -140,6 +161,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         realm.close();
+        if(chapterSubscription != null)
+            chapterSubscription.unsubscribe();
         super.onDestroy();
     }
 
@@ -150,13 +173,17 @@ public class MainActivity extends AppCompatActivity
         if(intent.getData() == null)
             return;
 
-        openChapterByUrl(intent.getData().getLastPathSegment());
+        openChapterByUrl(intent.getData());
 
         setIntent(null);
     }
 
-    public void openChapterByUrl(String url) {
-        Chapter chapter = realm.where(Chapter.class).equalTo("permalink", url).findFirst();
+    public void openChapterByUrl(Uri url) {
+        if(url == null || url.getLastPathSegment() == null) {
+            Toast.makeText(this, "Error adding chapter:\n" + "Invalid URL", Toast.LENGTH_LONG).show();
+            return;
+        }
+        Chapter chapter = realm.where(Chapter.class).equalTo("permalink", url.getLastPathSegment()).findFirst();
         if(chapter != null) {
             Intent readerIntent = new Intent(this, ReaderActivity.class);
             readerIntent.putExtra(ReaderActivity.PUBLICATION_ID, chapter.getId());
@@ -174,15 +201,29 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        ChaptersController.getInstance()
-                .requestChapterController(url)
-                .subscribe(response -> {
-                    Intent readerIntent = new Intent(this, ReaderActivity.class);
-                    readerIntent.putExtra(ReaderActivity.PUBLICATION_ID, response.data.getId());
-                    startActivity(readerIntent);
-                    loading = false;
-                    loadingLayout.setVisibility(View.GONE);
-                });
+        chapterRequest = ChaptersController.getInstance()
+                .requestChapterController(url.getLastPathSegment())
+                .cache();
+
+        subscribeToChapterRequest(chapterRequest);
+    }
+
+    public void subscribeToChapterRequest(Observable<Book> observable) {
+        chapterSubscription = observable.subscribe(response -> {
+            Intent readerIntent = new Intent(this, ReaderActivity.class);
+            readerIntent.putExtra(ReaderActivity.PUBLICATION_ID, response.data.getId());
+            startActivity(readerIntent);
+            loading = false;
+            loadingLayout.setVisibility(View.GONE);
+            chapterRequest = null;
+            chapterSubscription = null;
+        }, error -> {
+            Toast.makeText(this, "Error adding chapter:\n" + error.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+            loading = false;
+            loadingLayout.setVisibility(View.GONE);
+            chapterRequest = null;
+            chapterSubscription = null;
+        });
     }
 
     @Override
