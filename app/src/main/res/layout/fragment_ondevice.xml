@@ -16,6 +16,10 @@
         android:theme="@style/TabLayout"
         app:tabTextColor="#B3FFFFFF"
         app:tabSelectedTextColor="#FFFFFF"
+        app:tabMode="scrollable"
+        app:tabPaddingStart="25dp"
+        app:tabPaddingEnd="25dp"
+        android:paddingLeft="10dp"
         />
 
     <FrameLayout

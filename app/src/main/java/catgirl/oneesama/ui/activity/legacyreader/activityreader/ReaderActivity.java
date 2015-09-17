@@ -110,6 +110,7 @@ public class ReaderActivity extends BaseActivity implements AirViewerDelegate, A
 		if(currentPage >= book.data.getPages().size())
 			currentPage = book.data.getPages().size() - 1;
 
+		book.startDownload();
 		book.setDelegate(this);
 		book.addBookStateDelegate(this);
 		if(updateBook != null)

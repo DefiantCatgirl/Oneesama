@@ -65,7 +65,7 @@ public class ChaptersController implements BookStateDelegate, CacherDelegate {
     }
 
     // TODO create a data abstraction layer
-    public Observable<Book> requestChapterController(final Uri uri) {
+    public Observable<Book> requestChapterController(final String uri) {
         // TODO check if the next version of Gson doesn't require this hack to work with RealmObjects
         Gson gson = new GsonBuilder()
                 .setExclusionStrategies(new ExclusionStrategy() {
@@ -89,7 +89,7 @@ public class ChaptersController implements BookStateDelegate, CacherDelegate {
 
         DynastyService service = retrofit.create(DynastyService.class);
 
-        return service.getChapter(uri.getLastPathSegment())
+        return service.getChapter(uri)
                 .subscribeOn(Schedulers.io())
                 .doOnNext(response -> {
                     Realm realm = Realm.getDefaultInstance();

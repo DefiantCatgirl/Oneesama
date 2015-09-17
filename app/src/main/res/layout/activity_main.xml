@@ -33,7 +33,20 @@
                         android:background="?attr/colorPrimary"
                         app:titleTextAppearance="@style/ToolbarTitle"
                         android:theme="@style/Toolbar"
-                        android:elevation="0dp"/>
+                        android:elevation="0dp">
+
+                        <ImageButton
+                            android:id="@+id/MainActivity_AddButton"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:layout_gravity="right|center_vertical"
+                            android:padding="12dp"
+                            android:layout_margin="4dp"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/ic_add_circle_outline_white_24dp"
+                            style="@style/Widget.AppCompat.Toolbar.Button.Navigation"/>
+
+                        </android.support.v7.widget.Toolbar>
                 </FrameLayout>
 
                 <FrameLayout

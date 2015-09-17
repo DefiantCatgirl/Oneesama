@@ -1,6 +1,7 @@
 package catgirl.oneesama.ui.activity.main;
 
 import android.animation.Animator;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -11,13 +12,17 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.gson.ExclusionStrategy;
@@ -67,6 +72,7 @@ public class MainActivity extends AppCompatActivity
     @Bind(R.id.MainActivity_NavigationView) NavigationView mNavigationView;
     @Bind(R.id.container) ViewGroup container;
     @Bind(R.id.MainActivity_LoadingLayout) View loadingLayout;
+    @Bind(R.id.MainActivity_AddButton) ImageButton addButton;
 
     boolean loading = false;
 
@@ -101,6 +107,26 @@ public class MainActivity extends AppCompatActivity
         }
 
         setSupportActionBar(toolbar);
+
+        addButton.setOnClickListener(view -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Title");
+
+            final EditText input = new EditText(this);
+            input.setHint("Enter chapter URL here");
+
+            input.setInputType(InputType.TYPE_CLASS_TEXT);
+            builder.setView(input);
+
+            builder.setPositiveButton("OK", (dialog, which) -> {
+                openChapterByUrl(input.getText().toString());
+            });
+            builder.setNegativeButton("Cancel", (dialog, which) -> {
+                dialog.cancel();
+            });
+
+            builder.show();
+        });
     }
 
     @Override
@@ -124,7 +150,13 @@ public class MainActivity extends AppCompatActivity
         if(intent.getData() == null)
             return;
 
-        Chapter chapter = realm.where(Chapter.class).equalTo("permalink", intent.getData().getLastPathSegment()).findFirst();
+        openChapterByUrl(intent.getData().getLastPathSegment());
+
+        setIntent(null);
+    }
+
+    public void openChapterByUrl(String url) {
+        Chapter chapter = realm.where(Chapter.class).equalTo("permalink", url).findFirst();
         if(chapter != null) {
             Intent readerIntent = new Intent(this, ReaderActivity.class);
             readerIntent.putExtra(ReaderActivity.PUBLICATION_ID, chapter.getId());
@@ -143,7 +175,7 @@ public class MainActivity extends AppCompatActivity
         });
 
         ChaptersController.getInstance()
-                .requestChapterController(intent.getData())
+                .requestChapterController(url)
                 .subscribe(response -> {
                     Intent readerIntent = new Intent(this, ReaderActivity.class);
                     readerIntent.putExtra(ReaderActivity.PUBLICATION_ID, response.data.getId());
@@ -151,8 +183,6 @@ public class MainActivity extends AppCompatActivity
                     loading = false;
                     loadingLayout.setVisibility(View.GONE);
                 });
-
-        setIntent(null);
     }
 
     @Override
