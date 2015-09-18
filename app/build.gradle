@@ -10,11 +10,17 @@ android {
         targetSdkVersion 23
         versionCode 1
         versionName "0.1.0"
+        resValue 'string', 'app_name', 'Oneesama'
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            applicationIdSuffix '.dev'
+            versionNameSuffix '-DEV'
+            resValue 'string', 'app_name', 'Oneesama DEV'
         }
     }
     compileOptions {
