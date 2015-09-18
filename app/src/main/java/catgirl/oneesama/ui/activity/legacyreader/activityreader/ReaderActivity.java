@@ -168,9 +168,9 @@ public class ReaderActivity extends BaseActivity implements AirViewerDelegate, A
 
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
+		super.onSaveInstanceState(savedInstanceState);
 		savedInstanceState.putInt(ReaderActivity.PUBLICATION_ID, book.data.getId());
 		savedInstanceState.putInt(CURRENT_PAGE, currentPage);
-		super.onSaveInstanceState(savedInstanceState);
 	}
 
 	@Override

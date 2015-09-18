@@ -64,6 +64,8 @@ public class ReaderThumbnailsActivity extends AppCompatActivity implements BookS
 
         getSupportActionBar().setTitle(R.string.core_reader_thumbnails_title);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        toolbar.setNavigationOnClickListener(view -> onBackPressed());
 
         inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
