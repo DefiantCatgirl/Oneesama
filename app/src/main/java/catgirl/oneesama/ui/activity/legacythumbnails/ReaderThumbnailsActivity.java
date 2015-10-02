@@ -3,12 +3,11 @@ package catgirl.oneesama.ui.activity.legacythumbnails;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -169,7 +168,7 @@ public class ReaderThumbnailsActivity extends AppCompatActivity implements BookS
 
             // inflating grid view item
             if(convertView == null)
-                gridView = inflater.inflate(R.layout.thumbnail_item, new GridView(ReaderThumbnailsActivity.this), false);
+                gridView = inflater.inflate(R.layout.item_thumbnail, new GridView(ReaderThumbnailsActivity.this), false);
             else
                 gridView = convertView;
 
@@ -266,7 +265,7 @@ public class ReaderThumbnailsActivity extends AppCompatActivity implements BookS
 
     @Override
     public void pageDownloaded(int id, boolean bookDownloaded, int pageId, boolean onlyProgress) {
-        adapter.notifyDataSetChanged();
+        runOnUiThread(adapter::notifyDataSetChanged);
     }
 
     @Override

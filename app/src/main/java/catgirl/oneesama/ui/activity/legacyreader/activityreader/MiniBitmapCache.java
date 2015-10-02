@@ -17,7 +17,7 @@ public class MiniBitmapCache {
 	
 	private MiniBitmapCache()
 	{
-	    final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
+	    final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 128);
 
 	    // Use 1/16th of the available memory for this memory cache.
 	    final int cacheSize = maxMemory / 16;
