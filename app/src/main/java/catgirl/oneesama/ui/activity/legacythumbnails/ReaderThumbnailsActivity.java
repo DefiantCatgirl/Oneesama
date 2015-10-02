@@ -19,6 +19,8 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.yandex.metrica.YandexMetrica;
+
 import org.lucasr.smoothie.AsyncGridView;
 import org.lucasr.smoothie.ItemManager;
 import org.lucasr.smoothie.SimpleItemLoader;
@@ -271,5 +273,17 @@ public class ReaderThumbnailsActivity extends AppCompatActivity implements BookS
     @Override
     public void completelyDownloaded(int id, boolean success) {
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        YandexMetrica.onResumeActivity(this);
+    }
+
+    @Override
+    protected void onPause() {
+        YandexMetrica.onPauseActivity(this);
+        super.onPause();
     }
 }

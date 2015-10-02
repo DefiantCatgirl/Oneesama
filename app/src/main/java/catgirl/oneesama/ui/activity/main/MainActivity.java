@@ -18,6 +18,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,6 +28,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
+
+import com.yandex.metrica.YandexMetrica;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +42,7 @@ import catgirl.oneesama.controller.legacy.Book;
 import catgirl.oneesama.model.chapter.serializable.Chapter;
 import catgirl.oneesama.model.chapter.serializable.Page;
 import catgirl.oneesama.model.chapter.serializable.Tag;
+import catgirl.oneesama.model.chapter.ui.UiTag;
 import catgirl.oneesama.ui.activity.legacyreader.activityreader.ReaderActivity;
 import catgirl.oneesama.ui.activity.legacyreader.tools.EndAnimatorListener;
 import catgirl.oneesama.ui.activity.main.browse.BrowseFragment;
@@ -210,6 +214,15 @@ public class MainActivity extends AppCompatActivity
 
     public void subscribeToChapterRequest(Observable<Book> observable) {
         chapterSubscription = observable.subscribe(response -> {
+
+            String eventParameters = "{\"id\":\"" + response.data.getPermalink() + "\", \"tags\": [";
+            for(UiTag tag : response.data.getTags()) {
+                eventParameters += "{\"" + tag.getType() + "\": \"" + tag.getName() + "\"},";
+            }
+            eventParameters = eventParameters.substring(0, eventParameters.length() - 1);
+            eventParameters += "]}";
+            YandexMetrica.reportEvent("Chapter added", eventParameters);
+
             Intent readerIntent = new Intent(this, ReaderActivity.class);
             readerIntent.putExtra(ReaderActivity.PUBLICATION_ID, response.data.getId());
             startActivity(readerIntent);
@@ -406,5 +419,17 @@ public class MainActivity extends AppCompatActivity
             object.removeFromRealm();
 
         realm.commitTransaction();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        YandexMetrica.onResumeActivity(this);
+    }
+
+    @Override
+    protected void onPause() {
+        YandexMetrica.onPauseActivity(this);
+        super.onPause();
     }
 }

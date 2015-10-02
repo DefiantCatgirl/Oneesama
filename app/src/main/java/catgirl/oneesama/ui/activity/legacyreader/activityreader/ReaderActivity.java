@@ -19,6 +19,8 @@ import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.yandex.metrica.YandexMetrica;
+
 import java.util.ArrayList;
 
 import butterknife.ButterKnife;
@@ -192,6 +194,7 @@ public class ReaderActivity extends BaseActivity implements AirViewerDelegate, A
 	public void onResume()
 	{
 		super.onResume();
+		YandexMetrica.onResumeActivity(this);
 
 		if(book == null)
 		{
@@ -207,6 +210,12 @@ public class ReaderActivity extends BaseActivity implements AirViewerDelegate, A
 		}
 		
 		justStarted = false;	
+	}
+
+	@Override
+	protected void onPause() {
+		YandexMetrica.onPauseActivity(this);
+		super.onPause();
 	}
 	
     boolean quitting = false;
