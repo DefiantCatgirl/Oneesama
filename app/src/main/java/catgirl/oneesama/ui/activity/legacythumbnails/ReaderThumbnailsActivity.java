@@ -136,7 +136,7 @@ public class ReaderThumbnailsActivity extends AppCompatActivity implements BookS
 
     @Override
     protected void onDestroy() {
-
+        MiniBitmapCache.getInstance().mMemoryCache.evictAll();
         super.onDestroy();
     }
 

@@ -1,8 +1,5 @@
 package catgirl.oneesama.ui.activity.legacyreader.widgets.airviewer;
 
-import android.animation.Animator;
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Point;
@@ -10,6 +7,10 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
+
+import com.nineoldandroids.animation.Animator;
+import com.nineoldandroids.animation.ObjectAnimator;
+import com.nineoldandroids.animation.ValueAnimator;
 
 import catgirl.oneesama.ui.activity.legacyreader.tools.EndAnimatorListener;
 

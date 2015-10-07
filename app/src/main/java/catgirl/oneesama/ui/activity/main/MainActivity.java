@@ -1,6 +1,5 @@
 package catgirl.oneesama.ui.activity.main;
 
-import android.animation.Animator;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -8,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -29,6 +29,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.nineoldandroids.animation.Animator;
+import com.nineoldandroids.view.ViewHelper;
 import com.yandex.metrica.YandexMetrica;
 
 import java.util.ArrayList;
@@ -51,6 +53,8 @@ import io.realm.Realm;
 import io.realm.RealmObject;
 import rx.Observable;
 import rx.Subscription;
+
+import static com.nineoldandroids.view.ViewPropertyAnimator.animate;
 
 
 public class MainActivity extends AppCompatActivity
@@ -102,6 +106,7 @@ public class MainActivity extends AppCompatActivity
             loading = savedInstanceState.getBoolean("LOADING");
             if(loading) {
                 loadingLayout.setVisibility(View.VISIBLE);
+                loadingLayout.clearAnimation();
                 if(chapterRequest != null)
                     subscribeToChapterRequest(chapterRequest);
             }
@@ -119,13 +124,20 @@ public class MainActivity extends AppCompatActivity
             EditText input = (EditText) dialogView.findViewById(R.id.Dialog_AddChapter_Input);
 
             // Paste copied link from clipboard
-            ClipData data = ((ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE)).getPrimaryClip();
-            if(data != null) {
-                ClipData.Item item = data.getItemAt(0);
-                if(item.getText().toString().contains("dynasty-scans.com/chapters/")) {
-                    input.setText(item.getText());
-                    input.selectAll();
+            CharSequence text = "";
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                ClipData data = ((ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE)).getPrimaryClip();
+                if (data != null) {
+                    ClipData.Item item = data.getItemAt(0);
+                    text = item.getText();
                 }
+            } else {
+                text = ((android.text.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE)).getText();
+            }
+
+            if(text != null && text.toString().contains("dynasty-scans.com/chapters/")) {
+                input.setText(text);
+                input.selectAll();
             }
 
             builder.setView(dialogView);
@@ -197,11 +209,11 @@ public class MainActivity extends AppCompatActivity
 
         loading = true;
         loadingLayout.setVisibility(View.VISIBLE);
-        loadingLayout.setAlpha(0f);
-        loadingLayout.animate().alpha(1f).setListener(new EndAnimatorListener() {
+        ViewHelper.setAlpha(loadingLayout, 0f);
+        animate(loadingLayout).alpha(1f).setListener(new EndAnimatorListener() {
             @Override
             public void onAnimationEnd(Animator animator) {
-                loadingLayout.setAlpha(1f);
+                ViewHelper.setAlpha(loadingLayout, 1f);
             }
         });
 
@@ -228,12 +240,14 @@ public class MainActivity extends AppCompatActivity
             startActivity(readerIntent);
             loading = false;
             loadingLayout.setVisibility(View.GONE);
+            loadingLayout.clearAnimation();
             chapterRequest = null;
             chapterSubscription = null;
         }, error -> {
             Toast.makeText(this, "Error adding chapter:\n" + error.getLocalizedMessage(), Toast.LENGTH_LONG).show();
             loading = false;
             loadingLayout.setVisibility(View.GONE);
+            loadingLayout.clearAnimation();
             chapterRequest = null;
             chapterSubscription = null;
         });

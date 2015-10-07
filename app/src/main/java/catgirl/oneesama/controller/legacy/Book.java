@@ -455,7 +455,11 @@ public class Book implements BookDownloaderDelegate {
 						self.currentOptions.inSampleSize = ActivityUtils.calculateInSampleSizeMin(self.currentOptions, ActivityUtils.MAX_SIZE / 4, ActivityUtils.MAX_SIZE / 4);
 						self.currentOptions.inJustDecodeBounds = false;
 
-						bitmap = new BitmapDrawable(Application.getContextOfApplication().getResources(), BitmapFactory.decodeByteArray(a.array, 0, a.count, self.currentOptions));
+						try {
+							bitmap = new BitmapDrawable(Application.getContextOfApplication().getResources(), BitmapFactory.decodeByteArray(a.array, 0, a.count, self.currentOptions));
+						} catch (OutOfMemoryError e) {
+							return null;
+						}
 
 						return null;
 					}

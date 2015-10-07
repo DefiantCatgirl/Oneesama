@@ -59,7 +59,8 @@ public class ChaptersFragment extends CommonPage<ChapterAuthor, ChapterAuthorRea
 
     @Override
     public ChapterViewHolder provideViewHolder(ViewGroup parent) {
-        if(getArguments().getString("TAG_TYPE", "").equals("Series"))
+        String tagType = getArguments().getString("TAG_TYPE");
+        if(tagType != null && tagType.equals("Series"))
             return new ChapterViewHolder(getActivity().getLayoutInflater().inflate(R.layout.item_chapter_inner, parent, false), recycler) {
                 @Override
                 public void bind(int position, ChapterAuthor data) {
@@ -78,8 +79,8 @@ public class ChaptersFragment extends CommonPage<ChapterAuthor, ChapterAuthorRea
     }
 
     public void setTitle(TextView title, ChapterAuthor data) {
-        String tagName = getArguments().getString("TAG_NAME", "");
-        if(data.chapter.getTitle().startsWith(tagName))
+        String tagName = getArguments().getString("TAG_NAME");
+        if(tagName != null && data.chapter.getTitle().startsWith(tagName))
             title.setText(data.chapter.getTitle().substring(tagName.length()));
     }
 

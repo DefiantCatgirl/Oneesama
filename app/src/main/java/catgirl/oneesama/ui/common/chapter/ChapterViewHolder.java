@@ -1,6 +1,5 @@
 package catgirl.oneesama.ui.common.chapter;
 
-import android.animation.Animator;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,6 +10,8 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.nineoldandroids.animation.Animator;
+import com.nineoldandroids.view.ViewHelper;
 import com.pnikosis.materialishprogress.ProgressWheel;
 
 import butterknife.Bind;
@@ -22,6 +23,8 @@ import catgirl.oneesama.controller.legacy.BookStateDelegate;
 import catgirl.oneesama.ui.activity.legacyreader.activityreader.ReaderActivity;
 import catgirl.oneesama.ui.activity.legacyreader.tools.EndAnimatorListener;
 import catgirl.oneesama.ui.common.CommonViewHolder;
+
+import static com.nineoldandroids.view.ViewPropertyAnimator.animate;
 
 public class ChapterViewHolder extends CommonViewHolder implements BookStateDelegate {
 
@@ -141,11 +144,11 @@ public class ChapterViewHolder extends CommonViewHolder implements BookStateDele
                 layout = reloadLayout;
 
             layout.setVisibility(View.VISIBLE);
-            layout.setAlpha(0f);
-            layout.animate().alpha(1f).setListener(new EndAnimatorListener() {
+            ViewHelper.setAlpha(layout, 0f);
+            animate(layout).alpha(1f).setListener(new EndAnimatorListener() {
                 @Override
                 public void onAnimationEnd(Animator animator) {
-                    layout.setAlpha(1f);
+                    ViewHelper.setAlpha(layout, 1f);
                     progressLayout.setVisibility(View.GONE);
                 }
             });

@@ -1,9 +1,8 @@
 package catgirl.oneesama.ui.activity.legacyreader.tools;
 
-import android.animation.Animator;
-import android.animation.Animator.AnimatorListener;
+import com.nineoldandroids.animation.Animator;
 
-public abstract class EndAnimatorListener implements AnimatorListener {
+public abstract class EndAnimatorListener implements Animator.AnimatorListener {
 
 	@Override
 	public void onAnimationStart(Animator animation) {}

@@ -6,10 +6,10 @@ android {
 
     defaultConfig {
         applicationId "catgirl.oneesama"
-        minSdkVersion 14
+        minSdkVersion 9
         targetSdkVersion 23
         versionCode 1
-        versionName "0.1.0-beta4"
+        versionName "0.1.0-beta5"
         resValue 'string', 'app_name', 'Oneesama'
         resValue 'string', 'metrics_token', ''
     }
@@ -78,6 +78,7 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:23.0.1'
     compile 'com.pnikosis:materialish-progress:1.5'
     compile 'com.yandex.android:mobmetricalib:2.00@aar'
+    compile 'com.nineoldandroids:library:2.4.0'
 
     compile files('libs/commons-io-2.4.jar')
     compile files('libs/commons-codec-1.8.jar')

@@ -18,6 +18,7 @@ import android.widget.ListView;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.StreamCorruptedException;
 
 import catgirl.oneesama.Application;
@@ -207,9 +208,12 @@ public class ActivityUtils {
 				        count += len;
 				    }
 				}
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
+		  } catch (IOException e1) {
+			  e1.printStackTrace();
+		  } catch (OutOfMemoryError e2) {
+			  return null;
+		  }
+
           ByteArray a = new ByteArray();
           a.array = byteArr;
           a.count = count;
@@ -233,7 +237,16 @@ public class ActivityUtils {
 
 //            	brd = BitmapRegionDecoder.newInstance(a.array, 0, a.count, true);
 //            	return new BitmapDrawable(MApplication.getAppContext().getResources(), brd.decodeRegion(new Rect(0, 0, brd.getWidth(), brd.getHeight()), opts));
-				return new BitmapDrawable(Application.getContextOfApplication().getResources(), BitmapFactory.decodeByteArray(a.array, 0, a.count, opts));
+				try {
+					return new BitmapDrawable(Application.getContextOfApplication().getResources(), BitmapFactory.decodeByteArray(a.array, 0, a.count, opts));
+				} catch (OutOfMemoryError e) {
+					try {
+						opts.inSampleSize = 2;
+						return new BitmapDrawable(Application.getContextOfApplication().getResources(), BitmapFactory.decodeByteArray(a.array, 0, a.count, opts));
+					} catch (OutOfMemoryError e1) {
+						return null;
+					}
+				}
 			}
 
 			brd = BitmapRegionDecoder.newInstance(a.array, 0, a.count, true);

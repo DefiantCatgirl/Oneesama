@@ -1,19 +1,8 @@
 package catgirl.oneesama.ui.activity.legacyreader.widgets.airviewer;
 
-import java.util.ArrayList;
-
-import android.animation.Animator;
-import android.animation.ValueAnimator;
-import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.graphics.PointF;
-import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.RequiresPermission;
-import android.view.animation.Interpolator;
-import android.widget.Toast;
-
-import catgirl.oneesama.ui.activity.legacyreader.tools.EndAnimatorListener;
 
 /**
  * A class that contains both static page parameters and live page parameters - under normal circumstances

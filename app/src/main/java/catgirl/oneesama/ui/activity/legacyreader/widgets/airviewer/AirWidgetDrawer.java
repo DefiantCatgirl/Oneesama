@@ -22,6 +22,7 @@ import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.nineoldandroids.view.ViewHelper;
 import com.pnikosis.materialishprogress.ProgressWheel;
 
 import catgirl.oneesama.R;
@@ -380,9 +381,9 @@ public class AirWidgetDrawer extends FrameLayout implements AirViewerDrawDelegat
                                     }
                                     vi.setImageMatrix(m);
                                     if (ap.hasAlpha)
-                                        vi.setAlpha(ap.alpha);
+                                        ViewHelper.setAlpha(vi, 1f);
                                     else
-                                        vi.setAlpha(1f);
+                                        ViewHelper.setAlpha(vi, 1f);
                                 }
 
                                 if (xm == 0 && ym == 0) {
@@ -396,33 +397,36 @@ public class AirWidgetDrawer extends FrameLayout implements AirViewerDrawDelegat
                                     bg.clearAnimation();
                                     bg.setVisibility(View.VISIBLE);
                                     if (ap.hasAlpha)
-                                        bg.setAlpha(ap.alpha);
+                                        ViewHelper.setAlpha(bg, ap.alpha);
                                     else
-                                        bg.setAlpha(1f);
+                                        ViewHelper.setAlpha(bg, 1f);
                                 }
                             }
                             if (ap == null) {
-                                vi.clearAnimation();
                                 vi.setVisibility(View.GONE);
+								vi.clearAnimation();
                                 di.setVisibility(View.GONE);
+								di.clearAnimation();
                             } else {
                                 vi.clearAnimation();
                                 vi.setVisibility(View.VISIBLE);
 
                                 if (ap.isDownloading) {
                                     di.setVisibility(View.VISIBLE);
+									di.clearAnimation();
                                     di.bringToFront();
                                     if (di.getWidth() > 0) {
-                                        di.setTranslationX(ap.x + (ap.getWidth()) / 2f - di.getWidth() / 2f);
-                                        di.setTranslationY(ap.y + (ap.getHeight()) / 2f - di.getHeight() / 2f);
+                                        ViewHelper.setTranslationX(di, ap.x + (ap.getWidth()) / 2f - di.getWidth() / 2f);
+                                        ViewHelper.setTranslationY(di, ap.y + (ap.getHeight()) / 2f - di.getHeight() / 2f);
                                     }
 
                                     if (ap.hasAlpha)
-                                        di.setAlpha(ap.alpha);
+                                        ViewHelper.setAlpha(di, ap.alpha);
                                     else
-                                        di.setAlpha(1f);
+                                        ViewHelper.setAlpha(di, 1f);
                                 } else {
                                     di.setVisibility(View.GONE);
+									di.clearAnimation();
                                 }
                             }
                         } catch (NullPointerException e) {
