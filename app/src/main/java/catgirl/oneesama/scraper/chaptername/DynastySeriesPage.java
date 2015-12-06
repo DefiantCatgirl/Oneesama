@@ -1,4 +1,4 @@
-package catgirl.oneesama.scraper;
+package catgirl.oneesama.scraper.chaptername;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -32,6 +32,17 @@ public class OnDeviceFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
+    public void getFragmentList(List<Fragment> fragments, List<String> names) {
+        fragments.add(new SeriesPage());
+        names.add(getString(R.string.fragment_ondevice_series));
+
+        fragments.add(new DoujinsPage());
+        names.add(getString(R.string.fragment_ondevice_doujins));
+
+        fragments.add(new MiscPage());
+        names.add(getString(R.string.fragment_ondevice_misc));
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -41,14 +52,7 @@ public class OnDeviceFragment extends Fragment {
         List<Fragment> fragments = new ArrayList<>();
         List<String> names = new ArrayList<>();
 
-        fragments.add(new SeriesPage());
-        names.add(getString(R.string.fragment_ondevice_series));
-
-        fragments.add(new DoujinsPage());
-        names.add(getString(R.string.fragment_ondevice_doujins));
-
-        fragments.add(new MiscPage());
-        names.add(getString(R.string.fragment_ondevice_misc));
+        getFragmentList(fragments, names);
 
         viewPager.setAdapter(new FragmentPagerAdapter(getChildFragmentManager()) {
             @Override

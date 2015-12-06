@@ -86,15 +86,19 @@
         android:id="@+id/MainActivity_LoadingLayout"
         android:visibility="invisible">
 
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+        <com.pnikosis.materialishprogress.ProgressWheel
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            app:matProg_barColor="@android:color/white"
+            app:matProg_progressIndeterminate="true" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="40dp"
             android:layout_marginEnd="40dp"
+            android:layout_marginTop="10dp"
             android:gravity="center_horizontal"
             android:text="@string/activity_main_loading_chapter"
             android:textColor="#ffffff"

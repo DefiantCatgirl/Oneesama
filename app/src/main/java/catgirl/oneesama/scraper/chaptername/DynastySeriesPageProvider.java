@@ -1,4 +1,4 @@
-package catgirl.oneesama.scraper;
+package catgirl.oneesama.scraper.chaptername;
 
 import android.util.Log;
 
@@ -23,6 +23,7 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 
 import catgirl.oneesama.api.Config;
+import catgirl.oneesama.scraper.DynastyPage;
 
 public class DynastySeriesPageProvider {
     static Map<String, DynastySeriesPage> cache = new HashMap<>();
@@ -33,23 +34,7 @@ public class DynastySeriesPageProvider {
 
         String url = Config.apiEndpoint + "series/" + seriesId;
 
-        OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
-        Response response = client.newCall(request).execute();
-
-        String html = response.body().string();
-
-        Pattern mPattern = Pattern.compile("(?ms)<body>.*</body>");
-
-        Matcher matcher = mPattern.matcher(html);
-        matcher.find();
-        html = matcher.group();
-
-        Document doc = DocumentBuilderFactory.newInstance()
-                .newDocumentBuilder()
-                .parse(new InputSource(new StringReader(html)));
+        Document doc = DynastyPage.getBody(url);
 
         XPathExpression xpath = XPathFactory.newInstance()
                 .newXPath().compile("//dl");

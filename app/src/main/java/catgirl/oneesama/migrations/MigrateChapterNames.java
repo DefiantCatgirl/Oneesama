@@ -3,11 +3,9 @@ package catgirl.oneesama.migrations;
 import android.content.Context;
 import android.util.Log;
 
-import java.util.ListIterator;
-
 import catgirl.oneesama.model.chapter.serializable.Chapter;
-import catgirl.oneesama.scraper.DynastySeriesPage;
-import catgirl.oneesama.scraper.DynastySeriesPageProvider;
+import catgirl.oneesama.scraper.chaptername.DynastySeriesPage;
+import catgirl.oneesama.scraper.chaptername.DynastySeriesPageProvider;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import rx.Observable;
