@@ -1,8 +1,5 @@
 package catgirl.oneesama.controller;
 
-import android.net.Uri;
-import android.util.Log;
-
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
@@ -13,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import catgirl.oneesama.Application;
 import catgirl.oneesama.api.Config;
 import catgirl.oneesama.api.DynastyService;
 import catgirl.oneesama.controller.legacy.Book;
@@ -23,8 +19,9 @@ import catgirl.oneesama.model.chapter.serializable.Chapter;
 import catgirl.oneesama.model.chapter.serializable.Page;
 import catgirl.oneesama.model.chapter.serializable.Tag;
 import catgirl.oneesama.model.chapter.ui.UiChapter;
+import catgirl.oneesama.scraper.DynastySeriesPage;
+import catgirl.oneesama.scraper.DynastySeriesPageProvider;
 import io.realm.Realm;
-import io.realm.RealmList;
 import io.realm.RealmObject;
 import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
@@ -91,6 +88,28 @@ public class ChaptersController implements BookStateDelegate, CacherDelegate {
 
         return service.getChapter(uri)
                 .subscribeOn(Schedulers.io())
+                .doOnNext(response -> {
+                    // Find out the real, full chapter name and the corresponding volume
+                    // This is only available on the series page, does not apply if not part of a series
+                    String series = null;
+                    for(Tag tag : response.getTags()) {
+                        if(tag.getType().equals("Series")) {
+                            series = tag.getPermalink();
+                            break;
+                        }
+                    }
+
+                    if(series != null) {
+                        try {
+                            DynastySeriesPage.Chapter c = DynastySeriesPageProvider.provideChapterInfo(series, response.getPermalink());
+                            response.setTitle(c.chapterName);
+                            response.setVolumeName(c.volumeName);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            throw new RuntimeException(e);
+                        }
+                    }
+                })
                 .doOnNext(response -> {
                     Realm realm = Realm.getDefaultInstance();
                     realm.beginTransaction();

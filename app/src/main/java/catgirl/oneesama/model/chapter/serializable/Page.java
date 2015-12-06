@@ -3,12 +3,15 @@ package catgirl.oneesama.model.chapter.serializable;
 import com.google.gson.annotations.Expose;
 
 import io.realm.RealmObject;
+import io.realm.annotations.Required;
 
 public class Page extends RealmObject {
 
     @Expose
+    @Required
     private String name;
     @Expose
+    @Required
     private String url;
 
     /**

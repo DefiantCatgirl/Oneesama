@@ -15,10 +15,11 @@ public class UiChapter {
     private List<UiPage> pages;
     private String releasedOn;
     private String addedOn;
+    private String volumeName;
 
     private boolean completelyDownloaded;
 
-    public UiChapter(Integer id, String title, String longTitle, String permalink, List<UiTag> tags, List<UiPage> pages, String releasedOn, String addedOn, boolean completelyDownloaded) {
+    public UiChapter(Integer id, String title, String longTitle, String permalink, List<UiTag> tags, List<UiPage> pages, String releasedOn, String addedOn, String volumeName, boolean completelyDownloaded) {
         this.id = id;
         this.title = title;
         this.longTitle = longTitle;
@@ -27,6 +28,7 @@ public class UiChapter {
         this.pages = pages;
         this.releasedOn = releasedOn;
         this.addedOn = addedOn;
+        this.volumeName = volumeName;
         this.completelyDownloaded = completelyDownloaded;
     }
 
@@ -54,6 +56,7 @@ public class UiChapter {
 
         this.releasedOn = chapter.getReleasedOn();
         this.addedOn = chapter.getAddedOn();
+        this.volumeName = chapter.getVolumeName();
         this.completelyDownloaded = chapter.isCompletelyDownloaded();
     }
 
@@ -127,6 +130,10 @@ public class UiChapter {
      */
     public String getAddedOn() {
         return addedOn;
+    }
+
+    public String getVolumeName() {
+        return volumeName;
     }
 
 

@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
+import io.realm.annotations.Required;
 
 public class Chapter extends RealmObject {
     @PrimaryKey
@@ -13,11 +14,14 @@ public class Chapter extends RealmObject {
     private int id;
 
     @Expose
+    @Required
     private String title;
     @SerializedName("long_title")
     @Expose
+    @Required
     private String longTitle;
     @Expose
+    @Required
     private String permalink;
     @Expose
     private RealmList<Tag> tags = new RealmList<Tag>();
@@ -25,10 +29,14 @@ public class Chapter extends RealmObject {
     private RealmList<Page> pages = new RealmList<Page>();
     @SerializedName("released_on")
     @Expose
+    @Required
     private String releasedOn;
     @SerializedName("added_on")
     @Expose
+    @Required
     private String addedOn;
+
+    private String volumeName;
 
     private boolean completelyDownloaded = false;
 
@@ -182,5 +190,13 @@ public class Chapter extends RealmObject {
 
     public void setCompletelyDownloaded(boolean completelyDownloaded) {
         this.completelyDownloaded = completelyDownloaded;
+    }
+
+    public String getVolumeName() {
+        return volumeName;
+    }
+
+    public void setVolumeName(String volumeName) {
+        this.volumeName = volumeName;
     }
 }

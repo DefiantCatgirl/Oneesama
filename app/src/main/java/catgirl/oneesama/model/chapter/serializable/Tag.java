@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
+import io.realm.annotations.Required;
 
 public class Tag extends RealmObject {
 
@@ -11,10 +12,13 @@ public class Tag extends RealmObject {
     @Expose
     private int id;
     @Expose
+    @Required
     private String type;
     @Expose
+    @Required
     private String name;
     @Expose
+    @Required
     private String permalink;
 
     /**
