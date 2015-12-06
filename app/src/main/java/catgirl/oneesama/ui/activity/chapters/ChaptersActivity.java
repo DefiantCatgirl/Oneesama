@@ -38,12 +38,18 @@ public class ChaptersActivity extends AppCompatActivity {
         }
 
         if(savedInstanceState == null) {
-            ChaptersFragment fragment = new ChaptersFragment();
             Bundle bundle = new Bundle(getIntent().getExtras());
             bundle.putString("TAG_NAME", name);
             bundle.putString("TAG_TYPE", tag.getType());
-            fragment.setArguments(bundle);
-            getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
+            if(tag.getType().equals("Series")) {
+                SeriesChaptersFragment fragment = new SeriesChaptersFragment();
+                fragment.setArguments(bundle);
+                getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
+            } else {
+                ChaptersFragment fragment = new ChaptersFragment();
+                fragment.setArguments(bundle);
+                getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
+            }
         }
     }
 

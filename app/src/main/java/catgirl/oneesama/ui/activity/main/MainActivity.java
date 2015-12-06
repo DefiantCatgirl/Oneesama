@@ -18,7 +18,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -125,7 +124,7 @@ public class MainActivity extends AppCompatActivity
 
             // Paste copied link from clipboard
             CharSequence text = "";
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
                 ClipData data = ((ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE)).getPrimaryClip();
                 if (data != null) {
                     ClipData.Item item = data.getItemAt(0);
@@ -135,7 +134,7 @@ public class MainActivity extends AppCompatActivity
                 text = ((android.text.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE)).getText();
             }
 
-            if(text != null && text.toString().contains("dynasty-scans.com/chapters/")) {
+            if (text != null && text.toString().contains("dynasty-scans.com/chapters/")) {
                 input.setText(text);
                 input.selectAll();
             }

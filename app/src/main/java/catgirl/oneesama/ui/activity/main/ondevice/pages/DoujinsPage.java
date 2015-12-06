@@ -4,29 +4,36 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import catgirl.oneesama.R;
 import catgirl.oneesama.model.chapter.serializable.Tag;
+import catgirl.oneesama.model.chapter.ui.UiChapter;
+import catgirl.oneesama.model.chapter.ui.UiTag;
 import catgirl.oneesama.tools.RealmObservable;
 import catgirl.oneesama.ui.activity.main.ondevice.OnDeviceFragment;
+import catgirl.oneesama.ui.common.chapter.ChapterAuthor;
+import io.realm.RealmResults;
 import rx.Observable;
 
 public class DoujinsPage extends SeriesPage {
 
     @Override
-    public Observable<SeriesAuthorRealm> getDataSource(int id) {
-        return RealmObservable.object(getActivity(), realm1 -> {
-            Tag series = realm1.allObjects(Tag.class)
-                    .where()
-                    .equalTo("type", "Doujin")
-                    .findAllSorted("name")
-                    .get(id);
+    public List<SeriesAuthor> getDataSource() {
+        RealmResults<Tag> results = realm.allObjects(Tag.class)
+                .where()
+                .equalTo("type", "Doujin")
+                .findAllSorted("name");
 
-            Tag fake = new Tag();
-            fake.setName("");
-            fake.setId(id);
+        List<SeriesAuthor> result = new ArrayList<>();
 
-            return new SeriesAuthorRealm(series, fake);
-        });
+        Observable.from(results)
+                .map(chapter -> new SeriesAuthor(new UiTag(chapter), null))
+                .toList()
+                .subscribe(result::addAll);
+
+        return result;
     }
 
     @Override
@@ -47,5 +54,4 @@ public class DoujinsPage extends SeriesPage {
 
         return emptyMessage;
     }
-
 }

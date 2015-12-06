@@ -5,7 +5,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.pnikosis.materialishprogress.ProgressWheel;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -18,31 +19,33 @@ import catgirl.oneesama.tools.RealmObservable;
 import catgirl.oneesama.ui.common.CommonPage;
 import catgirl.oneesama.ui.activity.main.ondevice.OnDeviceFragment;
 import catgirl.oneesama.ui.common.chapter.ChapterAuthor;
-import catgirl.oneesama.ui.common.chapter.ChapterAuthorRealm;
 import catgirl.oneesama.ui.common.chapter.ChapterViewHolder;
+import io.realm.RealmResults;
 import rx.Observable;
 
-public class MiscPage extends CommonPage<ChapterAuthor, ChapterAuthorRealm, ChapterViewHolder> {
+public class MiscPage extends CommonPage<ChapterAuthor, ChapterViewHolder> {
 
     @Override
-    public Observable<ChapterAuthorRealm> getDataSource(int id) {
-        return RealmObservable.object(getActivity(), realm1 -> {
-            Chapter chapter = realm1.allObjects(Chapter.class)
-                    .where()
-                    .not()
-                    .equalTo("tags.type", "Series")
-                    .not()
-                    .equalTo("tags.type", "Doujin")
-                    .findAllSorted("title")
-                    .get(id);
+    public List<ChapterAuthor> getDataSource() {
+        RealmResults<Chapter> results = realm.allObjects(Chapter.class)
+                .where()
+                .not()
+                .equalTo("tags.type", "Series")
+                .not()
+                .equalTo("tags.type", "Doujin")
+                .findAllSorted("title");
 
-            Tag author = chapter.getTags()
-                    .where()
-                    .equalTo("type", "Author")
-                    .findFirst();
+        List<ChapterAuthor> result = new ArrayList<>();
 
-            return new ChapterAuthorRealm(chapter, author);
-        });
+        Observable.from(results)
+                .map(chapter -> new ChapterAuthor(new UiChapter(chapter), new UiTag(chapter.getTags()
+                        .where()
+                        .equalTo("type", "Author")
+                        .findFirst())))
+                .toList()
+                .subscribe(result::addAll);
+
+        return result;
     }
 
     @Override
@@ -54,13 +57,6 @@ public class MiscPage extends CommonPage<ChapterAuthor, ChapterAuthorRealm, Chap
                 .not()
                 .equalTo("tags.type", "Doujin")
                 .count();
-    }
-
-    @Override
-    public ChapterAuthor convertDataFromRealm(ChapterAuthorRealm source) {
-        return new ChapterAuthor(
-                new UiChapter(source.chapter),
-                new UiTag(source.author));
     }
 
     @Override

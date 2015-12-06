@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -17,6 +18,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import catgirl.oneesama.R;
 import catgirl.oneesama.model.chapter.serializable.Chapter;
+import catgirl.oneesama.ui.activity.chapters.SeriesChaptersFragment;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import rx.Observable;
@@ -24,7 +26,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public abstract class CommonPage<T, RT, VH extends CommonViewHolder> extends Fragment {
+public abstract class CommonPage<T, VH extends CommonViewHolder> extends Fragment {
 
     @Bind(R.id.Fragment_OnDevice_CommonRecycler)
     protected RecyclerView recycler;
@@ -34,6 +36,8 @@ public abstract class CommonPage<T, RT, VH extends CommonViewHolder> extends Fra
     int lastCount;
 
     RealmChangeListener listener;
+
+    List<T> cache = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,11 +51,19 @@ public abstract class CommonPage<T, RT, VH extends CommonViewHolder> extends Fra
         ButterKnife.bind(this, view);
 
         realm = Realm.getDefaultInstance();
-        lastCount = realm.allObjects(Chapter.class).size();
+        lastCount = getDataItemCount();
+
+        cache = getDataSource();
 
         listener = (() -> {
-            int count = realm.allObjects(Chapter.class).size();
+            int count = getDataItemCount();
             if (lastCount != count) {
+
+                // TODO remove debug
+                Log.v("Log", "Realm changed " + this.getClass().getName());
+
+                cache = getDataSource();
+
                 recycler.getAdapter().notifyDataSetChanged();
 
                 boolean empty = getDataItemCount() == 0;
@@ -59,9 +71,6 @@ public abstract class CommonPage<T, RT, VH extends CommonViewHolder> extends Fra
                 recycler.setVisibility(empty ? View.GONE : View.VISIBLE);
 
                 lastCount = count;
-
-                // TODO remove debug
-                Log.v("Log", "Realm changed " + this.getClass().getName());
             }
         });
         realm.addChangeListener(listener);
@@ -85,25 +94,12 @@ public abstract class CommonPage<T, RT, VH extends CommonViewHolder> extends Fra
             @Override
             public void onBindViewHolder(VH holder, int position) {
                 resetViewHolder(holder, position);
-
-                if(holder.subscription != null)
-                    holder.subscription.unsubscribe();
-
-                Executor ex = Executors.newSingleThreadExecutor();
-
-                holder.subscription = getDataSource(position)
-                        .subscribeOn(Schedulers.from(ex))
-                        .unsubscribeOn(Schedulers.from(ex))
-                        .map(CommonPage.this::convertDataFromRealm)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(item -> {
-                            CommonPage.this.bindViewHolder(holder, position, item);
-                        });
+                CommonPage.this.bindViewHolder(holder, position, cache.get(position));
             }
 
             @Override
             public int getItemCount() {
-                return getDataItemCount();
+                return cache.size();
             }
         });
 
@@ -140,9 +136,8 @@ public abstract class CommonPage<T, RT, VH extends CommonViewHolder> extends Fra
         super.onSaveInstanceState(outState);
     }
 
-    public abstract Observable<RT> getDataSource(int id);
+    public abstract List<T> getDataSource();
     public abstract int getDataItemCount();
-    public abstract T convertDataFromRealm(RT source);
     public abstract VH provideViewHolder(ViewGroup parent);
     public abstract void bindViewHolder(VH holder, int position, T data);
     public abstract void resetViewHolder(VH holder, int position);

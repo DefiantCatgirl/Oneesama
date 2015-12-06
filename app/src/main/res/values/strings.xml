@@ -12,6 +12,7 @@
     <string name="title_activity_chapters">ChaptersActivity</string>
     <string name="activity_chapters_go_back">Go back</string>
     <string name="activity_chapters_no_chapters">No chapters left.</string>
+    <string name="activity_chapters_no_comics">No comics left.</string>
     <string name="page_doujins_no_chapters">You don\'t have any doujins downloaded yet. T-that would have been lewd.</string>
     <string name="page_misc_no_chapters">You don\'t have any uncategorized chapters yet.</string>
     <string name="page_series_no_chapters">You don\'t have chapters from any series downloaded yet.</string>

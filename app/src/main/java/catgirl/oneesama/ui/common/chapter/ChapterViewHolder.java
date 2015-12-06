@@ -29,6 +29,7 @@ import static com.nineoldandroids.view.ViewPropertyAnimator.animate;
 public class ChapterViewHolder extends CommonViewHolder implements BookStateDelegate {
 
     @Bind(R.id.Item_Chapter_Title) protected TextView title;
+    @Bind(R.id.Item_Chapter_Volume) protected TextView volume;
 
     @Bind(R.id.Item_Chapter_StatusLayout) View statusLayout;
     @Bind(R.id.Item_Chapter_ProgressLayout) View progressLayout;
@@ -93,6 +94,13 @@ public class ChapterViewHolder extends CommonViewHolder implements BookStateDele
 
         title.setText(data.chapter.getTitle());
 
+        if(data.chapter.getVolumeName() != null) {
+            volume.setText(data.chapter.getVolumeName());
+            volume.setVisibility(View.VISIBLE);
+        } else {
+            volume.setVisibility(View.GONE);
+        }
+
         statusLayout.setVisibility(View.VISIBLE);
 
         progressLayout.setVisibility(View.GONE);
@@ -119,6 +127,8 @@ public class ChapterViewHolder extends CommonViewHolder implements BookStateDele
 
     public void reset() {
         title.setText("");
+        volume.setText("");
+        volume.setVisibility(View.GONE);
 
         statusLayout.setVisibility(View.GONE);
     }

@@ -6,39 +6,49 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import catgirl.oneesama.R;
 import catgirl.oneesama.model.chapter.serializable.Chapter;
 import catgirl.oneesama.model.chapter.serializable.Tag;
+import catgirl.oneesama.model.chapter.ui.UiChapter;
 import catgirl.oneesama.model.chapter.ui.UiTag;
 import catgirl.oneesama.tools.RealmObservable;
 import catgirl.oneesama.ui.activity.chapters.ChaptersActivity;
 import catgirl.oneesama.ui.common.CommonPage;
 import catgirl.oneesama.ui.activity.main.ondevice.OnDeviceFragment;
 import catgirl.oneesama.ui.common.CommonViewHolder;
+import catgirl.oneesama.ui.common.chapter.ChapterAuthor;
+import io.realm.RealmResults;
 import rx.Observable;
 
-public class SeriesPage extends CommonPage<SeriesPage.SeriesAuthor, SeriesPage.SeriesAuthorRealm, SeriesPage.SeriesViewHolder> {
+public class SeriesPage extends CommonPage<SeriesPage.SeriesAuthor, SeriesPage.SeriesViewHolder> {
 
     @Override
-    public Observable<SeriesAuthorRealm> getDataSource(int id) {
-        return RealmObservable.object(getActivity(), realm1 -> {
-            Tag series = realm1.allObjects(Tag.class)
-                    .where()
-                    .equalTo("type", "Series")
-                    .findAllSorted("name")
-                    .get(id);
-            Tag author = realm1.allObjects(Chapter.class)
-                    .where()
-                    .equalTo("tags.id", series.getId())
-                    .findFirst()
-                    .getTags()
-                    .where()
-                    .equalTo("type", "Author")
-                    .findFirst();
-            return new SeriesAuthorRealm(series, author);
-        });
+    public List<SeriesAuthor> getDataSource() {
+        RealmResults<Tag> results = realm.allObjects(Tag.class)
+                .where()
+                .equalTo("type", "Series")
+                .findAllSorted("name");
+
+        List<SeriesAuthor> result = new ArrayList<>();
+
+        Observable.from(results)
+                .map(series -> new SeriesAuthor(new UiTag(series), new UiTag(realm.allObjects(Chapter.class)
+                        .where()
+                        .equalTo("tags.id", series.getId())
+                        .findFirst()
+                        .getTags()
+                        .where()
+                        .equalTo("type", "Author")
+                        .findFirst())))
+                .toList()
+                .subscribe(result::addAll);
+
+        return result;
     }
 
     @Override
@@ -58,13 +68,6 @@ public class SeriesPage extends CommonPage<SeriesPage.SeriesAuthor, SeriesPage.S
     @Override
     public int getDataItemCount() {
         return (int) realm.allObjects(Tag.class).where().equalTo("type", "Series").count();
-    }
-
-    @Override
-    public SeriesAuthor convertDataFromRealm(SeriesAuthorRealm source) {
-        return new SeriesAuthor(
-                new UiTag(source.series),
-                new UiTag(source.author));
     }
 
     @Override
@@ -91,15 +94,6 @@ public class SeriesPage extends CommonPage<SeriesPage.SeriesAuthor, SeriesPage.S
         }
     }
 
-    class SeriesAuthorRealm {
-        Tag series;
-        Tag author;
-        public SeriesAuthorRealm(Tag series, Tag author) {
-            this.series = series;
-            this.author = author;
-        }
-    }
-
     class SeriesViewHolder extends CommonViewHolder {
 
         @Bind(R.id.Item_Series_Author) TextView author;
@@ -116,7 +110,9 @@ public class SeriesPage extends CommonPage<SeriesPage.SeriesAuthor, SeriesPage.S
         public void bind(int id, SeriesAuthor data) {
             this.data = data;
 
-            author.setText(data.author.getName());
+            if(data.author != null)
+                author.setText(data.author.getName());
+
             title.setText(data.series.getName());
         }
 
