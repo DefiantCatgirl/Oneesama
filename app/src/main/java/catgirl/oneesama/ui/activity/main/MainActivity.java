@@ -38,6 +38,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import catgirl.oneesama.R;
+import catgirl.oneesama.api.Config;
 import catgirl.oneesama.controller.ChaptersController;
 import catgirl.oneesama.controller.legacy.Book;
 import catgirl.oneesama.model.chapter.serializable.Chapter;
@@ -279,9 +280,15 @@ public class MainActivity extends AppCompatActivity
 
         final Menu menu = mNavigationView.getMenu();
 
+        int groupId = 0;
+
         for(int i = 0; i < menuConfig.menuItems.size(); i++) {
             MenuConfigItem item = menuConfig.menuItems.get(i);
-            MenuItem menuItem = menu.add(0, i, i, item.name);
+            if(item.type == MenuItemType.ITEM_SEPARATOR) {
+                groupId++;
+                continue;
+            }
+            MenuItem menuItem = menu.add(groupId, i, i, item.name);
             menuItem.setIcon(item.icon);
         }
 
@@ -319,6 +326,22 @@ public class MainActivity extends AppCompatActivity
             } catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
             }
+            return;
+        }
+
+        if(item.type == MenuItemType.ITEM_DYNASTY) {
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(Config.apiEndpoint));
+            startActivity(i);
+            updateUiForFragment(currentMenuItemId);
+            return;
+        }
+
+        if(item.type == MenuItemType.ITEM_WEBSITE) {
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(getString(R.string.oneesama_website)));
+            startActivity(i);
+            updateUiForFragment(currentMenuItemId);
             return;
         }
 
@@ -379,10 +402,13 @@ public class MainActivity extends AppCompatActivity
     public enum MenuItemType {
         ITEM_BROWSE,
         ITEM_ONDEVICE,
-        ITEM_ABOUT
+        ITEM_ABOUT,
+        ITEM_DYNASTY,
+        ITEM_WEBSITE,
+        ITEM_SEPARATOR
     }
 
-    public class MenuConfigItem {
+    public static class MenuConfigItem {
         MenuItemType type;
         String name;
         int icon;
@@ -391,6 +417,10 @@ public class MainActivity extends AppCompatActivity
             this.type = type;
             this.name = name;
             this.icon = icon;
+        }
+
+        public static MenuConfigItem getSeparator() {
+            return new MenuConfigItem(MenuItemType.ITEM_SEPARATOR, null, 0);
         }
     }
 
@@ -402,6 +432,9 @@ public class MainActivity extends AppCompatActivity
 
             menuItems.add(new MenuConfigItem(MenuItemType.ITEM_ONDEVICE, getString(R.string.activity_main_ondevice), R.drawable.ic_file_download_black_24dp));
             menuItems.add(new MenuConfigItem(MenuItemType.ITEM_BROWSE, getString(R.string.activity_main_browse), R.drawable.ic_library_books_black_24dp));
+            menuItems.add(MenuConfigItem.getSeparator());
+            menuItems.add(new MenuConfigItem(MenuItemType.ITEM_DYNASTY, getString(R.string.activity_main_dynasty), R.drawable.ic_web_black_24dp));
+            menuItems.add(new MenuConfigItem(MenuItemType.ITEM_WEBSITE, getString(R.string.activity_main_website), R.drawable.ic_github_circle_black_24dp));
             menuItems.add(new MenuConfigItem(MenuItemType.ITEM_ABOUT, getString(R.string.activity_main_about), R.drawable.ic_help_black_24dp));
         }
 

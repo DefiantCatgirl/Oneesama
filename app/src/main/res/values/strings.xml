@@ -22,6 +22,8 @@
     <string name="activity_main_ondevice">On Device</string>
     <string name="activity_main_browse">Browse</string>
     <string name="activity_main_about">About</string>
+    <string name="activity_main_dynasty">Dynasty Scans</string>
+    <string name="activity_main_website">App Website</string>
     <string name="activity_main_about_text">Oneesama v.%s, a Dynasty Reader client.\nMore to come.</string>
     <string name="DOWNLOADING_TITLE">Downloading</string>
     <string name="PAGE_TITLE">Page</string>
@@ -35,4 +37,5 @@
     <string name="fragment_browse_recent">RECENT</string>
     <string name="browse_empty_message">Nothing here.</string>
     <string name="default_error_message">Something went wrong.</string>
+    <string name="oneesama_website">https://defiantcatgirl.github.io/Oneesama</string>
 </resources>
