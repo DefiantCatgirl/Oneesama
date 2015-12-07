@@ -54,6 +54,6 @@ public class RecentChaptersViewHolder extends RecyclerView.ViewHolder {
                 authorAndSeries.setText(chapter.doujinName);
         }
 
-        tags.setText(StringUtils.join(chapter.tags, ", "));
+        tags.setText(StringUtils.join(chapter.tags, ",   "));
     }
 }
