@@ -49,6 +49,8 @@ public class ChaptersController implements BookStateDelegate, CacherDelegate {
         else {
             Realm realm = Realm.getDefaultInstance();
             Chapter chapter = realm.where(Chapter.class).equalTo("id", id).findFirst();
+            if(chapter == null)
+                return null;
             realm.close();
             Book book = new Book(new UiChapter(chapter), this, this, false, null);
             book.startDownload();
