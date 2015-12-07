@@ -67,8 +67,9 @@ public class ChaptersFragment extends CommonPage<ChapterAuthor, ChapterViewHolde
 
     public void setTitle(TextView title, ChapterAuthor data) {
         String tagName = getArguments().getString("TAG_NAME");
-        if (tagName != null && data.chapter.getTitle().startsWith(tagName))
-            title.setText(data.chapter.getTitle().substring(tagName.length()));
+        title.setText(data.chapter.getLongTitle());
+        if (tagName != null && data.chapter.getLongTitle().startsWith(tagName))
+            title.setText(data.chapter.getLongTitle().substring(tagName.length()));
     }
 
     @Override
