@@ -5,6 +5,8 @@ import android.util.Log;
 
 import com.yandex.metrica.YandexMetrica;
 
+import catgirl.oneesama.api.GithubService;
+import catgirl.oneesama.githubchecker.GithubReleaseChecker;
 import catgirl.oneesama.migrations.MigrateChapterNames;
 import io.realm.DynamicRealm;
 import io.realm.Realm;
@@ -39,6 +41,9 @@ public class Application extends android.app.Application {
 
         // Migrations
         MigrateChapterNames.migrateChapterNames(this);
+
+        // Check for updates
+        GithubReleaseChecker.checkForNewRelease();
 
         YandexMetrica.activate(getApplicationContext(), getString(R.string.metrics_token));
         YandexMetrica.setSessionTimeout(600);
