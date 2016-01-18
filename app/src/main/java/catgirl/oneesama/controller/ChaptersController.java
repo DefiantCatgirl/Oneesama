@@ -183,7 +183,10 @@ public class ChaptersController implements BookStateDelegate, CacherDelegate {
         String permalink;
 
         Realm realm = Realm.getDefaultInstance();
-        int maxTagId = realm.where(Tag.class).max("id").intValue() + 1;
+        int maxTagId = 1;
+
+        if(realm.allObjects(Tag.class).size() > 0)
+            maxTagId = realm.where(Tag.class).max("id").intValue() + 1;
 
         for(Tag tag : tags) {
             name = tag.getName();
@@ -210,7 +213,10 @@ public class ChaptersController implements BookStateDelegate, CacherDelegate {
         // It makes sense, but now we have to assign IDs manually
 
         Realm realm = Realm.getDefaultInstance();
-        int maxChapterId = realm.where(Chapter.class).max("id").intValue() + 1;
+        int maxChapterId = 1;
+
+        if(realm.allObjects(Chapter.class).size() > 0)
+                maxChapterId = realm.where(Chapter.class).max("id").intValue() + 1;
 
         Chapter existing = realm.where(Chapter.class)
                 .equalTo("permalink", chapter.getPermalink())
