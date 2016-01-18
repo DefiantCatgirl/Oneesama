@@ -2,25 +2,11 @@ package catgirl.oneesama.scraper.chaptername;
 
 import android.util.Log;
 
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-
-import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathFactory;
 
 import catgirl.oneesama.api.Config;
 import catgirl.oneesama.scraper.DynastyPage;
@@ -32,34 +18,23 @@ public class DynastySeriesPageProvider {
 
         DynastySeriesPage seriesPage = new DynastySeriesPage();
 
-        String url = Config.apiEndpoint + "series/" + seriesId;
+        String url = Config.apiEndpoint + "series/" + seriesId + ".json";
 
-        Document doc = DynastyPage.getBody(url);
+        JSONObject seriesObject = new JSONObject(DynastyPage.getBody(url));
+        JSONArray taggings = seriesObject.getJSONArray("taggings");
+        String currentVolume = null;
 
-        XPathExpression xpath = XPathFactory.newInstance()
-                .newXPath().compile("//dl");
-        XPathExpression chapterXpath = XPathFactory.newInstance()
-                .newXPath().compile(".//a");
-
-        NodeList result = (NodeList) xpath.evaluate(doc, XPathConstants.NODESET);
-
-        String current = null;
-        for(int i = 0; i < result.item(0).getChildNodes().getLength(); i++) {
-            Node n = result.item(0).getChildNodes().item(i);
-            if(n.getNodeName().equals("dt")) {
-                current = n.getTextContent().trim();
-                if(current.isEmpty())
-                    current = null;
+        for (int i = 0; i < taggings.length(); i++) {
+            JSONObject tagging = taggings.getJSONObject(i);
+            if (tagging.has("header")) {
+                currentVolume = tagging.getString("header");
             }
-            else if(n.getNodeName().equals("dd")) {
-                Node link = (Node) chapterXpath.evaluate(n, XPathConstants.NODE);
-
+            if (tagging.has("permalink")) {
                 DynastySeriesPage.Chapter c = new DynastySeriesPage.Chapter();
 
-                String[] parts = link.getAttributes().getNamedItem("href").getNodeValue().split("/");
-                c.chapterId = parts[parts.length - 1];
-                c.chapterName = link.getTextContent().trim();
-                c.volumeName = current;
+                c.chapterId = tagging.getString("permalink");
+                c.chapterName = tagging.getString("title");
+                c.volumeName = currentVolume;
 
                 seriesPage.chapters.add(c);
             }
