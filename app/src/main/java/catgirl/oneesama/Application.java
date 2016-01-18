@@ -8,6 +8,7 @@ import com.yandex.metrica.YandexMetrica;
 import catgirl.oneesama.api.GithubService;
 import catgirl.oneesama.githubchecker.GithubReleaseChecker;
 import catgirl.oneesama.migrations.MigrateChapterNames;
+import catgirl.oneesama.migrations.RemoveBrokenIdChaptersAndTags;
 import io.realm.DynamicRealm;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -41,6 +42,7 @@ public class Application extends android.app.Application {
 
         // Migrations
         MigrateChapterNames.migrateChapterNames(this);
+        RemoveBrokenIdChaptersAndTags.removeBrokenItemsAndFiles(this);
 
         // Check for updates
         GithubReleaseChecker.checkForNewRelease();

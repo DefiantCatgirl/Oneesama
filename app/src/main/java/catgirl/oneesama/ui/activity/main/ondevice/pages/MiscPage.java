@@ -38,10 +38,18 @@ public class MiscPage extends CommonPage<ChapterAuthor, ChapterViewHolder> {
         List<ChapterAuthor> result = new ArrayList<>();
 
         Observable.from(results)
-                .map(chapter -> new ChapterAuthor(new UiChapter(chapter), new UiTag(chapter.getTags()
-                        .where()
-                        .equalTo("type", "Author")
-                        .findFirst())))
+                .map(chapter -> {
+                    Tag tag = chapter.getTags()
+                            .where()
+                            .equalTo("type", "Author")
+                            .findFirst();
+                    if (tag == null) {
+                        tag = new Tag();
+                        tag.setName("No author");
+                        tag.setType("Author");
+                    }
+                    return new ChapterAuthor(new UiChapter(chapter), new UiTag(tag));
+                })
                 .toList()
                 .subscribe(result::addAll);
 

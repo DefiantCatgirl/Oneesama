@@ -90,28 +90,9 @@ public class ChaptersController implements BookStateDelegate, CacherDelegate {
 
         return service.getChapter(uri)
                 .subscribeOn(Schedulers.io())
-                .doOnNext(response -> {
-                    // Find out the real, full chapter name and the corresponding volume
-                    // This is only available on the series page, does not apply if not part of a series
-                    String series = null;
-                    for(Tag tag : response.getTags()) {
-                        if(tag.getType().equals("Series")) {
-                            series = tag.getPermalink();
-                            break;
-                        }
-                    }
-
-                    if(series != null) {
-                        try {
-                            DynastySeriesPage.Chapter c = DynastySeriesPageProvider.provideChapterInfo(series, response.getPermalink());
-                            response.setTitle(c.chapterName);
-                            response.setVolumeName(c.volumeName);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            throw new RuntimeException(e);
-                        }
-                    }
-                })
+                .doOnNext(this::checkChapterIdAgainstLocalDatabase)
+                .doOnNext(response -> checkTagIdsAgainstLocalDatabase(response.getTags()))
+                .doOnNext(this::findRealChapterName)
                 .doOnNext(response -> {
                     Realm realm = Realm.getDefaultInstance();
                     realm.beginTransaction();
@@ -192,5 +173,76 @@ public class ChaptersController implements BookStateDelegate, CacherDelegate {
         realm.close();
 
         FileManager.deleteFolder(id);
+    }
+
+    public void checkTagIdsAgainstLocalDatabase(List<Tag> tags) {
+        // Dynasty API does not have IDs anymore
+        // It makes sense, but now we have to assign IDs manually
+        String name;
+        String type;
+        String permalink;
+
+        Realm realm = Realm.getDefaultInstance();
+        int maxTagId = realm.where(Tag.class).max("id").intValue() + 1;
+
+        for(Tag tag : tags) {
+            name = tag.getName();
+            type = tag.getType();
+            permalink = tag.getPermalink();
+
+            Tag existing = realm.where(Tag.class)
+                    .equalTo("name", name)
+                    .equalTo("type", type)
+                    .equalTo("permalink", permalink)
+                    .findFirst();
+
+            if (existing == null) {
+                tag.setId(maxTagId);
+                maxTagId++;
+            } else {
+                tag.setId(existing.getId());
+            }
+        }
+    }
+
+    public void checkChapterIdAgainstLocalDatabase(Chapter chapter) {
+        // Dynasty API does not have IDs anymore
+        // It makes sense, but now we have to assign IDs manually
+
+        Realm realm = Realm.getDefaultInstance();
+        int maxChapterId = realm.where(Chapter.class).max("id").intValue() + 1;
+
+        Chapter existing = realm.where(Chapter.class)
+                .equalTo("permalink", chapter.getPermalink())
+                .findFirst();
+
+        if (existing == null) {
+            chapter.setId(maxChapterId);
+        } else {
+            chapter.setId(existing.getId());
+        }
+    }
+
+    public void findRealChapterName(Chapter chapter) {
+        // Find out the real, full chapter name and the corresponding volume
+        // This is only available on the series page, does not apply if not part of a series
+        String series = null;
+        for(Tag tag : chapter.getTags()) {
+            if(tag.getType().equals("Series")) {
+                series = tag.getPermalink();
+                break;
+            }
+        }
+
+        if(series != null) {
+            try {
+                DynastySeriesPage.Chapter c = DynastySeriesPageProvider.provideChapterInfo(series, chapter.getPermalink());
+                chapter.setTitle(c.chapterName);
+                chapter.setVolumeName(c.volumeName);
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
+        }
     }
 }
