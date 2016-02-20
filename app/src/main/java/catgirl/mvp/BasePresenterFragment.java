@@ -43,7 +43,7 @@ public abstract class BasePresenterFragment<P extends Presenter>
         presenter = (P) presenterCache.getPresenter(presenterId);
 
         if (presenter == null) {
-            presenter = getPresenterFactory().createPresenter();
+            presenter = createPresenter();
             presenterCache.setPresenter(presenterId, presenter);
         }
     }
@@ -90,6 +90,6 @@ public abstract class BasePresenterFragment<P extends Presenter>
         return presenter;
     }
 
-    protected abstract PresenterFactory<P> getPresenterFactory();
+    protected abstract P createPresenter();
 
 }

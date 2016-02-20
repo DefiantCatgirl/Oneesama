@@ -62,6 +62,7 @@ repositories {
 
 apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
+apply plugin: 'com.neenbedankt.android-apt'
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
@@ -84,4 +85,7 @@ dependencies {
     compile files('libs/commons-lang3-3.1.jar')
     compile 'org.lucasr.smoothie:smoothie:0.1.0'
     compile files('libs/vtd-xml.jar')
+    compile 'com.google.dagger:dagger:2.0.2'
+    compile 'javax.annotation:jsr250-api:1.0'
+    apt "com.google.dagger:dagger-compiler:2.0.2"
 }

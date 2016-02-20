@@ -24,12 +24,15 @@ public class BasePresenter<T> implements Presenter<T> {
 
     @Override
     public void bindView(T view) {
+        if (this.view != null)
+            throw new IllegalStateException("Old view still bound");
+
         this.view = view;
     }
 
     @Override
     public void unbindView() {
-
+        this.view = null;
     }
 
     @Override
