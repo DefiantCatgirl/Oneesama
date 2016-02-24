@@ -7,13 +7,13 @@ import android.support.annotation.Nullable;
 import java.util.List;
 
 import catgirl.mvp.BasePresenter;
-import catgirl.mvp.Presenter;
 import catgirl.oneesama.model.chapter.ui.UiChapter;
+import catgirl.oneesama.ui.common.chapter.ChapterAuthor;
 import catgirl.oneesama2.ui.fragment.IChapterListView;
 
 public class ChapterListPresenter extends BasePresenter<IChapterListView> {
 
-    List<UiChapter> chapters;
+    List<ChapterAuthor> chapters;
     private final String seriesId;
 
     public ChapterListPresenter(String seriesId) {
@@ -52,11 +52,25 @@ public class ChapterListPresenter extends BasePresenter<IChapterListView> {
         return null;
     }
 
-    public void onItemClicked(UiChapter chapter) {
+    public ChapterAuthor getChapter(int position) {
+        if (chapters == null)
+            return null;
+        else
+            return chapters.get(position);
+    }
+
+    public int getChaptersCount() {
+        if (chapters == null)
+            return 0;
+        else
+            return chapters.size();
+    }
+
+    public void onItemClicked(int position) {
 
     }
 
-    public void onItemDeleted(UiChapter chapter) {
+    public void onItemDeleted(int position) {
         
     }
 }
