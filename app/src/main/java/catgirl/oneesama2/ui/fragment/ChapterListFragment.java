@@ -23,7 +23,7 @@ import catgirl.oneesama.ui.common.chapter.ChapterAuthor;
 import catgirl.oneesama2.ui.presenter.ChapterListPresenter;
 import catgirl.oneesama2.ui.presenter.ChapterListPresenterFactory;
 
-public class ChapterListFragment extends BasePresenterFragment<ChapterListPresenter> implements IChapterListView {
+public class ChapterListFragment extends BasePresenterFragment<ChapterListPresenter> implements ChapterListView {
 
     ViewGroup view;
 

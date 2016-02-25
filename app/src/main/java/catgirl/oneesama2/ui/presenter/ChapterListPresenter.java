@@ -6,12 +6,15 @@ import android.support.annotation.Nullable;
 
 import java.util.List;
 
-import catgirl.mvp.BasePresenter;
-import catgirl.oneesama.model.chapter.ui.UiChapter;
-import catgirl.oneesama.ui.common.chapter.ChapterAuthor;
-import catgirl.oneesama2.ui.fragment.IChapterListView;
+import javax.inject.Inject;
 
-public class ChapterListPresenter extends BasePresenter<IChapterListView> {
+import catgirl.mvp.BasePresenter;
+import catgirl.oneesama.ui.common.chapter.ChapterAuthor;
+import catgirl.oneesama2.ui.fragment.ChapterListView;
+
+public class ChapterListPresenter extends BasePresenter<ChapterListView> {
+
+    @Inject
 
     List<ChapterAuthor> chapters;
     private final String seriesId;
@@ -36,7 +39,7 @@ public class ChapterListPresenter extends BasePresenter<IChapterListView> {
     }
 
     @Override
-    public void bindView(IChapterListView view) {
+    public void bindView(ChapterListView view) {
         super.bindView(view);
         if (chapters != null)
             view.showContents(chapters, seriesId);
@@ -48,7 +51,7 @@ public class ChapterListPresenter extends BasePresenter<IChapterListView> {
     }
 
     @Override
-    public IChapterListView getView() {
+    public ChapterListView getView() {
         return null;
     }
 
