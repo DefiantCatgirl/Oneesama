@@ -18,19 +18,29 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import catgirl.mvp.BasePresenterFragment;
+import catgirl.oneesama.Application;
 import catgirl.oneesama.R;
 import catgirl.oneesama.ui.common.chapter.ChapterAuthor;
+import catgirl.oneesama2.fragments.chapterwithauthor.ChapterWithAuthorListComponent;
+import catgirl.oneesama2.fragments.chapterwithauthor.ChapterWithAuthorListModule;
 import catgirl.oneesama2.fragments.chapterwithauthor.presenter.ChapterWithAuthorListPresenter;
 import catgirl.oneesama2.fragments.chapterwithauthor.presenter.ChapterWithAuthorListPresenterFactory;
 
 public class ChapterWithAuthorListFragment
-        extends BasePresenterFragment<ChapterWithAuthorListPresenter>
+        extends BasePresenterFragment<ChapterWithAuthorListPresenter, ChapterWithAuthorListComponent>
         implements ChapterWithAuthorListView
 {
+    // Component initialization //
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getComponent().inject(this);
+    }
+
+    @Override
+    protected ChapterWithAuthorListComponent createComponent() {
+        return Application.getApplicationComponent().plus(new ChapterWithAuthorListModule());
     }
 
     // Presenter initialization //

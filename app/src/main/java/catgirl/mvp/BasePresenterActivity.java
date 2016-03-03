@@ -7,9 +7,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
+/**
+ * Activity that stores an instance of a presenter and a Dagger component over configuration changes.
+ * When the activity is destroyed for good or due to lack of memory it should free said presenter and component.
+ */
 public abstract class BasePresenterActivity
         extends AppCompatActivity
-        implements PresenterCache {
+        implements ComponentPresenterCache {
 
     private static final String NEXT_ID_KEY = "next-presenter-id";
 
@@ -52,21 +56,32 @@ public abstract class BasePresenterActivity
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> Presenter<T> getPresenter(Long id) {
-        return (Presenter<T>) nonConfigurationInstance.components.get(id);
+    public <T> Presenter<T> getPresenter(long id) {
+        return (Presenter<T>) nonConfigurationInstance.objects.get(id);
     }
 
     @Override
-    public <T> void setPresenter(Long id, Presenter<T> presenter) {
-        nonConfigurationInstance.components.put(id, presenter);
+    public <T> void setPresenter(long id, Presenter<T> presenter) {
+        nonConfigurationInstance.objects.put(id, presenter);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <C> C getComponent(long id) {
+        return (C) nonConfigurationInstance.objects.get(id);
+    }
+
+    @Override
+    public <C> void setComponent(long id, C component) {
+        nonConfigurationInstance.objects.put(id, component);
     }
 
     private static class NonConfigurationInstance {
-        private Map<Long, Object> components;
+        private Map<Long, Object> objects;
         private AtomicLong nextId;
 
         public NonConfigurationInstance(long seed) {
-            components = new HashMap<>();
+            objects = new HashMap<>();
             nextId = new AtomicLong(seed);
         }
     }

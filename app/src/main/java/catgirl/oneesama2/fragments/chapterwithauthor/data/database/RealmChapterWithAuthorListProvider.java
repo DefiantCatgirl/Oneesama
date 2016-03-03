@@ -13,12 +13,16 @@ import io.realm.RealmResults;
 import rx.Observable;
 
 public class RealmChapterWithAuthorListProvider implements ChapterWithAuthorListProvider {
+
+    private Realm realm;
+
+    public RealmChapterWithAuthorListProvider(Realm realm) {
+        this.realm = realm;
+    }
+
     @Override
     public Observable<List<ChapterAuthor>> getChapterAuthorList(String tagId) {
         return Observable.fromCallable(() -> {
-            // TODO: provide with Dagger
-            Realm realm = Realm.getDefaultInstance();
-
             RealmResults<Chapter> results = realm.allObjects(Chapter.class)
                     .where()
                     .equalTo("tags.id", tagId)

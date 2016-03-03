@@ -5,10 +5,11 @@ import android.util.Log;
 
 import com.yandex.metrica.YandexMetrica;
 
-import catgirl.oneesama.api.GithubService;
 import catgirl.oneesama.githubchecker.GithubReleaseChecker;
 import catgirl.oneesama.migrations.MigrateChapterNames;
 import catgirl.oneesama.migrations.RemoveBrokenIdChaptersAndTags;
+import catgirl.oneesama2.application.ApplicationComponent;
+import catgirl.oneesama2.application.DaggerApplicationComponent;
 import io.realm.DynamicRealm;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -18,11 +19,15 @@ public class Application extends android.app.Application {
 
     private static Application appContext;
 
+    private ApplicationComponent applicationComponent;
+
     @Override
     public void onCreate() {
         super.onCreate();
 
         appContext = this;
+
+        // Database configuration
 
         RealmConfiguration config = new RealmConfiguration.Builder(this)
                 .schemaVersion(1)
@@ -47,6 +52,10 @@ public class Application extends android.app.Application {
         // Check for updates
         GithubReleaseChecker.checkForNewRelease();
 
+        // Dagger component initialization
+
+        applicationComponent = DaggerApplicationComponent.builder().build();
+
         YandexMetrica.activate(getApplicationContext(), getString(R.string.metrics_token));
         YandexMetrica.setSessionTimeout(600);
         YandexMetrica.setCollectInstalledApps(false);
@@ -55,5 +64,9 @@ public class Application extends android.app.Application {
 
     public static Context getContextOfApplication() {
         return appContext.getApplicationContext();
+    }
+
+    public static ApplicationComponent getApplicationComponent() {
+        return appContext.applicationComponent;
     }
 }
