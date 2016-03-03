@@ -1,10 +1,7 @@
-package catgirl.oneesama2.ui.fragment;
+package catgirl.oneesama2.fragments.chapterwithauthor.fragment;
 
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Handler;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageButton;
@@ -20,14 +17,13 @@ import catgirl.oneesama.R;
 import catgirl.oneesama.controller.ChaptersController;
 import catgirl.oneesama.controller.legacy.Book;
 import catgirl.oneesama.controller.legacy.BookStateDelegate;
-import catgirl.oneesama.ui.activity.legacyreader.activityreader.ReaderActivity;
 import catgirl.oneesama.ui.activity.legacyreader.tools.EndAnimatorListener;
 import catgirl.oneesama.ui.common.CommonViewHolder;
 import catgirl.oneesama.ui.common.chapter.ChapterAuthor;
 
 import static com.nineoldandroids.view.ViewPropertyAnimator.animate;
 
-public class ChapterViewHolder extends CommonViewHolder implements BookStateDelegate {
+public class ChapterWithAuthorViewHolder extends CommonViewHolder implements BookStateDelegate {
 
     @Bind(R.id.Item_Chapter_Title) protected TextView title;
     @Bind(R.id.Item_Chapter_Volume) protected TextView volume;
@@ -50,7 +46,7 @@ public class ChapterViewHolder extends CommonViewHolder implements BookStateDele
     Handler handler;
     Context context;
 
-    public ChapterViewHolder(View itemView, RecyclerView recycler) {
+    public ChapterWithAuthorViewHolder(View itemView, RecyclerView recycler) {
         super(itemView);
         ButterKnife.bind(this, itemView);
         context = itemView.getContext();

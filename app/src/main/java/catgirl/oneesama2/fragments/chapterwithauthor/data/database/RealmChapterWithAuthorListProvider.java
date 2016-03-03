@@ -1,4 +1,4 @@
-package catgirl.oneesama2.data.database;
+package catgirl.oneesama2.fragments.chapterwithauthor.data.database;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,13 +7,12 @@ import catgirl.oneesama.model.chapter.serializable.Chapter;
 import catgirl.oneesama.model.chapter.ui.UiChapter;
 import catgirl.oneesama.model.chapter.ui.UiTag;
 import catgirl.oneesama.ui.common.chapter.ChapterAuthor;
-import catgirl.oneesama2.data.provider.ChapterAuthorListProvider;
+import catgirl.oneesama2.fragments.chapterwithauthor.data.provider.ChapterWithAuthorListProvider;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 
-public class RealmChapterAuthorListProvider implements ChapterAuthorListProvider {
+public class RealmChapterWithAuthorListProvider implements ChapterWithAuthorListProvider {
     @Override
     public Observable<List<ChapterAuthor>> getChapterAuthorList(String tagId) {
         return Observable.fromCallable(() -> {
