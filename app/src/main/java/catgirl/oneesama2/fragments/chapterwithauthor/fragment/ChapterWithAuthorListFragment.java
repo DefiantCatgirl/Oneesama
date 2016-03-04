@@ -35,12 +35,16 @@ public class ChapterWithAuthorListFragment
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getComponent().inject(this);
     }
 
     @Override
     protected ChapterWithAuthorListComponent createComponent() {
         return Application.getApplicationComponent().plus(new ChapterWithAuthorListModule());
+    }
+
+    @Override
+    protected void onComponentCreated() {
+        getComponent().inject(this);
     }
 
     // Presenter initialization //
@@ -50,7 +54,7 @@ public class ChapterWithAuthorListFragment
 
     @Override
     protected ChapterWithAuthorListPresenter createPresenter() {
-        return presenterFactory.createPresenter(getArguments().getString("TAG_ID"));
+        return presenterFactory.createPresenter(getArguments().getInt("TAG_ID"));
     }
 
     // View //

@@ -21,7 +21,7 @@ public class RealmChapterWithAuthorListProvider implements ChapterWithAuthorList
     }
 
     @Override
-    public Observable<List<ChapterAuthor>> getChapterAuthorList(String tagId) {
+    public Observable<List<ChapterAuthor>> getChapterAuthorList(int tagId) {
         return Observable.fromCallable(() -> {
             RealmResults<Chapter> results = realm.allObjects(Chapter.class)
                     .where()

@@ -26,9 +26,10 @@ public class ChapterWithAuthorListPresenter extends BasePresenter<ChapterWithAut
     Subscription subscription;
 
     List<ChapterAuthor> chapterAuthors;
-    private final String tagId;
+    private final Integer tagId;
 
-    public ChapterWithAuthorListPresenter(String tagId) {
+    public ChapterWithAuthorListPresenter(ChapterWithAuthorListProvider listProvider, int tagId) {
+        this.listProvider = listProvider;
         this.tagId = tagId;
     }
 
@@ -52,7 +53,7 @@ public class ChapterWithAuthorListPresenter extends BasePresenter<ChapterWithAut
     public void bindView(ChapterWithAuthorListView view) {
         super.bindView(view);
         if (chapterAuthors != null) {
-            view.showContents(chapterAuthors, tagId);
+            view.showContents(chapterAuthors, "Test");
         } else if (subscription == null) {
             subscription = listProvider
                     .getChapterAuthorList(tagId)
@@ -60,7 +61,7 @@ public class ChapterWithAuthorListPresenter extends BasePresenter<ChapterWithAut
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(chapterAuthors -> {
                         this.chapterAuthors = chapterAuthors;
-                        view.showContents(chapterAuthors, tagId);
+                        view.showContents(chapterAuthors, "Test");
                     });
         }
     }

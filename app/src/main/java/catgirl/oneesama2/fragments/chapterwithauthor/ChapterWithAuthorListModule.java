@@ -15,7 +15,7 @@ public class ChapterWithAuthorListModule {
     }
 
     @Provides
-    public ChapterWithAuthorListPresenterFactory getPresenterFactory() {
-        return new ChapterWithAuthorListPresenterFactory();
+    public ChapterWithAuthorListPresenterFactory getPresenterFactory(ChapterWithAuthorListProvider listProvider) {
+        return new ChapterWithAuthorListPresenterFactory(listProvider);
     }
 }

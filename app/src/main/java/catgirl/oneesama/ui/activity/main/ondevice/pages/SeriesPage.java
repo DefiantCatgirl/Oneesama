@@ -22,6 +22,7 @@ import catgirl.oneesama.ui.common.CommonPage;
 import catgirl.oneesama.ui.activity.main.ondevice.OnDeviceFragment;
 import catgirl.oneesama.ui.common.CommonViewHolder;
 import catgirl.oneesama.ui.common.chapter.ChapterAuthor;
+import catgirl.oneesama2.activity.ChapterListActivity;
 import io.realm.RealmResults;
 import rx.Observable;
 
@@ -126,7 +127,7 @@ public class SeriesPage extends CommonPage<SeriesPage.SeriesAuthor, SeriesPage.S
             if(data == null)
                 return;
 
-            Intent intent = new Intent(getActivity(), ChaptersActivity.class);
+            Intent intent = new Intent(getActivity(), ChapterListActivity.class);
             intent.putExtra("TAG_ID", data.series.getId());
             startActivity(intent);
         }

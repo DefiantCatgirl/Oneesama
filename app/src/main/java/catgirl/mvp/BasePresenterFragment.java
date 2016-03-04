@@ -53,6 +53,8 @@ public abstract class BasePresenterFragment<P extends Presenter, C>
             componentPresenterCache.setComponent(componentId, component);
         }
 
+        onComponentCreated();
+
         presenter = (P) componentPresenterCache.getPresenter(presenterId);
 
         if (presenter == null) {
@@ -65,7 +67,7 @@ public abstract class BasePresenterFragment<P extends Presenter, C>
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         try {
-            presenter.bindView(view);
+            presenter.bindView(this);
         } catch (ClassCastException e) {
             throw new RuntimeException("The view provided does not"
                     + " implement the view interface expected by "
@@ -75,6 +77,7 @@ public abstract class BasePresenterFragment<P extends Presenter, C>
 
     @Override
     public void onResume() {
+        super.onResume();
         isDestroyedBySystem = false;
     }
 
@@ -94,11 +97,13 @@ public abstract class BasePresenterFragment<P extends Presenter, C>
             componentPresenterCache.setPresenter(presenterId, null);
             componentPresenterCache.setComponent(componentId, null);
         }
+        super.onDestroy();
     }
 
     @Override
     public void onDestroyView() {
         presenter.unbindView();
+        super.onDestroyView();
     }
 
     public P getPresenter() {
@@ -112,5 +117,7 @@ public abstract class BasePresenterFragment<P extends Presenter, C>
     }
 
     protected abstract C createComponent();
+
+    protected abstract void onComponentCreated();
 
 }

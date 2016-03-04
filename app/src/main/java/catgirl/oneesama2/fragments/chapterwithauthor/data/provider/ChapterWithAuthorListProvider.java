@@ -6,5 +6,5 @@ import catgirl.oneesama.ui.common.chapter.ChapterAuthor;
 import rx.Observable;
 
 public interface ChapterWithAuthorListProvider {
-    Observable<List<ChapterAuthor>> getChapterAuthorList(String tagId);
+    Observable<List<ChapterAuthor>> getChapterAuthorList(int tagId);
 }
