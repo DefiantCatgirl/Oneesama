@@ -21,8 +21,6 @@ public abstract class BasePresenterActivity
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
         NonConfigurationInstance instance = (NonConfigurationInstance) getLastCustomNonConfigurationInstance();
 
         if (instance == null) {
@@ -35,6 +33,10 @@ public abstract class BasePresenterActivity
         } else {
             nonConfigurationInstance = instance;
         }
+
+        // This actually calls onCreate() of restored fragments so it should either be last
+        // or fragments should rely on onActivityCreated()
+        super.onCreate(savedInstanceState);
     }
 
     @Override

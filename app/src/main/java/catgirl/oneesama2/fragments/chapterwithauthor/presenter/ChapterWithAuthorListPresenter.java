@@ -68,7 +68,7 @@ public class ChapterWithAuthorListPresenter extends BasePresenter<ChapterWithAut
 
     @Override
     public void unbindView() {
-
+        super.unbindView();
     }
 
     @Override

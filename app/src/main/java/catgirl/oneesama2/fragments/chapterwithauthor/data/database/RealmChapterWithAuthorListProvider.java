@@ -7,6 +7,7 @@ import catgirl.oneesama.model.chapter.serializable.Chapter;
 import catgirl.oneesama.model.chapter.ui.UiChapter;
 import catgirl.oneesama.model.chapter.ui.UiTag;
 import catgirl.oneesama.ui.common.chapter.ChapterAuthor;
+import catgirl.oneesama2.data.realm.RealmProvider;
 import catgirl.oneesama2.fragments.chapterwithauthor.data.provider.ChapterWithAuthorListProvider;
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -14,15 +15,17 @@ import rx.Observable;
 
 public class RealmChapterWithAuthorListProvider implements ChapterWithAuthorListProvider {
 
-    private Realm realm;
+    private RealmProvider realmProvider;
 
-    public RealmChapterWithAuthorListProvider(Realm realm) {
-        this.realm = realm;
+    public RealmChapterWithAuthorListProvider(RealmProvider realmProvider) {
+        this.realmProvider = realmProvider;
     }
 
     @Override
     public Observable<List<ChapterAuthor>> getChapterAuthorList(int tagId) {
         return Observable.fromCallable(() -> {
+            Realm realm = realmProvider.provideRealm();
+
             RealmResults<Chapter> results = realm.allObjects(Chapter.class)
                     .where()
                     .equalTo("tags.id", tagId)
@@ -37,6 +40,8 @@ public class RealmChapterWithAuthorListProvider implements ChapterWithAuthorList
                             .findFirst())))
                     .toList()
                     .subscribe(result::addAll);
+
+            realm.close();
 
             return result;
         });
