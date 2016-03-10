@@ -59,6 +59,7 @@ public abstract class BasePresenterFragment<P extends Presenter, C>
 
         if (presenter == null) {
             presenter = createPresenter();
+            presenter.onCreate(savedInstanceState);
             componentPresenterCache.setPresenter(presenterId, presenter);
         }
     }

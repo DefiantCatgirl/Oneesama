@@ -3,10 +3,9 @@ package catgirl.oneesama2.application;
 import javax.inject.Singleton;
 
 import catgirl.oneesama2.data.realm.RealmProvider;
-import catgirl.oneesama2.fragments.chapterwithauthor.ChapterWithAuthorListComponent;
-import catgirl.oneesama2.fragments.chapterwithauthor.ChapterWithAuthorListModule;
+import catgirl.oneesama2.activity.chapterlist.fragments.chapterlist.ChapterListComponent;
+import catgirl.oneesama2.activity.chapterlist.fragments.chapterlist.ChapterListModule;
 import dagger.Component;
-import io.realm.Realm;
 
 @Singleton
 @Component(modules = {
@@ -17,5 +16,5 @@ public interface ApplicationComponent {
     RealmProvider getRealmProvider();
 
     // Fragment scoped subcomponents
-    ChapterWithAuthorListComponent plus(ChapterWithAuthorListModule module);
+    ChapterListComponent plus(ChapterListModule module);
 }

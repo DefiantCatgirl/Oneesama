@@ -1,4 +1,4 @@
-package catgirl.oneesama2.fragments.chapterwithauthor.fragment;
+package catgirl.oneesama2.activity.chapterlist.fragments.chapterlist.fragment;
 
 import android.content.Context;
 import android.os.Handler;
@@ -17,13 +17,13 @@ import catgirl.oneesama.R;
 import catgirl.oneesama.controller.ChaptersController;
 import catgirl.oneesama.controller.legacy.Book;
 import catgirl.oneesama.controller.legacy.BookStateDelegate;
-import catgirl.oneesama.ui.activity.legacyreader.tools.EndAnimatorListener;
+import catgirl.oneesama2.legacy.legacyreader.tools.EndAnimatorListener;
 import catgirl.oneesama.ui.common.CommonViewHolder;
 import catgirl.oneesama.ui.common.chapter.ChapterAuthor;
 
 import static com.nineoldandroids.view.ViewPropertyAnimator.animate;
 
-public class ChapterWithAuthorViewHolder extends CommonViewHolder implements BookStateDelegate {
+public class ChapterViewHolder extends CommonViewHolder implements BookStateDelegate {
 
     @Bind(R.id.Item_Chapter_Title) protected TextView title;
     @Bind(R.id.Item_Chapter_Volume) protected TextView volume;
@@ -45,9 +45,13 @@ public class ChapterWithAuthorViewHolder extends CommonViewHolder implements Boo
     RecyclerView recycler;
     Handler handler;
     Context context;
+    private ChaptersController chaptersController;
+    private boolean shouldDisplayAuthor;
 
-    public ChapterWithAuthorViewHolder(View itemView, RecyclerView recycler) {
+    public ChapterViewHolder(View itemView, RecyclerView recycler, ChaptersController chaptersController, boolean shouldDisplayAuthor) {
         super(itemView);
+        this.chaptersController = chaptersController;
+        this.shouldDisplayAuthor = shouldDisplayAuthor;
         ButterKnife.bind(this, itemView);
         context = itemView.getContext();
         progressBar.stopSpinning();
@@ -79,7 +83,13 @@ public class ChapterWithAuthorViewHolder extends CommonViewHolder implements Boo
         this.delegate = delegate;
 
         title.setText(data.chapter.getTitle());
-        author.setText(data.author.getName());
+
+        if (shouldDisplayAuthor) {
+            author.setVisibility(View.VISIBLE);
+            author.setText(data.author.getName());
+        } else {
+            author.setVisibility(View.GONE);
+        }
 
         if(data.chapter.getVolumeName() != null) {
             volume.setText(data.chapter.getVolumeName());
@@ -95,8 +105,8 @@ public class ChapterWithAuthorViewHolder extends CommonViewHolder implements Boo
         reloadLayout.setVisibility(View.GONE);
         downloadedLayout.setVisibility(View.GONE);
 
-        if(ChaptersController.getInstance().isChapterControllerActive(data.chapter.getId())) {
-            Book controller = ChaptersController.getInstance().getChapterController(data.chapter.getId());
+        if(chaptersController.isChapterControllerActive(data.chapter.getId())) {
+            Book controller = chaptersController.getChapterController(data.chapter.getId());
             if(controller.completelyDownloaded) {
                 downloadedLayout.setVisibility(View.VISIBLE);
             } else if(controller.canReload) {
@@ -118,7 +128,7 @@ public class ChapterWithAuthorViewHolder extends CommonViewHolder implements Boo
         handler.post(() -> {
             reloadLayout.setVisibility(View.GONE);
             progressLayout.setVisibility(View.VISIBLE);
-            Book controller = ChaptersController.getInstance().getChapterController(data.chapter.getId());
+            Book controller = chaptersController.getChapterController(data.chapter.getId());
             if(controller != null)
                 progressBar.setProgress((float) controller.pagesDownloaded / (float) controller.totalFiles);
         });

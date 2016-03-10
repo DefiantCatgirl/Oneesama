@@ -1,4 +1,4 @@
-package catgirl.oneesama.tools;
+package catgirl.oneesama2.tools;
 
 /*
  NaturalOrderComparator.java -- Perform 'natural order' comparisons of strings in Java.
