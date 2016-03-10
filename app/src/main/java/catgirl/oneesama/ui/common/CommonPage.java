@@ -11,20 +11,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.List;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import catgirl.oneesama.R;
-import catgirl.oneesama.model.chapter.serializable.Chapter;
-import catgirl.oneesama.ui.activity.chapters.SeriesChaptersFragment;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
-import rx.Observable;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 public abstract class CommonPage<T, VH extends CommonViewHolder> extends Fragment {
 

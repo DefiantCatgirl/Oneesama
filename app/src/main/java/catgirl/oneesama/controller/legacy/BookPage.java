@@ -1,7 +1,7 @@
 package catgirl.oneesama.controller.legacy;
 
-import catgirl.oneesama.model.chapter.ui.UiPage;
-import catgirl.oneesama.ui.activity.legacyreader.widgets.airviewer.AirPage;
+import catgirl.oneesama2.data.model.chapter.ui.UiPage;
+import catgirl.oneesama2.legacy.legacyreader.widgets.airviewer.AirPage;
 
 /**
  * A "real" page - has its metadata and loads all of the required assets. Implied to be read-only for the model, but hey, that would require like ten more classes to properly guarantee.

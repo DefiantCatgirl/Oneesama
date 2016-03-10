@@ -1,7 +1,5 @@
 package catgirl.oneesama.controller.legacy.downloader;
 
-import catgirl.oneesama.model.chapter.serializable.Page;
-
 public abstract class BasicDownloaderDelegate implements BookDownloaderDelegate {
 
 	@Override

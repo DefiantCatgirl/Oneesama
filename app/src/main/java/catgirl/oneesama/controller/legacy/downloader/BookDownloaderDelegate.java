@@ -1,7 +1,5 @@
 package catgirl.oneesama.controller.legacy.downloader;
 
-import catgirl.oneesama.model.chapter.serializable.Page;
-
 public interface BookDownloaderDelegate {
 	
 	public void onDownloadComplete(int id, boolean fileExists);

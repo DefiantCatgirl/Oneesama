@@ -20,17 +20,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import catgirl.oneesama.Application;
+import catgirl.oneesama2.application.Application;
 import catgirl.oneesama.controller.FileManager;
 import catgirl.oneesama.controller.legacy.downloader.BookDownloaderDelegate;
 import catgirl.oneesama.controller.legacy.downloader.Downloader;
-import catgirl.oneesama.model.chapter.serializable.Chapter;
-import catgirl.oneesama.model.chapter.serializable.Page;
-import catgirl.oneesama.model.chapter.ui.UiChapter;
-import catgirl.oneesama.model.chapter.ui.UiPage;
-import catgirl.oneesama.ui.activity.legacyreader.tools.ActivityUtils;
-import catgirl.oneesama.ui.activity.legacyreader.tools.ThreadPoolAsyncTask;
-import catgirl.oneesama.ui.activity.legacyreader.widgets.airviewer.AirPage;
+import catgirl.oneesama2.data.model.chapter.ui.UiChapter;
+import catgirl.oneesama2.data.model.chapter.ui.UiPage;
+import catgirl.oneesama2.legacy.legacyreader.tools.ActivityUtils;
+import catgirl.oneesama2.legacy.legacyreader.tools.ThreadPoolAsyncTask;
+import catgirl.oneesama2.legacy.legacyreader.widgets.airviewer.AirPage;
 
 public class Book implements BookDownloaderDelegate {
 

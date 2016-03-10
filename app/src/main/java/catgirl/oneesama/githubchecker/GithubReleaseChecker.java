@@ -8,7 +8,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.NotificationCompat;
 
-import catgirl.oneesama.Application;
+import catgirl.oneesama2.application.Application;
 import catgirl.oneesama.BuildConfig;
 import catgirl.oneesama.R;
 import catgirl.oneesama.api.Config;

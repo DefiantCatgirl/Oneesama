@@ -3,7 +3,7 @@ package catgirl.oneesama.migrations;
 import android.content.Context;
 import android.util.Log;
 
-import catgirl.oneesama.model.chapter.serializable.Chapter;
+import catgirl.oneesama2.data.model.chapter.serializable.Chapter;
 import catgirl.oneesama.scraper.chaptername.DynastySeriesPage;
 import catgirl.oneesama.scraper.chaptername.DynastySeriesPageProvider;
 import io.realm.Realm;

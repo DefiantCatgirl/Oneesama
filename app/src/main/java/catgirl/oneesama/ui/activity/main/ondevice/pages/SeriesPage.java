@@ -1,7 +1,6 @@
 package catgirl.oneesama.ui.activity.main.ondevice.pages;
 
 import android.content.Intent;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -12,17 +11,13 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import catgirl.oneesama.R;
-import catgirl.oneesama.model.chapter.serializable.Chapter;
-import catgirl.oneesama.model.chapter.serializable.Tag;
-import catgirl.oneesama.model.chapter.ui.UiChapter;
-import catgirl.oneesama.model.chapter.ui.UiTag;
-import catgirl.oneesama.tools.RealmObservable;
-import catgirl.oneesama.ui.activity.chapters.ChaptersActivity;
+import catgirl.oneesama2.data.model.chapter.serializable.Chapter;
+import catgirl.oneesama2.data.model.chapter.serializable.Tag;
+import catgirl.oneesama2.data.model.chapter.ui.UiTag;
 import catgirl.oneesama.ui.common.CommonPage;
 import catgirl.oneesama.ui.activity.main.ondevice.OnDeviceFragment;
 import catgirl.oneesama.ui.common.CommonViewHolder;
-import catgirl.oneesama.ui.common.chapter.ChapterAuthor;
-import catgirl.oneesama2.activity.ChapterListActivity;
+import catgirl.oneesama2.activity.chapterlist.ChapterListActivity;
 import io.realm.RealmResults;
 import rx.Observable;
 

@@ -1,6 +1,5 @@
 package catgirl.oneesama.controller;
 
-import android.content.Context;
 import android.util.Log;
 
 import org.apache.commons.io.FileUtils;
@@ -12,8 +11,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-import catgirl.oneesama.Application;
-import catgirl.oneesama.model.chapter.ui.UiPage;
+import catgirl.oneesama2.application.Application;
+import catgirl.oneesama2.data.model.chapter.ui.UiPage;
 
 public class FileManager {
 

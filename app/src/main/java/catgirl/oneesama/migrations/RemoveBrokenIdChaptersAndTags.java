@@ -7,10 +7,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import catgirl.oneesama.Application;
+import catgirl.oneesama2.application.Application;
 import catgirl.oneesama.controller.FileManager;
-import catgirl.oneesama.model.chapter.serializable.Chapter;
-import catgirl.oneesama.model.chapter.serializable.Tag;
+import catgirl.oneesama2.data.model.chapter.serializable.Chapter;
+import catgirl.oneesama2.data.model.chapter.serializable.Tag;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import rx.Observable;

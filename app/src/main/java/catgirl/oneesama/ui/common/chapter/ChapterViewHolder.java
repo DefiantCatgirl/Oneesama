@@ -20,8 +20,8 @@ import catgirl.oneesama.R;
 import catgirl.oneesama.controller.ChaptersController;
 import catgirl.oneesama.controller.legacy.Book;
 import catgirl.oneesama.controller.legacy.BookStateDelegate;
-import catgirl.oneesama.ui.activity.legacyreader.activityreader.ReaderActivity;
-import catgirl.oneesama.ui.activity.legacyreader.tools.EndAnimatorListener;
+import catgirl.oneesama2.legacy.legacyreader.activityreader.ReaderActivity;
+import catgirl.oneesama2.legacy.legacyreader.tools.EndAnimatorListener;
 import catgirl.oneesama.ui.common.CommonViewHolder;
 
 import static com.nineoldandroids.view.ViewPropertyAnimator.animate;

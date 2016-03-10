@@ -1,7 +1,7 @@
 package catgirl.oneesama.api;
 
 import catgirl.oneesama.BuildConfig;
-import catgirl.oneesama.model.chapter.serializable.Chapter;
+import catgirl.oneesama2.data.model.chapter.serializable.Chapter;
 import retrofit.http.GET;
 import retrofit.http.Headers;
 import retrofit.http.Path;

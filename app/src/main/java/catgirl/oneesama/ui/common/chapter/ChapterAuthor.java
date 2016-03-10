@@ -1,7 +1,7 @@
 package catgirl.oneesama.ui.common.chapter;
 
-import catgirl.oneesama.model.chapter.ui.UiChapter;
-import catgirl.oneesama.model.chapter.ui.UiTag;
+import catgirl.oneesama2.data.model.chapter.ui.UiChapter;
+import catgirl.oneesama2.data.model.chapter.ui.UiTag;
 
 public class ChapterAuthor {
     public UiChapter chapter;

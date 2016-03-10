@@ -19,10 +19,10 @@ import java.net.URL;
 import java.util.Date;
 import java.util.HashSet;
 
-import catgirl.oneesama.Application;
+import catgirl.oneesama2.application.Application;
 import catgirl.oneesama.api.Config;
 import catgirl.oneesama.controller.FileManager;
-import catgirl.oneesama.model.chapter.ui.UiPage;
+import catgirl.oneesama2.data.model.chapter.ui.UiPage;
 
 public class Downloader {
 

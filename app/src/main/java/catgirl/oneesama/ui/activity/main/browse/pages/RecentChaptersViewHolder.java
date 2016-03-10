@@ -12,7 +12,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import catgirl.oneesama.R;
 import catgirl.oneesama.scraper.recentlist.DynastyRecentChapterPage;
-import catgirl.oneesama.ui.activity.legacyreader.activityreader.ReaderActivity;
 import catgirl.oneesama.ui.activity.main.MainActivity;
 
 public class RecentChaptersViewHolder extends RecyclerView.ViewHolder {
