@@ -25,13 +25,13 @@
                 android:layout_height="match_parent"
                 android:background="#65666d" >
 
-                <catgirl.oneesama2.legacy.legacyreader.widgets.airviewer.AirWidgetDrawer
+                <catgirl.oneesama.activity.legacyreader.widgets.airviewer.AirWidgetDrawer
                     xmlns:android="http://schemas.android.com/apk/res/android"
                     android:id="@+id/airrender"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent" />
 
-                <catgirl.oneesama2.legacy.legacyreader.widgets.airviewer.AirViewerRecognizer
+                <catgirl.oneesama.activity.legacyreader.widgets.airviewer.AirViewerRecognizer
                     xmlns:android="http://schemas.android.com/apk/res/android"
                     android:id="@+id/airtouch"
                     android:layout_width="fill_parent"

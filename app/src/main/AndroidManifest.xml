@@ -13,10 +13,10 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
-        android:name="catgirl.oneesama2.application.Application"
+        android:name=".application.Application"
         android:largeHeap="true">
         <activity
-            android:name=".ui.activity.main.MainActivity"
+            android:name=".activity.main.MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask" >
             <intent-filter>
@@ -51,31 +51,31 @@
         <activity
             android:name=".ui.activity.chapters.ChaptersActivity"
             android:label="@string/title_activity_chapters"
-            android:parentActivityName=".ui.activity.main.MainActivity"
+            android:parentActivityName=".activity.main.MainActivity"
             android:theme="@style/AppTheme" >
         </activity>
         <activity
-            android:name="catgirl.oneesama2.activity.chapterlist.ChapterListActivity"
+            android:name=".activity.chapterlist.ChapterListActivity"
             android:label="@string/title_activity_chapters"
-            android:parentActivityName=".ui.activity.main.MainActivity"
+            android:parentActivityName=".activity.main.MainActivity"
             android:theme="@style/AppTheme" >
         </activity>
         <activity
-            android:name="catgirl.oneesama2.legacy.legacyreader.activityreader.ReaderActivity"
+            android:name=".activity.legacyreader.activityreader.ReaderActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/app_name"
-            android:parentActivityName=".ui.activity.main.MainActivity"
+            android:parentActivityName=".activity.main.MainActivity"
             android:windowSoftInputMode="stateHidden|adjustPan"
             android:theme="@style/ReaderTheme">
         </activity>
         <activity
-            android:name="catgirl.oneesama2.legacy.legacythumbnails.ReaderThumbnailsActivity"
+            android:name=".activity.legacythumbnails.ReaderThumbnailsActivity"
             android:label="@string/app_name"
-            android:parentActivityName="catgirl.oneesama2.legacy.legacyreader.activityreader.ReaderActivity"
+            android:parentActivityName=".activity.legacyreader.activityreader.ReaderActivity"
             android:theme="@style/ReaderTheme" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="catgirl.oneesama2.legacy.legacyreader.activityreader.ReaderActivity" />
+                android:value=".activity.legacyreader.activityreader.ReaderActivity" />
         </activity>
     </application>
 
