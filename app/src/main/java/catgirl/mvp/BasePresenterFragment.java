@@ -107,12 +107,6 @@ public abstract class BasePresenterFragment<P extends Presenter, C>
         super.onDestroyView();
     }
 
-    public P getPresenter() {
-        return presenter;
-    }
-
-    protected abstract P createPresenter();
-
     public C getComponent() {
         return component;
     }
@@ -120,5 +114,11 @@ public abstract class BasePresenterFragment<P extends Presenter, C>
     protected abstract C createComponent();
 
     protected abstract void onComponentCreated();
+
+    public P getPresenter() {
+        return presenter;
+    }
+
+    protected abstract P createPresenter();
 
 }

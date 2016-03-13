@@ -43,7 +43,7 @@ import catgirl.oneesama.R;
 import catgirl.oneesama.application.Config;
 import catgirl.oneesama.data.controller.ChaptersController;
 import catgirl.oneesama.data.controller.legacy.Book;
-import catgirl.oneesama.activity.main.fragments.browse.legacy.BrowseFragment;
+import catgirl.oneesama.activity.main.fragments.browse.BrowseFragment;
 import catgirl.oneesama.activity.main.fragments.ondevice.OnDeviceFragment;
 import catgirl.oneesama.application.Application;
 import catgirl.oneesama.data.model.chapter.serializable.Chapter;
