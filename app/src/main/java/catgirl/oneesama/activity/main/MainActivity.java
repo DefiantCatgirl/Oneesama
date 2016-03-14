@@ -212,10 +212,28 @@ public class MainActivity extends BasePresenterActivity
 
     @Override
     protected void onNewIntent (Intent intent) {
+        super.onNewIntent(intent);
+
         if(loading)
             return;
         if(intent.getData() == null)
             return;
+
+        Uri url = intent.getData();
+
+        // Dynasty "Recent chapters" URL is "/chapters/added" so "/chapters/<chapter_permalink>"
+        // intent filter has no choice but to grab it and, normally, fail miserably.
+        // But there's a "Recent chapters" page in the app itself, so we can redirect there!
+        if(url != null) {
+            String last = url.getLastPathSegment();
+            if (last != null && (last.equals("added")
+                            || last.startsWith("added?")
+                            || last.startsWith("added."))) {
+                onBrowseButtonPressed();
+                setIntent(null);
+                return;
+            }
+        }
 
         openChapterByUrl(intent.getData());
 
@@ -434,7 +452,9 @@ public class MainActivity extends BasePresenterActivity
 
     @Override
     public void onBrowseButtonPressed() {
-        selectMenuItem(MenuItemType.ITEM_BROWSE);
+        if (menuConfig.getId(MenuItemType.ITEM_BROWSE) != currentMenuItemId) {
+            selectMenuItem(MenuItemType.ITEM_BROWSE);
+        }
     }
 
     public enum MenuItemType {
