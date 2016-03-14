@@ -41,67 +41,15 @@
         android:paddingBottom="4dp"
         android:paddingTop="4dp"/>
 
-    <FrameLayout
-        android:layout_width="@dimen/download_progress_layout_size"
-        android:layout_height="@dimen/download_progress_layout_size"
-        android:id="@+id/Item_Chapter_StatusLayout"
-        android:layout_gravity="center_vertical"
-        android:layout_marginLeft="12dp">
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/Item_Chapter_ProgressLayout"
-            android:layout_gravity="center_vertical">
-            <com.pnikosis.materialishprogress.ProgressWheel
-                android:id="@+id/Item_Chapter_ProgressBG"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:matProg_barColor="#20000000"
-                app:matProg_progressIndeterminate="false"
-                app:matProg_barWidth="@dimen/download_progress_wheel_weight"
-                app:matProg_fillRadius="true"
-                app:matProg_linearProgress="true"
-                android:layout_gravity="center_vertical" />
-            <com.pnikosis.materialishprogress.ProgressWheel
-                android:id="@+id/Item_Chapter_ProgressBar"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:matProg_barColor="?attr/colorAccent"
-                app:matProg_progressIndeterminate="false"
-                app:matProg_barWidth="@dimen/download_progress_wheel_weight"
-                app:matProg_fillRadius="true"
-                app:matProg_linearProgress="true"
-                android:layout_gravity="center_vertical" />
-        </FrameLayout>
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/Item_Chapter_DownloadedLayout"
-            android:background="@drawable/downloaded_circle"
-            android:layout_gravity="center_vertical">
+     <FrameLayout
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_gravity="center_vertical"
+         android:layout_marginLeft="12dp">
 
-            <ImageView
-                android:layout_width="@dimen/download_progress_layout_size"
-                android:layout_height="@dimen/download_progress_layout_size"
-                android:padding="@dimen/download_progress_wheel_weight"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_done_white_18dp" />
-        </FrameLayout>
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/Item_Chapter_ReloadLayout"
-            android:background="@drawable/reload_circle"
-            android:layout_gravity="center_vertical">
+         <include layout="@layout/partial_item_chapter_statuslayout"/>
 
-            <ImageView
-                android:layout_width="@dimen/download_progress_layout_size"
-                android:layout_height="@dimen/download_progress_layout_size"
-                android:padding="@dimen/download_progress_wheel_weight"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_refresh_white_18dp" />
-        </FrameLayout>
-    </FrameLayout>
+     </FrameLayout>
 
     <ImageButton
         android:id="@+id/Item_Chapter_DeleteButton"

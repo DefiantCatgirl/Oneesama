@@ -17,6 +17,8 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import catgirl.mvp.BasePresenterFragment;
@@ -28,6 +30,8 @@ import catgirl.oneesama.activity.main.fragments.browse.fragments.recent.RecentMo
 import catgirl.oneesama.activity.main.fragments.browse.fragments.recent.data.model.RecentChapter;
 import catgirl.oneesama.activity.main.fragments.browse.fragments.recent.presenter.RecentPresenter;
 import catgirl.oneesama.application.Application;
+import catgirl.oneesama.data.controller.ChaptersController;
+import rx.subscriptions.CompositeSubscription;
 
 public class RecentFragment
         extends BasePresenterFragment<RecentPresenter, RecentComponent>
@@ -49,6 +53,10 @@ public class RecentFragment
     }
 
     // View //
+
+    @Inject ChaptersController chaptersController;
+
+    CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     static final int LOADED = 0;
     static final int LOADING = 1;
@@ -137,6 +145,12 @@ public class RecentFragment
         return view;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        compositeSubscription.unsubscribe();
+    }
+
     protected View getEmptyMessage(ViewGroup parent) {
         // This can't really happen with recent chapters so w/e
         return new View(parent.getContext());
@@ -153,7 +167,10 @@ public class RecentFragment
     }
 
     protected RecentViewHolder createViewHolder(ViewGroup parent) {
-        return new RecentViewHolder(getActivity().getLayoutInflater().inflate(R.layout.item_recent_chapter, parent, false));
+        return new RecentViewHolder(
+                getActivity().getLayoutInflater().inflate(R.layout.item_recent_chapter, parent, false),
+                chaptersController,
+                compositeSubscription);
     }
 
     private RecyclerView.ViewHolder createErrorViewHolder(ViewGroup parent) {
@@ -181,6 +198,7 @@ public class RecentFragment
     }
 
     // Only supposed to be called when fragment is first created or re-created
+    // OR when something in Realm changed
     @Override
     public void showExistingItems(List<RecentChapter> items, boolean finished) {
         mode = finished ? LOADED : LOADING;
@@ -272,5 +290,10 @@ public class RecentFragment
     public void showLoadingMoreItems() {
         mode = LOADING;
         recyclerView.getAdapter().notifyItemChanged(recyclerView.getAdapter().getItemCount() - 1);
+    }
+
+    @Override
+    public void updateExistingItems(List<RecentChapter> items) {
+        recyclerView.getAdapter().notifyDataSetChanged();
     }
 }

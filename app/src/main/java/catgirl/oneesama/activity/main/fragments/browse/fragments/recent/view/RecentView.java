@@ -14,4 +14,5 @@ public interface RecentView {
     void showInitialState();
     void loadChapter(String permalink);
     void showLoadingMoreItems();
+    void updateExistingItems(List<RecentChapter> items);
 }

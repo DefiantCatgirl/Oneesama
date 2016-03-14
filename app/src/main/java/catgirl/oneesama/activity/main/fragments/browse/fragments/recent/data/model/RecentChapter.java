@@ -2,10 +2,11 @@ package catgirl.oneesama.activity.main.fragments.browse.fragments.recent.data.mo
 
 import java.util.List;
 
+import catgirl.oneesama.data.model.chapter.ui.UiChapter;
 import catgirl.oneesama.data.model.chapter.ui.UiTag;
 
 public class RecentChapter {
-    public int id;
+    public UiChapter chapter;
     public boolean isLocal = false;
     public String title;
     public String series;

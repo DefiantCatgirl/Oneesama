@@ -20,15 +20,17 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
                     <TextView
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceLarge"
                         android:text="Series title"
@@ -43,40 +45,49 @@
                         android:paddingRight="12dp"
                         android:paddingBottom="6dp"
                         android:paddingTop="10dp"/>
-
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="Author - Doujin"
+                        android:textSize="14sp"
+                        android:layout_weight="1"
+                        android:id="@+id/Item_Chapter_AuthorAndSeries"
+                        android:maxLines="2"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:layout_gravity="center_vertical"
+                        android:paddingLeft="12dp"
+                        android:paddingRight="12dp"
+                        android:paddingBottom="6dp"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="Tag 1, Tag 2, Tag 3"
+                        android:textSize="12sp"
+                        android:layout_weight="1"
+                        android:id="@+id/Item_Chapter_Tags"
+                        android:maxLines="2"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:layout_gravity="center_vertical"
+                        android:paddingLeft="12dp"
+                        android:paddingRight="12dp"
+                        android:paddingBottom="10dp"/>
                 </LinearLayout>
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="Author - Doujin"
-                    android:textSize="14sp"
-                    android:layout_weight="1"
-                    android:id="@+id/Item_Chapter_AuthorAndSeries"
-                    android:maxLines="2"
-                    android:ellipsize="end"
-                    android:gravity="center_vertical"
-                    android:layout_gravity="center_vertical"
-                    android:paddingLeft="12dp"
-                    android:paddingRight="12dp"
-                    android:paddingBottom="6dp"/>
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:text="Tag 1, Tag 2, Tag 3"
-                    android:textSize="12sp"
-                    android:layout_weight="1"
-                    android:id="@+id/Item_Chapter_Tags"
-                    android:maxLines="2"
-                    android:ellipsize="end"
-                    android:gravity="center_vertical"
-                    android:layout_gravity="center_vertical"
-                    android:paddingLeft="12dp"
-                    android:paddingRight="12dp"
-                    android:paddingBottom="10dp"/>
-            </LinearLayout>
 
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="10dp">
+
+                    <include layout="@layout/partial_item_chapter_statuslayout"/>
+
+                </FrameLayout>
+
+            </LinearLayout>
 
         </FrameLayout>
 

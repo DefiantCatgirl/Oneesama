@@ -207,6 +207,10 @@ public class Book implements BookDownloaderDelegate {
 			bsDelegates.add(new WeakReference<BookStateDelegate>(delegate));
 	}
 
+	public synchronized void removeBookStateDelegate(BookStateDelegate delegate) {
+		bsDelegates.remove(delegate);
+	}
+
 	public synchronized void delegateOnPageDownloaded(int id, boolean bookDownloaded, int pageId, boolean onlyProgress)
 	{
 		for(WeakReference<BookStateDelegate> d : bsDelegates)

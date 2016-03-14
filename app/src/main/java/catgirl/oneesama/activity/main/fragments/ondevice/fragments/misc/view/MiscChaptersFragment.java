@@ -58,6 +58,7 @@ public class MiscChaptersFragment
                 getActivity().getLayoutInflater().inflate(R.layout.item_chapter_author, parent, false),
                 recyclerView,
                 chaptersController,
+                compositeSubscription,
                 true);
     }
 

@@ -1,8 +1,6 @@
  package catgirl.oneesama.activity.main.fragments.browse.fragments.recent.presenter;
 
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +8,7 @@ import java.util.List;
 import catgirl.mvp.BasePresenter;
 import catgirl.oneesama.BuildConfig;
 import catgirl.oneesama.activity.main.fragments.browse.fragments.recent.data.RecentProvider;
+import catgirl.oneesama.activity.main.fragments.browse.fragments.recent.data.RecentToLocalProvider;
 import catgirl.oneesama.activity.main.fragments.browse.fragments.recent.data.model.RecentChapter;
 import catgirl.oneesama.activity.main.fragments.browse.fragments.recent.data.model.RecentChapterPage;
 import catgirl.oneesama.activity.main.fragments.browse.fragments.recent.view.RecentView;
@@ -20,6 +19,7 @@ import rx.schedulers.Schedulers;
 public class RecentPresenter extends BasePresenter<RecentView> {
 
     private RecentProvider recentProvider;
+    private RecentToLocalProvider recentToLocalProvider;
 
     List<RecentChapter> items = new ArrayList<>();
 
@@ -33,13 +33,27 @@ public class RecentPresenter extends BasePresenter<RecentView> {
     Subscription moreItemsSubscription;
     Subscription newItemsSubscription;
 
-    public RecentPresenter(RecentProvider recentProvider) {
+    public RecentPresenter(RecentProvider recentProvider, RecentToLocalProvider recentToLocalProvider) {
         this.recentProvider = recentProvider;
+        this.recentToLocalProvider = recentToLocalProvider;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         loadMore();
+
+        recentToLocalProvider.setCurrentItems(items);
+        recentToLocalProvider.subscribeForItems()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                recentChapters -> {
+                    items = recentChapters;
+                    if (getView() != null) {
+                        getView().updateExistingItems(items);
+                    }
+                }
+        );
     }
 
     @Override
@@ -52,6 +66,7 @@ public class RecentPresenter extends BasePresenter<RecentView> {
             newItemsSubscription.unsubscribe();
             newItemsSubscription = null;
         }
+        recentToLocalProvider.onDestroy();
     }
 
     @Override
@@ -137,6 +152,7 @@ public class RecentPresenter extends BasePresenter<RecentView> {
 
                             if (result.chapters != null) {
                                 items.addAll(result.chapters);
+                                recentToLocalProvider.setCurrentItems(items);
                             }
 
                             if (getView() != null) {
@@ -174,6 +190,7 @@ public class RecentPresenter extends BasePresenter<RecentView> {
                 .subscribe(
                         result -> {
                             items.addAll(0, result);
+                            recentToLocalProvider.setCurrentItems(items);
 
                             newItemsSubscription = null;
 

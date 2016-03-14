@@ -63,6 +63,7 @@ public class ChapterListFragment
                 getActivity().getLayoutInflater().inflate(R.layout.item_chapter_author, parent, false),
                 recyclerView,
                 chaptersController,
+                compositeSubscription,
                 shouldDisplayAuthor);
     }
 

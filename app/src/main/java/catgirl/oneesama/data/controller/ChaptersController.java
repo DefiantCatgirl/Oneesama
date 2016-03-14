@@ -29,9 +29,12 @@ import retrofit.RxJavaCallAdapterFactory;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import rx.subjects.PublishSubject;
 
 public class ChaptersController implements BookStateDelegate, CacherDelegate {
     private static ChaptersController ourInstance = new ChaptersController();
+
+    private PublishSubject<UiChapter> publisher = PublishSubject.create();
 
     public static ChaptersController getInstance() {
         return ourInstance;
@@ -51,10 +54,13 @@ public class ChaptersController implements BookStateDelegate, CacherDelegate {
             Chapter chapter = realm.where(Chapter.class).equalTo("id", id).findFirst();
             if(chapter == null)
                 return null;
-            Book book = new Book(new UiChapter(chapter), this, this, false, null);
+
+            UiChapter uiChapter = new UiChapter(chapter);
+            Book book = new Book(uiChapter, this, this, false, null);
             realm.close();
             book.startDownload();
             controllers.put(id, book);
+            publisher.onNext(uiChapter);
             return book;
         }
     }
@@ -101,9 +107,11 @@ public class ChaptersController implements BookStateDelegate, CacherDelegate {
                     realm.close();
                 })
                 .map(response -> {
-                    Book book = new Book(new UiChapter(response), this, this, false, null);
+                    UiChapter chapter = new UiChapter(response);
+                    Book book = new Book(chapter, this, this, false, null);
                     controllers.put(response.getId(), book);
                     book.startDownload();
+                    publisher.onNext(chapter);
                     return book;
                 })
                 .doOnNext(response -> controllers.put(response.data.getId(), response))
@@ -250,5 +258,9 @@ public class ChaptersController implements BookStateDelegate, CacherDelegate {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    public Observable<UiChapter> subscribeForChapterControllerActivation() {
+        return publisher;
     }
 }

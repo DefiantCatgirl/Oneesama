@@ -12,8 +12,11 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import catgirl.oneesama.R;
+import catgirl.oneesama.activity.common.view.ChapterViewHolderStatusDelegate;
 import catgirl.oneesama.activity.main.fragments.browse.fragments.recent.data.model.RecentChapter;
+import catgirl.oneesama.data.controller.ChaptersController;
 import catgirl.oneesama.data.model.chapter.ui.UiTag;
+import rx.subscriptions.CompositeSubscription;
 
 public class RecentViewHolder extends RecyclerView.ViewHolder {
     @Bind(R.id.Item_Chapter_Title) TextView title;
@@ -21,11 +24,14 @@ public class RecentViewHolder extends RecyclerView.ViewHolder {
     @Bind(R.id.Item_Chapter_Tags) TextView tags;
 
     private RecentViewHolderDelegate delegate;
+    private ChapterViewHolderStatusDelegate statusDelegate;
 
-    public RecentViewHolder(View itemView) {
+    public RecentViewHolder(View itemView, ChaptersController chaptersController, CompositeSubscription compositeSubscription) {
         super(itemView);
         ButterKnife.bind(this, itemView);
         itemView.setOnClickListener(this::onClick);
+
+        statusDelegate = new ChapterViewHolderStatusDelegate(itemView, chaptersController, compositeSubscription);
     }
 
     private void onClick(View view) {
@@ -75,6 +81,8 @@ public class RecentViewHolder extends RecyclerView.ViewHolder {
                 authorsAndDoujins.setText(authorList + " - " + doujinList);
             }
         }
+
+        statusDelegate.bind(chapter.chapter);
     }
 
     public interface RecentViewHolderDelegate {

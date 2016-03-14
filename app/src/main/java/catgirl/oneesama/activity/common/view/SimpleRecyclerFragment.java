@@ -16,6 +16,7 @@ import butterknife.ButterKnife;
 import catgirl.mvp.BasePresenterFragment;
 import catgirl.mvp.Presenter;
 import catgirl.oneesama.R;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * A class with boilerplate for displaying a simple RecyclerView or an empty message
@@ -27,6 +28,8 @@ import catgirl.oneesama.R;
 public abstract class SimpleRecyclerFragment<T, VH extends RecyclerView.ViewHolder, P extends Presenter, C>
         extends BasePresenterFragment<P, C>
         implements SimpleRecyclerView<T> {
+
+    protected CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     @Bind(R.id.Fragment_OnDevice_CommonRecycler)
     protected RecyclerView recyclerView;
@@ -79,6 +82,12 @@ public abstract class SimpleRecyclerFragment<T, VH extends RecyclerView.ViewHold
         }
 
         recyclerView.getAdapter().notifyDataSetChanged();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        compositeSubscription.unsubscribe();
     }
 
     protected abstract View getEmptyMessage(ViewGroup parent);
