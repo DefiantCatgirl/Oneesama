@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,6 +58,15 @@ public class RecentFragment
 
     int mode = LOADING;
 
+    // Ugly hack to avoid endless requests
+    // When we're loading a request initiated by the "Load more" button we don't want RecyclerView
+    // posting more requests to the queue - if e.g. the network is down they simply come in too fast.
+    boolean buttonAskedForMore = false;
+
+    // Another ugly hack to make recycler scroll back upwards if we're loading from an error with
+    // no items currently present: recycler tries to keep "looking" at the error item and scrolls down with it.
+    boolean shouldScrollUp = false;
+
     Handler handler = new Handler();
 
     @Bind(R.id.Recycler) protected RecyclerView recyclerView;
@@ -93,7 +103,7 @@ public class RecentFragment
                     RecentFragment.this.bindViewHolder((RecentViewHolder) holder, position);
                 }
 
-                if (mode == LOADING && position + needItemsThreshold >= getItemCount()) {
+                if (mode == LOADING && position + needItemsThreshold >= getItemCount() && !buttonAskedForMore) {
                     handler.post(() -> getPresenter().loadMore());
                 }
             }
@@ -130,25 +140,29 @@ public class RecentFragment
     protected View getEmptyMessage(ViewGroup parent) {
         // This can't really happen with recent chapters so w/e
         return new View(parent.getContext());
-    };
+    }
 
     protected int getItemCount() {
         return getPresenter().getItemCount();
-    };
+    }
 
     protected void bindViewHolder(RecentViewHolder holder, int position) {
         holder.bind(getPresenter().getItem(position), () -> {
             getPresenter().itemClicked(position);
         });
-    };
+    }
 
     protected RecentViewHolder createViewHolder(ViewGroup parent) {
         return new RecentViewHolder(getActivity().getLayoutInflater().inflate(R.layout.item_recent_chapter, parent, false));
-    };
+    }
 
     private RecyclerView.ViewHolder createErrorViewHolder(ViewGroup parent) {
         View errorView = getActivity().getLayoutInflater().inflate(R.layout.item_error, parent, false);
         errorView.findViewById(R.id.ReloadButton).setOnClickListener(view -> {
+            if (getPresenter().getItemCount() == 0) {
+                shouldScrollUp = true;
+            }
+            buttonAskedForMore = true;
             getPresenter().loadMore();
         });
         return new ErrorViewHolder(errorView);
@@ -178,8 +192,14 @@ public class RecentFragment
     @Override
     public void showMoreItems(List<RecentChapter> items, boolean finished) {
         recyclerView.getAdapter().notifyItemRangeInserted(getPresenter().getItemCount() - items.size(), items.size());
+        if (shouldScrollUp) {
+            recyclerView.getLayoutManager().scrollToPosition(0);
+        }
 
         mode = finished ? LOADED : LOADING;
+
+        buttonAskedForMore = false;
+        shouldScrollUp = false;
 
         if (finished)
             recyclerView.getAdapter().notifyItemRemoved(recyclerView.getAdapter().getItemCount() - 1);
@@ -191,7 +211,13 @@ public class RecentFragment
     @Override
     public void showNewItems(List<RecentChapter> items) {
         swipeRefreshLayout.setRefreshing(false);
+
+        boolean shouldScrollUpwards = ((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition() == 0;
+
         recyclerView.getAdapter().notifyItemRangeInserted(0, items.size());
+
+        if (shouldScrollUpwards)
+            recyclerView.getLayoutManager().scrollToPosition(0);
     }
 
     // Only supposed to be called when fragment is re-created
@@ -206,15 +232,23 @@ public class RecentFragment
         // This can only happen if the very last item is "Loading"
         recyclerView.getAdapter().notifyItemChanged(recyclerView.getAdapter().getItemCount() - 1);
 
-        if (showToast)
-            Toast.makeText(getContext(), "Couldn't load more chapters...", Toast.LENGTH_SHORT).show();
+        buttonAskedForMore = false;
+
+        if (showToast) {
+            if (getPresenter().getItemCount() == 0) {
+                Toast.makeText(getContext(), R.string.fragment_recent_loading_first_items_error, Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getContext(), R.string.fragment_recent_loading_more_items_error, Toast.LENGTH_SHORT).show();
+            }
+        }
 
         testEmpty(false);
     }
 
     @Override
     public void showNewItemsError() {
-        Toast.makeText(getContext(), "Couldn't check for new chapters...", Toast.LENGTH_SHORT).show();
+        swipeRefreshLayout.setRefreshing(false);
+        Toast.makeText(getContext(), R.string.fragment_recent_loading_new_items_error, Toast.LENGTH_SHORT).show();
     }
 
     // Call if not calling showExistingItems just so it refreshes itself once
