@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.yandex.metrica.YandexMetrica;
 
@@ -30,6 +31,7 @@ import catgirl.oneesama.activity.legacyreader.widgets.airviewer.AirViewerDelegat
 import catgirl.oneesama.activity.legacyreader.widgets.airviewer.AirViewerRecognizer;
 import catgirl.oneesama.activity.legacyreader.widgets.airviewer.AirWidgetDrawer;
 import catgirl.oneesama.activity.legacythumbnails.ReaderThumbnailsActivity;
+import catgirl.oneesama.data.model.chapter.ui.UiTag;
 
 public class ReaderActivity extends BaseActivity implements AirViewerDelegate, AirCanvasDrawerDelegate, CacherDelegate, BookStateDelegate
 {
@@ -66,6 +68,8 @@ public class ReaderActivity extends BaseActivity implements AirViewerDelegate, A
     public boolean isAnimating = false;
     
     boolean started = false;
+
+	boolean leftToRight = false;
 
     @SuppressWarnings("deprecation")
 	@SuppressLint("NewApi")
@@ -112,6 +116,14 @@ public class ReaderActivity extends BaseActivity implements AirViewerDelegate, A
 
 		book.cacheAround(currentPage, -1);
 
+		for (UiTag tag : book.data.getTags()) {
+			if (tag.getType().equals(UiTag.GENERAL) && tag.getPermalink().equals(UiTag.LEFT_TO_RIGHT)) {
+				leftToRight = true;
+				Toast.makeText(this, R.string.activity_reader_left_to_right_warning, Toast.LENGTH_LONG).show();
+				break;
+			}
+		}
+
 		setContentView(R.layout.activity_reader);
 		ButterKnife.bind(this);
 
@@ -129,7 +141,7 @@ public class ReaderActivity extends BaseActivity implements AirViewerDelegate, A
 
 		airDrawer.useBackground = false;
 
-		airView = new AirViewer(this, self, airDrawer, false, true, false);
+		airView = new AirViewer(this, self, airDrawer, false, !leftToRight, false);
 
 		isLandscape = (readerView.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
 

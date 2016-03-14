@@ -14,6 +14,8 @@ public class UiTag {
     public final static String AUTHOR = "Author";
     public final static String GENERAL = "General";
 
+    public final static String LEFT_TO_RIGHT = "read_left_to_right";
+
     public UiTag(Integer id, String type, String name, String permalink) {
         this.id = id;
         this.type = type;

@@ -38,9 +38,10 @@
     <string name="browse_empty_message">Nothing here.</string>
     <string name="default_error_message">Something went wrong.</string>
     <string name="oneesama_website">https://defiantcatgirl.github.io/Oneesama</string>
-    <string name="fragment_recent_loading_first_items_error">Couldn\'t load any chapters...</string>
-    <string name="fragment_recent_loading_more_items_error">Couldn\'t load more chapters...</string>
-    <string name="fragment_recent_loading_new_items_error">Couldn\'t check for new chapters...</string>
+    <string name="fragment_recent_loading_first_items_error">Couldn\'t load any chapters…</string>
+    <string name="fragment_recent_loading_more_items_error">Couldn\'t load more chapters…</string>
+    <string name="fragment_recent_loading_new_items_error">Couldn\'t check for new chapters…</string>
+    <string name="activity_reader_left_to_right_warning">This comic is read left to right.</string>
 
 
 </resources>
