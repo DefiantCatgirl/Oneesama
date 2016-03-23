@@ -84,8 +84,6 @@ public class RecentProvider {
             final boolean[] running = {true};
             while (running[0]) {
                 api.getRecentPage(i)
-                        .subscribeOn(Schedulers.immediate())
-                        .observeOn(Schedulers.immediate())
                         .toBlocking()
                         .subscribe(
                                 result -> {

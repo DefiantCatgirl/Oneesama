@@ -17,6 +17,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -351,6 +352,11 @@ public class MainActivity extends BasePresenterActivity
             return;
         }
 
+        Fragment fr = getSupportFragmentManager().findFragmentById(R.id.container);
+        if(fr!=null){
+            Log.e("MainActivity", "Switched to: " + fr.toString());
+        }
+
         updateUiForFragment(
                 Integer.parseInt(getSupportFragmentManager().getBackStackEntryAt(getSupportFragmentManager().getBackStackEntryCount() - 1).getName())
         );
@@ -413,16 +419,18 @@ public class MainActivity extends BasePresenterActivity
 
         if(fragmentClass != null)
             try {
-                if (id == 0) {
-                    while (getSupportFragmentManager().getBackStackEntryCount() > 0)  {
-                        getSupportFragmentManager().popBackStackImmediate();
-                    }
+                Fragment fragment = getSupportFragmentManager().findFragmentByTag(String.valueOf(id));
+
+                if (fragment == null) {
+                    fragment = (Fragment) fragmentClass.newInstance();
                 }
+
                 getSupportFragmentManager()
                         .beginTransaction()
                         .replace(
                                 R.id.container,
-                                ((Fragment) fragmentClass.newInstance()))
+                                fragment,
+                                String.valueOf(id))
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                         .addToBackStack(String.valueOf(id))
                         .commit();
