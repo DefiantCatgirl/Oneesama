@@ -12,6 +12,7 @@ android {
         versionName "0.1.0-beta.7"
         resValue 'string', 'app_name', 'Oneesama'
         resValue 'string', 'metrics_token', ''
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -43,6 +44,10 @@ android {
         debug {
             storeFile file("debug.keystore")
         }
+    }
+
+    sourceSets {
+        test.java.srcDir 'src/unitTests/java'
     }
 }
 
@@ -91,4 +96,6 @@ dependencies {
     compile 'com.google.dagger:dagger:2.0.2'
     compile 'javax.annotation:jsr250-api:1.0'
     apt "com.google.dagger:dagger-compiler:2.0.2"
+
+    testCompile 'junit:junit:4.12'
 }
