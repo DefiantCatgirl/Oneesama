@@ -3,6 +3,7 @@ package catgirl.oneesama.activity.main.fragments.browse.fragments.recent.data;
 import java.util.ArrayList;
 import java.util.List;
 
+import catgirl.oneesama.activity.common.data.model.LazyLoadResult;
 import catgirl.oneesama.activity.main.fragments.browse.fragments.recent.data.model.RecentChapter;
 import catgirl.oneesama.activity.main.fragments.browse.fragments.recent.data.model.RecentChapterPage;
 import catgirl.oneesama.data.network.api.DynastyService;
@@ -13,43 +14,69 @@ public class RecentProvider {
 
     private DynastyService api;
 
+    private List<RecentChapter> cache = new ArrayList<>();
+    private int currentPage = 0;
+
     public RecentProvider(DynastyService api) {
         this.api = api;
     }
 
-    public Observable<RecentChapterPage> getPages(int offset, int count) {
+    public Observable<LazyLoadResult<RecentChapter>> getMoreChapters() {
         return Observable.fromCallable(() -> {
-            RecentChapterPage result = new RecentChapterPage();
+            final RecentChapterPage combinedResult = new RecentChapterPage();
             final Throwable[] error = {null};
+            int requestPage = currentPage + 1;
 
-            List<Integer> numbers = new ArrayList<>();
-            for (int i = 0; i < count; i++) {
-                numbers.add(offset + i);
+            while (combinedResult.chapters.isEmpty()) {
+                api.getRecentPage(requestPage)
+                        .toBlocking()
+                        .subscribe(
+                                chapterPage -> {
+                                    combinedResult.chapters.addAll(parseResult(chapterPage.chapters, cache));
+                                    combinedResult.totalPages = chapterPage.totalPages;
+                                    combinedResult.currentPage = chapterPage.currentPage;
+                                },
+                                e -> error[0] = e
+                        );
+
+                if(error[0] != null) {
+                    throw new RuntimeException(error[0]);
+                }
+
+                if (combinedResult.currentPage >= combinedResult.totalPages) {
+                    break;
+                }
+
+                requestPage++;
             }
 
-            Observable.from(numbers)
-                    .concatMapEager(api::getRecentPage)
-                    .toBlocking()
-                    .subscribe(chapterPage -> {
-                        if (result.chapters == null) {
-                            result.chapters = chapterPage.chapters;
-                        } else if (chapterPage.chapters != null) {
-                            result.chapters.addAll(chapterPage.chapters);
-                        }
-                        result.currentPage = chapterPage.currentPage;
-                        result.totalPages = chapterPage.totalPages;
-                    }, e -> error[0] = e);
-
-            // Technically the last pages could return a very valid 404 so only throw up if we didn't go that far.
-            if(error[0] != null && !(result.totalPages > 0 && result.currentPage >= result.totalPages))
-                throw new RuntimeException(error[0]);
+            boolean finished = (combinedResult.currentPage >= combinedResult.totalPages || combinedResult.chapters.isEmpty());
+            LazyLoadResult<RecentChapter> result = new LazyLoadResult<>(combinedResult.chapters, finished);
+            currentPage = combinedResult.currentPage;
+            cache.addAll(combinedResult.chapters);
 
             return result;
         });
     }
 
     // TODO: TEST
-    public Observable<List<RecentChapter>> getNewChapters(RecentChapter topChapter) {
+    public static List<RecentChapter> parseResult(List<RecentChapter> newChapters, List<RecentChapter> cache) {
+        List<RecentChapter> result = new ArrayList<>(newChapters);
+
+        for (int i = cache.size() - 1; i >= 0; i--) {
+            if (result.get(0).permalink.equals(cache.get(i).permalink)) {
+                int resultSize = result.size();
+                for (int j = 0; j < Math.min(resultSize, cache.size() - i); j++) {
+                    result.remove(0);
+                }
+                break;
+            }
+        }
+        return result;
+    }
+
+    // TODO: TEST
+    public Observable<List<RecentChapter>> getNewChapters() {
         return Observable.fromCallable(() -> {
             List<RecentChapter> chapters = new ArrayList<>();
 
@@ -65,15 +92,14 @@ public class RecentProvider {
                                     if (result.chapters == null || result.chapters.isEmpty()) {
                                         running[0] = false;
                                     } else {
-                                        // If no top chapter was supplied just return whatever we got
-                                        if (topChapter == null) {
+                                        if (cache.isEmpty()) {
                                             chapters.addAll(result.chapters);
                                             running[0] = false;
                                             return;
                                         }
 
                                         for (RecentChapter chapter : result.chapters) {
-                                            if (!chapter.permalink.equals(topChapter.permalink)) {
+                                            if (!chapter.permalink.equals(cache.get(0).permalink)) {
                                                 chapters.add(chapter);
                                             } else {
                                                 running[0] = false;
@@ -88,6 +114,7 @@ public class RecentProvider {
                 i++;
             }
 
+            cache.addAll(0, chapters);
             return chapters;
         });
     }
