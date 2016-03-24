@@ -1,9 +1,12 @@
-package catgirl.mvp;
+package catgirl.mvp.implementations;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.View;
+
+import catgirl.mvp.ComponentPresenterCache;
+import catgirl.mvp.Presenter;
 
 public abstract class BasePresenterFragment<P extends Presenter, C>
         extends Fragment {

@@ -7,11 +7,11 @@ import com.yandex.metrica.YandexMetrica;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import catgirl.mvp.BasePresenterActivity;
+import catgirl.mvp.implementations.BaseCacheActivity;
 import catgirl.oneesama.R;
 import catgirl.oneesama.activity.chapterlist.fragments.chapterlist.view.ChapterListFragment;
 
-public class ChapterListActivity extends BasePresenterActivity {
+public class ChapterListActivity extends BaseCacheActivity {
     @Bind(R.id.toolbar_layout)
     Toolbar toolbar;
 

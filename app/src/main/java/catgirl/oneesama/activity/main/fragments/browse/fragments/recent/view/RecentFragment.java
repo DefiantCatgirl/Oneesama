@@ -1,27 +1,14 @@
 package catgirl.oneesama.activity.main.fragments.browse.fragments.recent.view;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
-import android.os.Bundle;
-import android.os.Handler;
-import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import catgirl.mvp.BasePresenterFragment;
 import catgirl.oneesama.R;
 import catgirl.oneesama.activity.common.view.LazyLoadFragment;
 import catgirl.oneesama.activity.main.MainActivity;

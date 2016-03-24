@@ -1,4 +1,4 @@
-package catgirl.mvp;
+package catgirl.mvp.implementations;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -7,11 +7,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
+import catgirl.mvp.ComponentPresenterCache;
+import catgirl.mvp.Presenter;
+
 /**
  * Activity that stores an instance of a presenter and a Dagger component over configuration changes.
  * When the activity is destroyed for good or due to lack of memory it should free said presenter and component.
  */
-public abstract class BasePresenterActivity
+public abstract class BaseCacheActivity
         extends AppCompatActivity
         implements ComponentPresenterCache {
 

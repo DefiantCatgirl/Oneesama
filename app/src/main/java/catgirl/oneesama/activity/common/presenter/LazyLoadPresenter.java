@@ -5,7 +5,7 @@ import android.os.Bundle;
 import java.util.ArrayList;
 import java.util.List;
 
-import catgirl.mvp.BasePresenter;
+import catgirl.mvp.implementations.BasePresenter;
 import catgirl.oneesama.BuildConfig;
 import catgirl.oneesama.activity.common.data.model.LazyLoadResult;
 import catgirl.oneesama.activity.common.view.LazyLoadView;

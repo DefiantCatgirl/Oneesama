@@ -13,7 +13,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import catgirl.mvp.BasePresenterFragment;
+import catgirl.mvp.implementations.BasePresenterFragment;
 import catgirl.mvp.Presenter;
 import catgirl.oneesama.R;
 import rx.subscriptions.CompositeSubscription;

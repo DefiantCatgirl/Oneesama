@@ -17,7 +17,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,8 +27,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.nineoldandroids.animation.Animator;
-import com.nineoldandroids.view.ViewHelper;
 import com.yandex.metrica.YandexMetrica;
 
 import java.util.ArrayList;
@@ -39,44 +36,38 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import catgirl.mvp.BasePresenterActivity;
+import catgirl.mvp.implementations.BaseComponentActivity;
 import catgirl.oneesama.R;
-import catgirl.oneesama.application.Config;
-import catgirl.oneesama.data.controller.ChaptersController;
-import catgirl.oneesama.data.controller.legacy.Book;
+import catgirl.oneesama.activity.common.activity.ChapterLoaderActivity;
+import catgirl.oneesama.activity.common.activity.ChapterLoaderActivityDelegate;
 import catgirl.oneesama.activity.main.fragments.browse.BrowseFragment;
 import catgirl.oneesama.activity.main.fragments.ondevice.OnDeviceFragment;
 import catgirl.oneesama.application.Application;
+import catgirl.oneesama.application.Config;
+import catgirl.oneesama.data.controller.ChaptersController;
 import catgirl.oneesama.data.model.chapter.serializable.Chapter;
 import catgirl.oneesama.data.model.chapter.serializable.Page;
 import catgirl.oneesama.data.model.chapter.serializable.Tag;
-import catgirl.oneesama.data.model.chapter.ui.UiTag;
 import catgirl.oneesama.data.realm.RealmProvider;
-import catgirl.oneesama.activity.legacyreader.activityreader.ReaderActivity;
-import catgirl.oneesama.activity.legacyreader.tools.EndAnimatorListener;
 import io.realm.Realm;
 import io.realm.RealmObject;
-import rx.Observable;
-import rx.Subscription;
-
-import static com.nineoldandroids.view.ViewPropertyAnimator.animate;
 
 
-public class MainActivity extends BasePresenterActivity
-        implements FragmentManager.OnBackStackChangedListener, NavigationView.OnNavigationItemSelectedListener, OnDeviceFragment.OnDeviceFragmentDelegate {
+public class MainActivity extends BaseComponentActivity<MainActivityComponent>
+        implements
+        FragmentManager.OnBackStackChangedListener,
+        NavigationView.OnNavigationItemSelectedListener,
+        OnDeviceFragment.OnDeviceFragmentDelegate,
+        ChapterLoaderActivity
+{
 
-    private static final String COMPONENT_INDEX_KEY = "activity-component-index";
     private static final String CURRENT_ITEM_KEY = "current-item";
-    private static final String LOADING_KEY = "loading";
-
-    private long componentId;
 
     @Inject RealmProvider realmProvider;
     @Inject ChaptersController chaptersController;
 
     private ActionBarDrawerToggle mDrawerToggle;
 
-    private Realm realm;
 
     private MenuConfig menuConfig;
     private int currentMenuItemId = 0;
@@ -85,40 +76,24 @@ public class MainActivity extends BasePresenterActivity
     @Bind(R.id.drawer_layout) DrawerLayout mDrawerLayout;
     @Bind(R.id.MainActivity_NavigationView) NavigationView mNavigationView;
     @Bind(R.id.container) ViewGroup container;
-    @Bind(R.id.MainActivity_LoadingLayout) View loadingLayout;
     @Bind(R.id.MainActivity_AddButton) ImageButton addButton;
 
-    boolean loading = false;
-
-    // TODO use a library or move this into a singleton
-    static Observable<Book> chapterRequest;
-    Subscription chapterSubscription;
+    ChapterLoaderActivityDelegate chapterLoaderDelegate;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (savedInstanceState == null) {
-            componentId = generateId();
-        } else {
-            componentId = savedInstanceState.getLong(COMPONENT_INDEX_KEY);
-        }
-
-        MainActivityComponent component = getComponent(componentId);
-
-        if (component == null) {
-            component = Application.getApplicationComponent().plus(new MainActivityModule());
-            setComponent(componentId, component);
-        }
-
-        component.inject(this);
-
         ButterKnife.bind(this);
-
-        realm = realmProvider.provideRealm();
+        getComponent().inject(this);
 
 //        fixOrphans();
+
+        chapterLoaderDelegate = new ChapterLoaderActivityDelegate(
+                this, findViewById(android.R.id.content),
+                realmProvider.provideRealm(),
+                chaptersController);
 
         menuConfig = new MenuConfig();
 
@@ -130,16 +105,9 @@ public class MainActivity extends BasePresenterActivity
 
         setUpNavigationMenu(savedInstanceState != null);
 
+        chapterLoaderDelegate.onCreate(savedInstanceState);
+
         if(savedInstanceState != null) {
-
-            loading = savedInstanceState.getBoolean(LOADING_KEY);
-            if(loading) {
-                loadingLayout.setVisibility(View.VISIBLE);
-                loadingLayout.clearAnimation();
-                if(chapterRequest != null)
-                    subscribeToChapterRequest(chapterRequest);
-            }
-
             onBackStackChanged();
         }
 
@@ -196,6 +164,11 @@ public class MainActivity extends BasePresenterActivity
     }
 
     @Override
+    public MainActivityComponent createComponent() {
+        return Application.getApplicationComponent().plus(new MainActivityModule());
+    }
+
+    @Override
     protected void onStart() {
         super.onStart();
 
@@ -205,9 +178,7 @@ public class MainActivity extends BasePresenterActivity
 
     @Override
     protected void onDestroy() {
-        realm.close();
-        if(chapterSubscription != null)
-            chapterSubscription.unsubscribe();
+        chapterLoaderDelegate.onDestroy();
         super.onDestroy();
     }
 
@@ -215,7 +186,7 @@ public class MainActivity extends BasePresenterActivity
     protected void onNewIntent (Intent intent) {
         super.onNewIntent(intent);
 
-        if(loading)
+        if(chapterLoaderDelegate.isLoading())
             return;
         if(intent.getData() == null)
             return;
@@ -228,8 +199,8 @@ public class MainActivity extends BasePresenterActivity
         if(url != null) {
             String last = url.getLastPathSegment();
             if (last != null && (last.equals("added")
-                            || last.startsWith("added?")
-                            || last.startsWith("added."))) {
+                    || last.startsWith("added?")
+                    || last.startsWith("added."))) {
                 onBrowseButtonPressed();
                 setIntent(null);
                 return;
@@ -246,65 +217,18 @@ public class MainActivity extends BasePresenterActivity
             Toast.makeText(this, "Error adding chapter:\n" + "Invalid URL", Toast.LENGTH_LONG).show();
             return;
         }
-        Chapter chapter = realm.where(Chapter.class).equalTo("permalink", url.getLastPathSegment()).findFirst();
-        if(chapter != null) {
-            Intent readerIntent = new Intent(this, ReaderActivity.class);
-            readerIntent.putExtra(ReaderActivity.PUBLICATION_ID, chapter.getId());
-            startActivity(readerIntent);
-            return;
-        }
-
-        loading = true;
-        loadingLayout.setVisibility(View.VISIBLE);
-        ViewHelper.setAlpha(loadingLayout, 0f);
-        animate(loadingLayout).alpha(1f).setListener(new EndAnimatorListener() {
-            @Override
-            public void onAnimationEnd(Animator animator) {
-                ViewHelper.setAlpha(loadingLayout, 1f);
-            }
-        });
-
-        chapterRequest = chaptersController
-                .requestChapterController(url.getLastPathSegment())
-                .cache();
-
-        subscribeToChapterRequest(chapterRequest);
+        openChapterByPermalink(url.getLastPathSegment());
     }
 
-    public void subscribeToChapterRequest(Observable<Book> observable) {
-        chapterSubscription = observable.subscribe(response -> {
-
-            String eventParameters = "{\"id\":\"" + response.data.getPermalink() + "\", \"tags\": [";
-            for(UiTag tag : response.data.getTags()) {
-                eventParameters += "{\"" + tag.getType() + "\": \"" + tag.getName() + "\"},";
-            }
-            eventParameters = eventParameters.substring(0, eventParameters.length() - 1);
-            eventParameters += "]}";
-            YandexMetrica.reportEvent("Chapter added", eventParameters);
-
-            Intent readerIntent = new Intent(this, ReaderActivity.class);
-            readerIntent.putExtra(ReaderActivity.PUBLICATION_ID, response.data.getId());
-            startActivity(readerIntent);
-            loading = false;
-            loadingLayout.setVisibility(View.GONE);
-            loadingLayout.clearAnimation();
-            chapterRequest = null;
-            chapterSubscription = null;
-        }, error -> {
-            Toast.makeText(this, "Error adding chapter:\n" + error.getLocalizedMessage(), Toast.LENGTH_LONG).show();
-            loading = false;
-            loadingLayout.setVisibility(View.GONE);
-            loadingLayout.clearAnimation();
-            chapterRequest = null;
-            chapterSubscription = null;
-        });
+    @Override
+    public void openChapterByPermalink(String permalink) {
+        chapterLoaderDelegate.openChapterByPermalink(permalink);
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putInt(CURRENT_ITEM_KEY, currentMenuItemId);
-        outState.putBoolean(LOADING_KEY, loading);
-        outState.putLong(COMPONENT_INDEX_KEY, componentId);
+        chapterLoaderDelegate.onSaveInstanceState(outState);
         super.onSaveInstanceState(outState);
     }
 
@@ -510,6 +434,7 @@ public class MainActivity extends BasePresenterActivity
 
     // Remove orphaned tags and pages fix for development
     private void fixOrphans() {
+        Realm realm = realmProvider.provideRealm();
         realm.beginTransaction();
 
         List<RealmObject> toRemove = new ArrayList<>();
@@ -526,6 +451,7 @@ public class MainActivity extends BasePresenterActivity
             object.removeFromRealm();
 
         realm.commitTransaction();
+        realm.close();
     }
 
     @Override

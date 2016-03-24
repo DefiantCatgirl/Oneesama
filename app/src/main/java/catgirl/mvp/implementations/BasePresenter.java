@@ -1,8 +1,10 @@
-package catgirl.mvp;
+package catgirl.mvp.implementations;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import catgirl.mvp.Presenter;
 
 public class BasePresenter<T> implements Presenter<T> {
     private T view;

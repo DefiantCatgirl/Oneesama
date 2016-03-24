@@ -1,6 +1,5 @@
 package catgirl.oneesama.activity.common.view;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -15,7 +14,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import catgirl.mvp.BasePresenterFragment;
+import catgirl.mvp.implementations.BasePresenterFragment;
 import catgirl.mvp.Presenter;
 import catgirl.oneesama.R;
 import catgirl.oneesama.activity.main.fragments.browse.fragments.recent.view.LoadingViewHolder;

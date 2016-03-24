@@ -2,7 +2,7 @@ package catgirl.oneesama.activity.common.presenter;
 
 import java.util.List;
 
-import catgirl.mvp.BasePresenter;
+import catgirl.mvp.implementations.BasePresenter;
 import catgirl.oneesama.activity.common.view.SimpleRecyclerView;
 import rx.Observable;
 import rx.Subscription;
