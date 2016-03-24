@@ -352,11 +352,6 @@ public class MainActivity extends BasePresenterActivity
             return;
         }
 
-        Fragment fr = getSupportFragmentManager().findFragmentById(R.id.container);
-        if(fr!=null){
-            Log.e("MainActivity", "Switched to: " + fr.toString());
-        }
-
         updateUiForFragment(
                 Integer.parseInt(getSupportFragmentManager().getBackStackEntryAt(getSupportFragmentManager().getBackStackEntryCount() - 1).getName())
         );

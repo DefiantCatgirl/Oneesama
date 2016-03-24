@@ -4,10 +4,12 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import catgirl.oneesama.activity.main.fragments.browse.fragments.recent.data.RecentProvider;
 import catgirl.oneesama.activity.main.fragments.browse.fragments.recent.data.model.RecentChapter;
 import catgirl.oneesama.activity.main.fragments.browse.fragments.recent.data.model.RecentChapterPage;
+import catgirl.oneesama.activity.main.fragments.browse.fragments.series.data.model.SeriesItem;
 import catgirl.oneesama.data.model.chapter.serializable.Chapter;
 import catgirl.oneesama.data.network.api.DynastyService;
 import rx.Observable;
@@ -154,6 +156,11 @@ public class RecentProviderTest {
                 }
                 return null;
             }
+
+            @Override
+            public Observable<Map<String, SeriesItem[]>> getAllSeries() {
+                return null;
+            }
         };
     }
 
@@ -273,6 +280,11 @@ public class RecentProviderTest {
 
                 requestCount++;
                 return Observable.just(chapterPage);
+            }
+
+            @Override
+            public Observable<Map<String, SeriesItem[]>> getAllSeries() {
+                return null;
             }
         };
     }

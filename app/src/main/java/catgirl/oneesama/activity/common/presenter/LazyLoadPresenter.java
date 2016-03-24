@@ -80,7 +80,7 @@ public abstract class LazyLoadPresenter<Model, View extends LazyLoadView<Model>>
             getView().showLoadingMoreItems();
         }
 
-        moreItemsSubscription = getMoreChaptersObservable()
+        moreItemsSubscription = getMoreItemsObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -111,17 +111,17 @@ public abstract class LazyLoadPresenter<Model, View extends LazyLoadView<Model>>
                 );
     }
 
-    protected abstract Observable<LazyLoadResult<Model>> getMoreChaptersObservable();
-    protected abstract Observable<List<Model>> getNewChaptersObservable();
+    protected abstract Observable<LazyLoadResult<Model>> getMoreItemsObservable();
+    protected abstract Observable<List<Model>> getNewItemsObservable();
     protected abstract void onItemsUpdated();
-    protected abstract void itemClicked(int position);
+    public abstract void itemClicked(int position);
 
     public void loadNew() {
         if (newItemsSubscription != null) {
             return;
         }
 
-        newItemsSubscription = getNewChaptersObservable()
+        newItemsSubscription = getNewItemsObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(

@@ -1,5 +1,6 @@
 package catgirl.oneesama.activity.common.view;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;

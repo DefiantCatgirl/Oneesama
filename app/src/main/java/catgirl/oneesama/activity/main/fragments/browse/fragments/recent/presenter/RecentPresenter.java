@@ -48,12 +48,12 @@ public class RecentPresenter extends LazyLoadPresenter<RecentChapter, RecentView
     }
 
     @Override
-    protected Observable<LazyLoadResult<RecentChapter>> getMoreChaptersObservable() {
+    protected Observable<LazyLoadResult<RecentChapter>> getMoreItemsObservable() {
         return recentProvider.getMoreChapters();
     }
 
     @Override
-    protected Observable<List<RecentChapter>> getNewChaptersObservable() {
+    protected Observable<List<RecentChapter>> getNewItemsObservable() {
         return recentProvider.getNewChapters();
     }
 

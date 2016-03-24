@@ -18,7 +18,9 @@
             android:orientation="vertical"
             android:padding="12dp"
             android:focusable="true"
-            android:background="?attr/selectableItemBackground">
+            android:background="?attr/selectableItemBackground"
+            android:gravity="center_vertical"
+            android:minHeight="48dp">
 
 
             <TextView
@@ -36,7 +38,8 @@
                 android:text="Author"
                 android:textSize="14sp"
                 android:layout_marginTop="6dp"
-                android:id="@+id/Item_Series_Author" />
+                android:id="@+id/Item_Series_Author"
+                android:visibility="visible" />
         </LinearLayout>
 
     </android.support.v7.widget.CardView>
