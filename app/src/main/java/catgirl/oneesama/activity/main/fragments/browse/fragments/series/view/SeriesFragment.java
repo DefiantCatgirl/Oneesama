@@ -1,11 +1,13 @@
 package catgirl.oneesama.activity.main.fragments.browse.fragments.series.view;
 
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import catgirl.oneesama.R;
+import catgirl.oneesama.activity.browseseriespage.BrowseSeriesPageActivity;
 import catgirl.oneesama.activity.common.view.LazyLoadFragment;
 import catgirl.oneesama.activity.main.MainActivityModule;
 import catgirl.oneesama.activity.main.fragments.browse.fragments.recent.view.ErrorViewHolder;
@@ -93,6 +95,8 @@ public class SeriesFragment
 
     @Override
     public void switchToSeries(String seriesPermalink, String title) {
-        Toast.makeText(getActivity(), "Clicked on " + seriesPermalink, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getActivity(), "Clicked on " + seriesPermalink, Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getActivity(), BrowseSeriesPageActivity.class);
+        startActivity(intent);
     }
 }

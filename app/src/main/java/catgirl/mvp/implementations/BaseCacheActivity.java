@@ -23,7 +23,7 @@ public abstract class BaseCacheActivity
     private NonConfigurationInstance nonConfigurationInstance;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         NonConfigurationInstance instance = (NonConfigurationInstance) getLastCustomNonConfigurationInstance();
 
         if (instance == null) {
@@ -43,7 +43,7 @@ public abstract class BaseCacheActivity
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putLong(NEXT_ID_KEY, nonConfigurationInstance.nextId.get());
     }

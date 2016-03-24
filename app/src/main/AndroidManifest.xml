@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="catgirl.oneesama"
-    android:installLocation="preferExternal">
+    android:installLocation="preferExternal" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -9,12 +9,12 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
+        android:name=".application.Application"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
-        android:name=".application.Application"
-        android:largeHeap="true">
+        android:largeHeap="true"
+        android:theme="@style/AppTheme" >
         <activity
             android:name=".activity.main.MainActivity"
             android:label="@string/app_name"
@@ -49,12 +49,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.activity.chapters.ChaptersActivity"
-            android:label="@string/title_activity_chapters"
-            android:parentActivityName=".activity.main.MainActivity"
-            android:theme="@style/AppTheme" >
-        </activity>
-        <activity
             android:name=".activity.chapterlist.ChapterListActivity"
             android:label="@string/title_activity_chapters"
             android:parentActivityName=".activity.main.MainActivity"
@@ -65,8 +59,8 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/app_name"
             android:parentActivityName=".activity.main.MainActivity"
-            android:windowSoftInputMode="stateHidden|adjustPan"
-            android:theme="@style/ReaderTheme">
+            android:theme="@style/ReaderTheme"
+            android:windowSoftInputMode="stateHidden|adjustPan" >
         </activity>
         <activity
             android:name=".activity.legacythumbnails.ReaderThumbnailsActivity"
@@ -76,6 +70,11 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activity.legacyreader.activityreader.ReaderActivity" />
+        </activity>
+        <activity android:name=".activity.browseseriespage.BrowseSeriesPageActivity"
+            android:label="@string/app_name"
+            android:parentActivityName=".activity.main.MainActivity"
+            android:theme="@style/ReaderTheme" >
         </activity>
     </application>
 

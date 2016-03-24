@@ -27,7 +27,7 @@ public class ChapterListActivity extends BaseCacheActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         toolbar.setNavigationOnClickListener(view -> onBackPressed());
 
-        if(!getIntent().getExtras().containsKey("TAG_ID")) {
+        if(getIntent().getExtras() == null || !getIntent().getExtras().containsKey("TAG_ID")) {
             finish();
             return;
         }
