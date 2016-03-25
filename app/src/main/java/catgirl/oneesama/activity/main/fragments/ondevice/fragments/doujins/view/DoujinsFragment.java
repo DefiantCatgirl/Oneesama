@@ -73,7 +73,7 @@ public class DoujinsFragment
     @Override
     public void switchToChapterList(int tagId) {
         Intent intent = new Intent(getActivity(), ChapterListActivity.class);
-        intent.putExtra("TAG_ID", tagId);
+        intent.putExtra(ChapterListActivity.TAG_ID, tagId);
         startActivity(intent);
     }
 }

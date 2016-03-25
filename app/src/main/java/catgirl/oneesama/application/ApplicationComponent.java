@@ -2,11 +2,13 @@ package catgirl.oneesama.application;
 
 import javax.inject.Singleton;
 
+import catgirl.oneesama.activity.browseseriespage.BrowseSeriesPageActivityComponent;
+import catgirl.oneesama.activity.browseseriespage.BrowseSeriesPageActivityModule;
+import catgirl.oneesama.activity.chapterlist.fragments.chapterlist.ChapterListComponent;
+import catgirl.oneesama.activity.chapterlist.fragments.chapterlist.ChapterListModule;
 import catgirl.oneesama.activity.main.MainActivityComponent;
 import catgirl.oneesama.activity.main.MainActivityModule;
 import catgirl.oneesama.data.realm.RealmProvider;
-import catgirl.oneesama.activity.chapterlist.fragments.chapterlist.ChapterListComponent;
-import catgirl.oneesama.activity.chapterlist.fragments.chapterlist.ChapterListModule;
 import dagger.Component;
 
 @Singleton
@@ -19,6 +21,7 @@ public interface ApplicationComponent {
 
     // Activity scoped subcomponents
     MainActivityComponent plus(MainActivityModule module);
+    BrowseSeriesPageActivityComponent plus(BrowseSeriesPageActivityModule module);
 
     // Fragment scoped subcomponents
     ChapterListComponent plus(ChapterListModule module);

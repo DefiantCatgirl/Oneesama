@@ -14,6 +14,7 @@ import android.widget.TextView;
 import javax.inject.Inject;
 
 import catgirl.oneesama.R;
+import catgirl.oneesama.activity.chapterlist.ChapterListActivity;
 import catgirl.oneesama.data.controller.ChaptersController;
 import catgirl.oneesama.activity.chapterlist.fragments.chapterlist.data.model.ChapterAuthor;
 import catgirl.oneesama.activity.chapterlist.fragments.chapterlist.ChapterListComponent;
@@ -50,7 +51,7 @@ public class ChapterListFragment
 
     @Override
     protected ChapterListPresenter createPresenter() {
-        return presenterFactory.createPresenter(getArguments().getInt("TAG_ID"));
+        return presenterFactory.createPresenter(getArguments().getInt(ChapterListActivity.TAG_ID));
     }
 
     // View //

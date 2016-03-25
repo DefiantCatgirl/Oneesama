@@ -12,6 +12,9 @@ import catgirl.oneesama.R;
 import catgirl.oneesama.activity.chapterlist.fragments.chapterlist.view.ChapterListFragment;
 
 public class ChapterListActivity extends BaseCacheActivity {
+
+    public static final String TAG_ID = "tag_id";
+
     @Bind(R.id.toolbar_layout)
     Toolbar toolbar;
 
@@ -27,7 +30,7 @@ public class ChapterListActivity extends BaseCacheActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         toolbar.setNavigationOnClickListener(view -> onBackPressed());
 
-        if(getIntent().getExtras() == null || !getIntent().getExtras().containsKey("TAG_ID")) {
+        if(getIntent().getExtras() == null || !getIntent().getExtras().containsKey(TAG_ID)) {
             finish();
             return;
         }

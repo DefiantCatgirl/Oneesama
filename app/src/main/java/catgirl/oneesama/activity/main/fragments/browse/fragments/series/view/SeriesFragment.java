@@ -95,8 +95,9 @@ public class SeriesFragment
 
     @Override
     public void switchToSeries(String seriesPermalink, String title) {
-//        Toast.makeText(getActivity(), "Clicked on " + seriesPermalink, Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(getActivity(), BrowseSeriesPageActivity.class);
+        intent.putExtra(BrowseSeriesPageActivity.SERIES_PERMALINK, seriesPermalink);
+        intent.putExtra(BrowseSeriesPageActivity.SERIES_TITLE, title);
         startActivity(intent);
     }
 }
