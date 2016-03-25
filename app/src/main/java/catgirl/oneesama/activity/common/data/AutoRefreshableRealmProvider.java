@@ -19,10 +19,11 @@ public abstract class AutoRefreshableRealmProvider<R extends RealmObject, T> {
     protected RealmChangeListener changeListener;
     protected RealmResults<R> results;
     protected HandlerThread thread;
+    protected Handler mainThreadHandler = new Handler();
 
     public Observable<List<T>> subscribeForItems() {
         thread = new HandlerThread(getClass().getName()) {
-            private int lastCount = 0;
+            private int lastCount = -1;
 
             @Override
             protected void onLooperPrepared() {
@@ -44,7 +45,8 @@ public abstract class AutoRefreshableRealmProvider<R extends RealmObject, T> {
             }
         };
 
-        thread.start();
+        // To avoid getting the first change listener message before we subscribed to the subject
+        mainThreadHandler.post(thread::start);
 
         return subject;
     }
