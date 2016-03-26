@@ -81,6 +81,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
+                    android:minHeight="@dimen/download_progress_layout_size"
                     android:layout_margin="10dp">
 
                     <include layout="@layout/partial_item_chapter_statuslayout"/>

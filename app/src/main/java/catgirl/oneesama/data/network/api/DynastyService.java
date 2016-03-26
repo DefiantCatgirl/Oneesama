@@ -3,7 +3,7 @@ package catgirl.oneesama.data.network.api;
 import java.util.Map;
 
 import catgirl.oneesama.BuildConfig;
-import catgirl.oneesama.activity.browseseriespage.fragment.data.model.BrowseSeriesPage;
+import catgirl.oneesama.activity.browseseriespage.fragment.data.model.BrowseSeriesPageJson;
 import catgirl.oneesama.activity.main.fragments.browse.fragments.recent.data.model.RecentChapterPage;
 import catgirl.oneesama.activity.main.fragments.browse.fragments.series.data.model.SeriesItem;
 import catgirl.oneesama.data.model.chapter.serializable.Chapter;
@@ -28,5 +28,5 @@ public interface DynastyService {
 
     @Headers({"User-Agent: Oneesama-" + BuildConfig.VERSION_NAME + "-Android"})
     @GET("/series/{permalink}.json")
-    Observable<BrowseSeriesPage> getSeriesPage(@Path("permalink") String permalink);
+    Observable<BrowseSeriesPageJson> getSeriesPage(@Path("permalink") String permalink);
 }

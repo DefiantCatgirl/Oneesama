@@ -22,7 +22,6 @@ public class ChapterViewHolder extends RecyclerView.ViewHolder {
     @Bind(R.id.Item_Chapter_Author) TextView author;
 
     ChapterAuthor data;
-    int position;
     private IActionDelegate delegate;
     RecyclerView recycler;
     Context context;
@@ -61,9 +60,8 @@ public class ChapterViewHolder extends RecyclerView.ViewHolder {
         delegate.onClick();
     }
 
-    public void bind(int position, ChapterAuthor data, IActionDelegate delegate) {
+    public void bind(ChapterAuthor data, IActionDelegate delegate) {
         this.data = data;
-        this.position = position;
         this.delegate = delegate;
 
         title.setText(data.chapter.getTitle());

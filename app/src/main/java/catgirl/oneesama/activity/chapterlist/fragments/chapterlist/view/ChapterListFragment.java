@@ -70,7 +70,7 @@ public class ChapterListFragment
 
     @Override
     public void bindViewHolder(ChapterViewHolder holder, int position) {
-        holder.bind(position, getPresenter().getItem(position), new ChapterViewHolder.IActionDelegate() {
+        holder.bind(getPresenter().getItem(position), new ChapterViewHolder.IActionDelegate() {
             @Override
             public void onClick() {
                 // Granular deletion doesn't re-bind the existing viewholders,
