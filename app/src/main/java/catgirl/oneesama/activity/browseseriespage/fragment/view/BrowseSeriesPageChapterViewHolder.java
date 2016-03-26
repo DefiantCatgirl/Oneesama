@@ -17,16 +17,27 @@ public class BrowseSeriesPageChapterViewHolder extends RecyclerView.ViewHolder {
     @Bind(R.id.Item_Chapter_Title) TextView title;
 
     ChapterViewHolderStatusDelegate statusDelegate;
+    private ViewHolderDelegate delegate;
 
     public BrowseSeriesPageChapterViewHolder(View itemView, ChaptersController chaptersController, CompositeSubscription compositeSubscription) {
         super(itemView);
         ButterKnife.bind(this, itemView);
         statusDelegate = new ChapterViewHolderStatusDelegate(itemView, chaptersController, compositeSubscription);
+        itemView.setOnClickListener(this::onClick);
     }
 
-    public void bind(BrowseSeriesPageChapter chapter) {
-        title.setText(chapter.title);
+    private void onClick(View view) {
+        if (delegate != null)
+            delegate.onClick();
+    }
 
+    public void bind(BrowseSeriesPageChapter chapter, ViewHolderDelegate delegate) {
+        this.delegate = delegate;
+        title.setText(chapter.title);
         statusDelegate.bind(chapter.chapter);
+    }
+
+    public interface ViewHolderDelegate {
+        void onClick();
     }
 }

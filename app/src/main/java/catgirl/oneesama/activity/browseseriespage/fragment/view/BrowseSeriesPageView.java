@@ -13,4 +13,6 @@ public interface BrowseSeriesPageView {
     void showLoading();
 
     void updateExistingItems(List<Object> chapters);
+
+    void loadChapter(String permalink);
 }

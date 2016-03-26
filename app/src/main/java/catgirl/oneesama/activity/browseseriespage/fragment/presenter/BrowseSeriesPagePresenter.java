@@ -9,6 +9,7 @@ import catgirl.oneesama.BuildConfig;
 import catgirl.oneesama.activity.browseseriespage.fragment.data.BrowseSeriesPageProvider;
 import catgirl.oneesama.activity.browseseriespage.fragment.data.BrowseSeriesPageToLocalProvider;
 import catgirl.oneesama.activity.browseseriespage.fragment.data.model.BrowseSeriesPage;
+import catgirl.oneesama.activity.browseseriespage.fragment.data.model.BrowseSeriesPageChapter;
 import catgirl.oneesama.activity.browseseriespage.fragment.view.BrowseSeriesPageView;
 import catgirl.oneesama.application.Config;
 import rx.Subscription;
@@ -134,5 +135,12 @@ public class BrowseSeriesPagePresenter extends BasePresenter<BrowseSeriesPageVie
             return 0;
 
         return seriesPage.objects.size();
+    }
+
+    public void onItemClicked(int position) {
+        if (seriesPage.objects.get(position) instanceof BrowseSeriesPageChapter) {
+            if (getView() != null)
+                getView().loadChapter(((BrowseSeriesPageChapter) seriesPage.objects.get(position)).permalink);
+        }
     }
 }

@@ -1,5 +1,7 @@
 package catgirl.oneesama.activity.browseseriespage.fragment.view;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -33,6 +35,8 @@ import catgirl.oneesama.activity.browseseriespage.fragment.BrowseSeriesPageModul
 import catgirl.oneesama.activity.browseseriespage.fragment.data.model.BrowseSeriesPageChapter;
 import catgirl.oneesama.activity.browseseriespage.fragment.data.model.BrowseSeriesPageVolume;
 import catgirl.oneesama.activity.browseseriespage.fragment.presenter.BrowseSeriesPagePresenter;
+import catgirl.oneesama.activity.common.activity.ChapterLoaderActivity;
+import catgirl.oneesama.activity.main.MainActivity;
 import catgirl.oneesama.application.Application;
 import catgirl.oneesama.data.controller.ChaptersController;
 import rx.subscriptions.CompositeSubscription;
@@ -154,7 +158,8 @@ public class BrowseSeriesPageFragment
 
         if (type == TYPE_CHAPTER) {
             ((BrowseSeriesPageChapterViewHolder) holder)
-                    .bind((BrowseSeriesPageChapter) getPresenter().getItem(position));
+                    .bind((BrowseSeriesPageChapter) getPresenter().getItem(position),
+                            () -> getPresenter().onItemClicked(holder.getAdapterPosition()));
         } else if (type == TYPE_VOLUME) {
             ((BrowseSeriesPageVolumeViewHolder) holder)
                     .bind((BrowseSeriesPageVolume) getPresenter().getItem(position));
@@ -240,5 +245,10 @@ public class BrowseSeriesPageFragment
     @Override
     public void updateExistingItems(List<Object> chapters) {
         recyclerView.getAdapter().notifyDataSetChanged();
+    }
+
+    @Override
+    public void loadChapter(String permalink) {
+        ((ChapterLoaderActivity) getActivity()).openChapterByPermalink(permalink);
     }
 }
