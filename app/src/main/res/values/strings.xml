@@ -15,6 +15,7 @@
     <string name="activity_chapters_no_comics">No comics left.</string>
     <string name="page_doujins_no_chapters">You don\'t have any doujins downloaded yet. T-that would have been lewd.</string>
     <string name="page_misc_no_chapters">You don\'t have any uncategorized chapters yet.</string>
+    <string name="page_history_no_chapters">Your history is empty.\nTime to get reading!</string>
     <string name="page_series_no_chapters">You don\'t have chapters from any series downloaded yet.</string>
     <string name="fragment_ondevice_series">SERIES</string>
     <string name="fragment_ondevice_doujins">DOUJINS</string>
@@ -45,6 +46,7 @@
     <string name="fragment_browseseries_refresh_error">Couldn\'t refresh series…</string>
     <string name="activity_reader_left_to_right_warning">This comic is read left to right.</string>
     <string name="fragment_browse_series">SERIES</string>
+    <string name="activity_main_history">History</string>
 
 
 </resources>

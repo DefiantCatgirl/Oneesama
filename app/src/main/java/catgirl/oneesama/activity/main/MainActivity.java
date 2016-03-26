@@ -41,6 +41,7 @@ import catgirl.oneesama.R;
 import catgirl.oneesama.activity.common.activity.ChapterLoaderActivity;
 import catgirl.oneesama.activity.common.activity.ChapterLoaderActivityDelegate;
 import catgirl.oneesama.activity.main.fragments.browse.BrowseFragment;
+import catgirl.oneesama.activity.main.fragments.history.view.HistoryFragment;
 import catgirl.oneesama.activity.main.fragments.ondevice.OnDeviceFragment;
 import catgirl.oneesama.application.Application;
 import catgirl.oneesama.application.Config;
@@ -332,6 +333,9 @@ public class MainActivity extends BaseComponentActivity<MainActivityComponent>
             case ITEM_ONDEVICE:
                 fragmentClass = OnDeviceFragment.class;
                 break;
+            case ITEM_HISTORY:
+                fragmentClass = HistoryFragment.class;
+                break;
             default:
                 break;
         }
@@ -390,6 +394,7 @@ public class MainActivity extends BaseComponentActivity<MainActivityComponent>
         ITEM_ABOUT,
         ITEM_DYNASTY,
         ITEM_WEBSITE,
+        ITEM_HISTORY,
         ITEM_SEPARATOR
     }
 
@@ -416,6 +421,7 @@ public class MainActivity extends BaseComponentActivity<MainActivityComponent>
             menuItems = new ArrayList<>();
 
             menuItems.add(new MenuConfigItem(MenuItemType.ITEM_ONDEVICE, getString(R.string.activity_main_ondevice), R.drawable.ic_file_download_black_24dp));
+            menuItems.add(new MenuConfigItem(MenuItemType.ITEM_HISTORY, getString(R.string.activity_main_history), R.drawable.ic_history_black_24dp));
             menuItems.add(new MenuConfigItem(MenuItemType.ITEM_BROWSE, getString(R.string.activity_main_browse), R.drawable.ic_library_books_black_24dp));
             menuItems.add(MenuConfigItem.getSeparator());
             menuItems.add(new MenuConfigItem(MenuItemType.ITEM_DYNASTY, getString(R.string.activity_main_dynasty), R.drawable.ic_web_black_24dp));

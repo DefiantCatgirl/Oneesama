@@ -16,6 +16,8 @@ import android.widget.Toast;
 
 import com.yandex.metrica.YandexMetrica;
 
+import javax.inject.Inject;
+
 import butterknife.ButterKnife;
 import butterknife.Bind;
 import catgirl.oneesama.application.Application;
@@ -32,6 +34,8 @@ import catgirl.oneesama.activity.legacyreader.widgets.airviewer.AirViewerRecogni
 import catgirl.oneesama.activity.legacyreader.widgets.airviewer.AirWidgetDrawer;
 import catgirl.oneesama.activity.legacythumbnails.ReaderThumbnailsActivity;
 import catgirl.oneesama.data.model.chapter.ui.UiTag;
+import catgirl.oneesama.data.settings.RecentlyOpenedChapters;
+import catgirl.oneesama.data.settings.SettingsProvider;
 
 public class ReaderActivity extends BaseActivity implements AirViewerDelegate, AirCanvasDrawerDelegate, CacherDelegate, BookStateDelegate
 {
@@ -71,11 +75,15 @@ public class ReaderActivity extends BaseActivity implements AirViewerDelegate, A
 
 	boolean leftToRight = false;
 
+	@Inject SettingsProvider<RecentlyOpenedChapters> recentlyOpenedProvider;
+
     @SuppressWarnings("deprecation")
 	@SuppressLint("NewApi")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		Application.getApplicationComponent().inject(this);
 
 		Log.v("PixelFormat", "format = " + getWindow().getAttributes().format + ", 565 = " + PixelFormat.RGB_565); 
 		
@@ -93,6 +101,11 @@ public class ReaderActivity extends BaseActivity implements AirViewerDelegate, A
 
 	public void init(int bookId, int savedCurrentPage) {
 		book = ChaptersController.getInstance().getChapterController(bookId);
+
+		// Save last opened date
+		RecentlyOpenedChapters recentlyOpenedChapters = recentlyOpenedProvider.retrieve();
+		recentlyOpenedChapters.refreshOpenDate(bookId);
+		recentlyOpenedProvider.commit(recentlyOpenedChapters);
 
 		if(book == null)
 		{

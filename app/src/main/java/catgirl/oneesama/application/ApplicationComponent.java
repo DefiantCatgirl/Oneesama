@@ -6,6 +6,7 @@ import catgirl.oneesama.activity.browseseriespage.BrowseSeriesPageActivityCompon
 import catgirl.oneesama.activity.browseseriespage.BrowseSeriesPageActivityModule;
 import catgirl.oneesama.activity.chapterlist.fragments.chapterlist.ChapterListComponent;
 import catgirl.oneesama.activity.chapterlist.fragments.chapterlist.ChapterListModule;
+import catgirl.oneesama.activity.legacyreader.activityreader.ReaderActivity;
 import catgirl.oneesama.activity.main.MainActivityComponent;
 import catgirl.oneesama.activity.main.MainActivityModule;
 import catgirl.oneesama.data.realm.RealmProvider;
@@ -25,4 +26,7 @@ public interface ApplicationComponent {
 
     // Fragment scoped subcomponents
     ChapterListComponent plus(ChapterListModule module);
+
+    // That one annoying legacy activity
+    void inject(ReaderActivity readerActivity);
 }

@@ -1,5 +1,7 @@
 package catgirl.oneesama.application;
 
+import android.content.Context;
+
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
@@ -10,6 +12,9 @@ import javax.inject.Singleton;
 import catgirl.oneesama.data.controller.ChaptersController;
 import catgirl.oneesama.data.network.api.DynastyService;
 import catgirl.oneesama.data.realm.RealmProvider;
+import catgirl.oneesama.data.settings.RecentlyOpenedChapters;
+import catgirl.oneesama.data.settings.SettingsProvider;
+import catgirl.oneesama.data.settings.SharedSettingsProvider;
 import dagger.Module;
 import dagger.Provides;
 import io.realm.RealmObject;
@@ -56,5 +61,15 @@ public class ApplicationModule {
                 .build();
 
         return retrofit.create(DynastyService.class);
+    }
+
+    @Provides
+    public SettingsProvider<RecentlyOpenedChapters> provideRecentlyOpenedSettingsProvider(Context context) {
+        return new SharedSettingsProvider<>(context, RecentlyOpenedChapters.class);
+    }
+
+    @Provides
+    public Context provideApplicationContext() {
+        return Application.getContextOfApplication();
     }
 }

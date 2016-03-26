@@ -4,6 +4,8 @@ import catgirl.oneesama.activity.main.fragments.browse.fragments.recent.RecentCo
 import catgirl.oneesama.activity.main.fragments.browse.fragments.recent.RecentModule;
 import catgirl.oneesama.activity.main.fragments.browse.fragments.series.BrowseSeriesComponent;
 import catgirl.oneesama.activity.main.fragments.browse.fragments.series.BrowseSeriesModule;
+import catgirl.oneesama.activity.main.fragments.history.HistoryComponent;
+import catgirl.oneesama.activity.main.fragments.history.HistoryModule;
 import catgirl.oneesama.activity.main.fragments.ondevice.fragments.doujins.DoujinsComponent;
 import catgirl.oneesama.activity.main.fragments.ondevice.fragments.doujins.DoujinsModule;
 import catgirl.oneesama.activity.main.fragments.ondevice.fragments.misc.MiscChaptersComponent;
@@ -26,4 +28,7 @@ public interface MainActivityComponent {
     // Browse
     RecentComponent plus(RecentModule module);
     BrowseSeriesComponent plus(BrowseSeriesModule browseSeriesModule);
+
+    // History
+    HistoryComponent plus(HistoryModule historyModule);
 }

@@ -41,7 +41,7 @@ public abstract class SimpleRecyclerFragment<T, VH extends RecyclerView.ViewHold
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        ViewGroup view = (ViewGroup) inflater.inflate(R.layout.fragment_ondevice_page_common, container, false);
+        ViewGroup view = getView(inflater, container);
         ButterKnife.bind(this, view);
 
         RecyclerView.Adapter<VH> adapter = new RecyclerView.Adapter<VH>() {
@@ -113,5 +113,9 @@ public abstract class SimpleRecyclerFragment<T, VH extends RecyclerView.ViewHold
 
     protected long getItemId(int position) {
         return RecyclerView.NO_ID;
+    }
+
+    protected ViewGroup getView(LayoutInflater inflater, ViewGroup container) {
+        return (ViewGroup) inflater.inflate(R.layout.fragment_ondevice_page_common, container, false);
     }
 }
