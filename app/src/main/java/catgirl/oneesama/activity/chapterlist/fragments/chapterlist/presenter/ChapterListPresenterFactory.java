@@ -1,7 +1,7 @@
 package catgirl.oneesama.activity.chapterlist.fragments.chapterlist.presenter;
 
-import catgirl.oneesama.data.controller.ChaptersController;
 import catgirl.oneesama.activity.chapterlist.fragments.chapterlist.data.ChapterListProvider;
+import catgirl.oneesama.data.controller.ChaptersController;
 
 public class ChapterListPresenterFactory {
 

@@ -1,11 +1,8 @@
 package catgirl.oneesama.activity.browseseriespage.fragment.view;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorListener;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +16,8 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+
+import net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout;
 
 import java.util.List;
 
@@ -36,7 +35,6 @@ import catgirl.oneesama.activity.browseseriespage.fragment.data.model.BrowseSeri
 import catgirl.oneesama.activity.browseseriespage.fragment.data.model.BrowseSeriesPageVolume;
 import catgirl.oneesama.activity.browseseriespage.fragment.presenter.BrowseSeriesPagePresenter;
 import catgirl.oneesama.activity.common.activity.ChapterLoaderActivity;
-import catgirl.oneesama.activity.main.MainActivity;
 import catgirl.oneesama.application.Application;
 import catgirl.oneesama.data.controller.ChaptersController;
 import rx.subscriptions.CompositeSubscription;

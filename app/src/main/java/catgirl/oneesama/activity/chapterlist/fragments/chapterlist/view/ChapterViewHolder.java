@@ -25,7 +25,9 @@ public class ChapterViewHolder extends RecyclerView.ViewHolder {
     private IActionDelegate delegate;
     RecyclerView recycler;
     Context context;
-    private boolean shouldDisplayAuthor;
+
+    // TODO: ew
+    private boolean isDoujinsPage;
 
     ChapterViewHolderStatusDelegate statusDelegate;
 
@@ -34,9 +36,9 @@ public class ChapterViewHolder extends RecyclerView.ViewHolder {
             RecyclerView recycler,
             ChaptersController chaptersController,
             CompositeSubscription compositeSubscription,
-            boolean shouldDisplayAuthor) {
+            boolean isDoujinsPage) {
         super(itemView);
-        this.shouldDisplayAuthor = shouldDisplayAuthor;
+        this.isDoujinsPage = isDoujinsPage;
         ButterKnife.bind(this, itemView);
         context = itemView.getContext();
         this.recycler = recycler;
@@ -66,14 +68,15 @@ public class ChapterViewHolder extends RecyclerView.ViewHolder {
 
         title.setText(data.chapter.getTitle());
 
-        if (shouldDisplayAuthor) {
+        if (isDoujinsPage) {
             author.setVisibility(View.VISIBLE);
             author.setText(data.author.getName());
+            title.setText(data.chapter.getLongTitle());
         } else {
             author.setVisibility(View.GONE);
         }
 
-        if(data.chapter.getVolumeName() != null) {
+        if(data.chapter.getVolumeName() != null & !isDoujinsPage) {
             volume.setText(data.chapter.getVolumeName());
             volume.setVisibility(View.VISIBLE);
         } else {

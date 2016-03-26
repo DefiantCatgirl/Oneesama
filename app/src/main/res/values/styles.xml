@@ -4,8 +4,11 @@
 
     </style>
 
-
     <style name="ReaderTheme" parent="BaseTheme">
+
+    </style>
+
+    <style name="CollapsibleToolbarTheme" parent="BaseTheme">
 
     </style>
 
@@ -14,6 +17,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowBackground">@color/windowBackground</item>
     </style>
 
     <style name="Toolbar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
@@ -22,6 +26,11 @@
 
     <style name="ToolbarTitle">
         <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="ExpandedToolbarTitle">
+        <item name="android:textSize">24sp</item>
         <item name="android:textColor">@android:color/white</item>
     </style>
 

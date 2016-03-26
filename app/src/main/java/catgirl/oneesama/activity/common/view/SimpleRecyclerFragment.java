@@ -44,7 +44,7 @@ public abstract class SimpleRecyclerFragment<T, VH extends RecyclerView.ViewHold
         ViewGroup view = (ViewGroup) inflater.inflate(R.layout.fragment_ondevice_page_common, container, false);
         ButterKnife.bind(this, view);
 
-        recyclerView.setAdapter(new RecyclerView.Adapter<VH>() {
+        RecyclerView.Adapter<VH> adapter = new RecyclerView.Adapter<VH>() {
             @Override
             public VH onCreateViewHolder(ViewGroup parent, int viewType) {
                 return SimpleRecyclerFragment.this.createViewHolder(parent);
@@ -59,8 +59,16 @@ public abstract class SimpleRecyclerFragment<T, VH extends RecyclerView.ViewHold
             public int getItemCount() {
                 return SimpleRecyclerFragment.this.getItemCount();
             }
-        });
 
+            @Override
+            public long getItemId(int position) {
+                return SimpleRecyclerFragment.this.getItemId(position);
+            }
+        };
+
+        adapter.setHasStableIds(hasStableIds());
+
+        recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         // Empty
@@ -97,4 +105,13 @@ public abstract class SimpleRecyclerFragment<T, VH extends RecyclerView.ViewHold
     protected abstract void bindViewHolder(VH holder, int position);
 
     protected abstract VH createViewHolder(ViewGroup parent);
+
+    // Overridable
+    protected boolean hasStableIds() {
+        return false;
+    }
+
+    protected long getItemId(int position) {
+        return RecyclerView.NO_ID;
+    }
 }

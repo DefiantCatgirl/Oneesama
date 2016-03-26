@@ -3,9 +3,18 @@ package catgirl.oneesama.activity.chapterlist.fragments.chapterlist.view;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -14,6 +23,7 @@ import android.widget.TextView;
 import javax.inject.Inject;
 
 import catgirl.oneesama.R;
+import catgirl.oneesama.activity.browseseriespage.BrowseSeriesPageActivity;
 import catgirl.oneesama.activity.chapterlist.ChapterListActivity;
 import catgirl.oneesama.data.controller.ChaptersController;
 import catgirl.oneesama.activity.chapterlist.fragments.chapterlist.data.model.ChapterAuthor;
@@ -56,7 +66,37 @@ public class ChapterListFragment
 
     // View //
 
-    boolean shouldDisplayAuthor;
+    boolean isDoujinsPage;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+
+        inflater.inflate(R.menu.chapterlist_fragment_menu, menu);
+
+        Drawable drawable = menu.findItem(R.id.MenuItem_Browse).getIcon();
+        if (drawable != null) {
+            drawable.mutate();
+            drawable.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.MenuItem_Browse:
+                getPresenter().onBrowseClicked();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
     @Override
     public ChapterViewHolder createViewHolder(ViewGroup parent) {
@@ -65,7 +105,7 @@ public class ChapterListFragment
                 recyclerView,
                 chaptersController,
                 compositeSubscription,
-                shouldDisplayAuthor);
+                isDoujinsPage);
     }
 
     @Override
@@ -115,8 +155,8 @@ public class ChapterListFragment
     }
 
     @Override
-    public void setDisplayAuthor(boolean shouldDisplayAuthor) {
-        this.shouldDisplayAuthor = shouldDisplayAuthor;
+    public void setIsDoujinsPage(boolean isDoujinsPage) {
+        this.isDoujinsPage = isDoujinsPage;
     }
 
     @Override
@@ -159,5 +199,28 @@ public class ChapterListFragment
         if (getPresenter().getItemsCount() == 0) {
             getActivity().onBackPressed();
         }
+    }
+
+    @Override
+    public void openUrl(String url) {
+        Intent i = new Intent(Intent.ACTION_VIEW);
+        i.setData(Uri.parse(url));
+        startActivity(i);
+    }
+
+    @Override
+    public void switchToBrowseSeriesPage(String permalink, String name) {
+        Intent intent = new Intent(getActivity(), BrowseSeriesPageActivity.class);
+        intent.putExtra(BrowseSeriesPageActivity.SERIES_PERMALINK, permalink);
+        intent.putExtra(BrowseSeriesPageActivity.SERIES_TITLE, name);
+        startActivity(intent);
+    }
+
+    protected boolean hasStableIds() {
+        return true;
+    }
+
+    protected long getItemId(int position) {
+        return getPresenter().getItem(position).chapter.getPermalink().hashCode();
     }
 }

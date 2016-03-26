@@ -67,15 +67,18 @@ public class RemoveBrokenIdChaptersAndTags {
                         }
 
                         File allFolders = new File(Application.getContextOfApplication().getExternalFilesDir(null), FileManager.DOWNLOAD_FOLDER);
-                        for (File folder : allFolders.listFiles()) {
-                            try {
-                                if (folder.isDirectory() && !ids.contains(Integer.parseInt(folder.getName()))) {
-                                    FileManager.deleteFolder(Integer.parseInt(folder.getName()));
-                                    Log.d("FileManager", "Deleted directory: " + folder.getName());
+
+                        if (allFolders.listFiles() != null) {
+                            for (File folder : allFolders.listFiles()) {
+                                try {
+                                    if (folder.isDirectory() && !ids.contains(Integer.parseInt(folder.getName()))) {
+                                        FileManager.deleteFolder(Integer.parseInt(folder.getName()));
+                                        Log.d("FileManager", "Deleted directory: " + folder.getName());
+                                    }
+                                } catch (NumberFormatException e) {
+                                    // Skip any odd folder that might occur
+                                    e.printStackTrace();
                                 }
-                            } catch (NumberFormatException e) {
-                                // Skip any odd folder that might occur
-                                e.printStackTrace();
                             }
                         }
 

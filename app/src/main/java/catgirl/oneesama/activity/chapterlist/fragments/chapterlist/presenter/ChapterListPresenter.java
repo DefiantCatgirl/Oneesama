@@ -5,11 +5,12 @@ import android.support.annotation.Nullable;
 
 import java.util.List;
 
+import catgirl.oneesama.activity.chapterlist.fragments.chapterlist.data.ChapterListProvider;
+import catgirl.oneesama.application.Config;
 import catgirl.oneesama.data.controller.ChaptersController;
 import catgirl.oneesama.activity.common.presenter.SimpleRecyclerPresenter;
 import catgirl.oneesama.data.model.chapter.ui.UiTag;
 import catgirl.oneesama.activity.chapterlist.fragments.chapterlist.data.model.ChapterAuthor;
-import catgirl.oneesama.activity.chapterlist.fragments.chapterlist.data.ChapterListProvider;
 import catgirl.oneesama.activity.chapterlist.fragments.chapterlist.view.ChapterListView;
 import rx.Observable;
 
@@ -24,6 +25,8 @@ public class ChapterListPresenter extends SimpleRecyclerPresenter<ChapterAuthor,
     int deleteConfirmationPosition;
     UiTag tag;
 
+    boolean isDoujinsPage;
+
     public ChapterListPresenter(ChapterListProvider listProvider, ChaptersController chaptersController, int tagId) {
         this.chaptersController = chaptersController;
         this.listProvider = listProvider;
@@ -34,6 +37,7 @@ public class ChapterListPresenter extends SimpleRecyclerPresenter<ChapterAuthor,
     public void onCreate(@Nullable Bundle bundle) {
         super.onCreate(bundle);
         tag = listProvider.getTag(tagId);
+        isDoujinsPage = !tag.getType().equals(UiTag.SERIES);
     }
 
     @Override
@@ -41,7 +45,7 @@ public class ChapterListPresenter extends SimpleRecyclerPresenter<ChapterAuthor,
         super.bindView(view);
 
         view.setSeriesTitle(tag.getName());
-        view.setDisplayAuthor(!tag.getType().equals(UiTag.SERIES));
+        view.setIsDoujinsPage(isDoujinsPage);
 
         if (deleteConfirmationShown) {
             view.showDeleteConfirmation(deleteConfirmationPosition);
@@ -55,7 +59,13 @@ public class ChapterListPresenter extends SimpleRecyclerPresenter<ChapterAuthor,
 
     @Override
     public Observable<List<ChapterAuthor>> getItemObservable() {
-        return listProvider.getChapterAuthorList(tagId, tag.getType().equals(UiTag.SERIES));
+        listProvider.setTagId(tagId, tag.getType().equals(UiTag.SERIES));
+        return listProvider.subscribeForItems();
+    }
+
+    @Override
+    public void onDestroy() {
+        listProvider.onDestroy();
     }
 
     public void onItemClicked(int position) {
@@ -81,5 +91,13 @@ public class ChapterListPresenter extends SimpleRecyclerPresenter<ChapterAuthor,
 
     public void onItemDeletionDismissed() {
         deleteConfirmationShown = false;
+    }
+
+    public void onBrowseClicked() {
+        if (isDoujinsPage) {
+            getView().openUrl(Config.apiEndpoint + "doujins/" + tag.getPermalink());
+        } else {
+            getView().switchToBrowseSeriesPage(tag.getPermalink(), tag.getName());
+        }
     }
 }
