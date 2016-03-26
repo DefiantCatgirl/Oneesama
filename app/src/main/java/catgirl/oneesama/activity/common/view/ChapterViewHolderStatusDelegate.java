@@ -112,11 +112,13 @@ public class ChapterViewHolderStatusDelegate implements BookStateDelegate {
     @Override
     public void pageDownloaded(int id, boolean bookDownloaded, int pageId, boolean onlyProgress) {
         handler.post(() -> {
-            reloadLayout.setVisibility(View.GONE);
-            progressLayout.setVisibility(View.VISIBLE);
-            Book controller = chaptersController.getChapterController(chapter.getId());
-            if(controller != null)
-                progressBar.setProgress((float) controller.pagesDownloaded / (float) controller.totalFiles);
+            if (chapter != null) {
+                reloadLayout.setVisibility(View.GONE);
+                progressLayout.setVisibility(View.VISIBLE);
+                Book controller = chaptersController.getChapterController(chapter.getId());
+                if (controller != null)
+                    progressBar.setProgress((float) controller.pagesDownloaded / (float) controller.totalFiles);
+            }
         });
     }
 

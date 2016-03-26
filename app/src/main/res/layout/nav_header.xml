@@ -2,12 +2,19 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingTop="@dimen/toolbar_padding"
+    android:layout_height="100dp"
     android:background="?attr/colorPrimary">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/imageView"
+        android:src="@drawable/drawer_header_background"
+        android:scaleType="centerCrop" />
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="match_parent"
         android:gravity="bottom"
         android:padding="16dp"
         android:orientation="vertical"
@@ -21,4 +28,5 @@
             android:textStyle="bold"
             android:id="@+id/textView2" />
     </LinearLayout>
+
 </FrameLayout>
