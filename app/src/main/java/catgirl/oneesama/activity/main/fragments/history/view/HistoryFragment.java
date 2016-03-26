@@ -58,9 +58,7 @@ public class HistoryFragment
     @Override
     public void onResume() {
         super.onResume();
-
-        Log.v("HistoryFragment", toString() + ": onResume; justStarted: " + justStarted);
-
+        
         if (!justStarted)
             getPresenter().onResume();
 
