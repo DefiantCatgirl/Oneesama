@@ -39,14 +39,20 @@ public class SeriesProvider extends AutoRefreshableRealmProvider<Tag, SeriesAuth
         List<SeriesAuthor> result = new ArrayList<>();
 
         Observable.from(results)
-                .map(series -> new SeriesAuthor(new UiTag(series), new UiTag(realm.allObjects(Chapter.class)
-                        .where()
-                        .equalTo("tags.id", series.getId())
-                        .findFirst()
-                        .getTags()
-                        .where()
-                        .equalTo("type", UiTag.AUTHOR)
-                        .findFirst())))
+                .map(series -> {
+                    Tag author = realm.allObjects(Chapter.class)
+                            .where()
+                            .equalTo("tags.id", series.getId())
+                            .findFirst()
+                            .getTags()
+                            .where()
+                            .equalTo("type", UiTag.AUTHOR)
+                            .findFirst();
+                    if (author != null)
+                        return new SeriesAuthor(new UiTag(series), new UiTag(author));
+                    else
+                        return new SeriesAuthor(new UiTag(series), null);
+                })
                 .toList()
                 .subscribe(result::addAll);
 

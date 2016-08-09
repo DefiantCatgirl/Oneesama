@@ -70,8 +70,13 @@ public class ChapterViewHolder extends RecyclerView.ViewHolder {
 
         if (isDoujinsPage) {
             author.setVisibility(View.VISIBLE);
-            author.setText(data.author.getName());
+            if (data.author != null) {
+                author.setText(data.author.getName());
+            } else {
+                author.setText("");
+            }
             title.setText(data.chapter.getLongTitle());
+
         } else {
             author.setVisibility(View.GONE);
         }

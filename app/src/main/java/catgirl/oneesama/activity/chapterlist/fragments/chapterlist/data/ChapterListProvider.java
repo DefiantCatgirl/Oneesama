@@ -57,10 +57,16 @@ public class ChapterListProvider extends AutoRefreshableRealmProvider<Chapter, C
         List<ChapterAuthor> result = new ArrayList<>();
 
         Observable.from(results)
-                .map(chapter -> new ChapterAuthor(new UiChapter(chapter), new UiTag(chapter.getTags()
-                        .where()
-                        .equalTo("type", UiTag.AUTHOR)
-                        .findFirst())))
+                .map(chapter -> {
+                    Tag author = chapter.getTags()
+                            .where()
+                            .equalTo("type", UiTag.AUTHOR)
+                            .findFirst();
+                    if (author != null)
+                        return new ChapterAuthor(new UiChapter(chapter), new UiTag(author));
+                    else
+                        return new ChapterAuthor(new UiChapter(chapter), null);
+                })
                 .toList()
                 .subscribe(result::addAll);
 
